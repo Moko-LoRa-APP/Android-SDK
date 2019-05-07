@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">LoRaWAN</string>
+    <string name="app_name">Moko LoRaWAN</string>
+    <string name="about_title">About Moko</string>
+    <string name="about_moko_name">Moko Technology LTD.</string>
 
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
@@ -18,5 +20,10 @@
 
     <string name="main_exit_tips">Are you sure you want to quit?</string>
     <string name="setting_syncing">syncing</string>
+
+    <string name="main_scan_name">Name</string>
+    <string name="main_scan_rssi">RSSI</string>
+    <string name="about_moko_url">http://doc.mokotechnology.com/index.php?s=/page/526</string>
+    <string name="version_info">Version:%s</string>
 
 </resources>

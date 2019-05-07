@@ -59,7 +59,7 @@ public class LoadingDialog extends BaseDialog {
 
     @Override
     public boolean getCancellable() {
-        return true;
+        return false;
     }
 
     @Override

@@ -64,7 +64,7 @@ public class MokoSupport implements MokoResponseCallback {
     private MokoConnStateCallback mMokoConnStateCallback;
     private HashMap<OrderType, MokoCharacteristic> mCharacteristicMap;
     private static final UUID DESCRIPTOR_UUID_NOTIFY = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-    private static final UUID SERVICE_UUID = UUID.fromString("0000ffc0-0000-1000-8000-00805f9b34fb");
+    private static final UUID SERVICE_UUID = UUID.fromString("0000ffc3-0000-1000-8000-00805f9b34fb");
 
     private static volatile MokoSupport INSTANCE;
 
