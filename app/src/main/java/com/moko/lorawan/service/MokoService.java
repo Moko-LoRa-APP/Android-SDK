@@ -15,6 +15,7 @@ import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.handler.BaseMessageHandler;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.task.WriteUplinkDataTestTask;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -148,5 +149,10 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
 
     public void getGPSAndSensorData(){
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getGPSAndSensor(this));
+    }
+
+
+    public void setUplinkDataTest() {
+        MokoSupport.getInstance().sendOrder(new WriteUplinkDataTestTask(this));
     }
 }

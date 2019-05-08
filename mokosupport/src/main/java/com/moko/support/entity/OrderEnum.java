@@ -24,6 +24,7 @@ public enum OrderEnum implements Serializable {
     READ_9_AXIS_G("读取9轴G数据", 0x18),
     READ_9_AXIS_M("读取9轴M数据", 0x19),
     READ_9_AXIS_ANGLE("读取9轴角度数据", 0x1A),
+    WRITE_UPLINK_DATA_TEST("设置上行测试数据", 0xBB),
     ;
 
 
