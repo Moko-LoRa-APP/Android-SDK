@@ -14,20 +14,23 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
 import com.moko.lorawan.adapter.LoRaDeviceAdapter;
 import com.moko.lorawan.dialog.AlertMessageDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.service.MokoService;
+import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
+import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.task.OrderTaskResponse;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -40,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -59,6 +61,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     private LoRaDeviceAdapter mAdapter;
     private List<DeviceInfo> mDeviceInfos;
     private HashMap<String, DeviceInfo> mDeviceInfoHashMap;
+    private String mSelectedDeviceName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +138,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                                 public void run() {
                                     srlMain.autoRefresh();
                                 }
-                            },500);
+                            }, 500);
                             break;
                     }
                 }
@@ -143,9 +146,19 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
                 }
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-
+                    dismissLoadingProgressDialog();
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
+                    OrderEnum orderEnum = response.order;
+                    switch (orderEnum) {
+                        case READ_UPLOAD_MODE:
+                            // 跳转基础信息页面
+                            Intent i = new Intent(MainActivity.this, BasicInfoActivity.class);
+                            i.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mSelectedDeviceName);
+                            startActivity(i);
+                            break;
+                    }
                 }
             }
         }
@@ -155,11 +168,18 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         String action = event.getAction();
         if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
-            // 设备断开，通知页面更新
-
+            // 设备断开
+            dismissLoadingProgressDialog();
+            ToastUtils.showToast(MainActivity.this, "connect failed");
         }
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
-            // 设备连接成功，通知页面更新
+            // 设备连接成功
+            mMokoService.mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mMokoService.getBasicInfo();
+                }
+            }, 1000);
         }
     }
 
@@ -239,7 +259,13 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        // TODO: 2019/5/7 跳转
+        srlMain.finishRefresh();
+        MokoSupport.getInstance().stopScanDevice();
+        // 跳转
+        final DeviceInfo deviceInfo = (DeviceInfo) adapter.getItem(position);
+        mMokoService.connectBluetoothDevice(deviceInfo.mac);
+        mSelectedDeviceName = deviceInfo.name;
+        showLoadingProgressDialog();
     }
 
     @Override
@@ -255,6 +281,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     }
 
     public void about(View view) {
-        // TODO: 2019/5/7 关于
+        // 关于
+        startActivity(new Intent(this, AboutActivity.class));
     }
 }

@@ -1,6 +1,16 @@
 package com.moko.support;
 
 public class MokoConstants {
+    // 发送头
+    public static final int HEADER_SEND = 0xED;
+    // 读取发送尾
+    public static final int END_READ = 0xEE;
+    // 应答头
+    public static final int HEADER_REPLAY = 0xED;
+    // 应答成功
+    public static final int SUCCESS_REPLAY = 0xAA;
+    // 应答失败
+    public static final int FAILED_REPLAY = 0xFF;
     // 发现状态
     public static final String ACTION_DISCOVER_SUCCESS = "com.moko.lorawan.ACTION_DISCOVER_SUCCESS";
     public static final String ACTION_DISCOVER_TIMEOUT = "com.moko.lorawan.ACTION_DISCOVER_TIMEOUT";

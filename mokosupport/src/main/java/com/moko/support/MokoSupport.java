@@ -550,4 +550,127 @@ public class MokoSupport implements MokoResponseCallback {
         }
         return false;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // connect status
+    ///////////////////////////////////////////////////////////////////////////
+    private int connectStatus;
+
+    public void setConnectStatus(int connectStatus) {
+        this.connectStatus = connectStatus;
+    }
+
+    public int getConnectStatus() {
+        return connectStatus;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // region
+    ///////////////////////////////////////////////////////////////////////////
+    private int region;
+
+    public void setRegion(int region) {
+        this.region = region;
+    }
+
+    public int getRegion() {
+        return region;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // class type
+    ///////////////////////////////////////////////////////////////////////////
+    private int classType;
+
+    public void setClassType(int classType) {
+        this.classType = classType;
+    }
+
+    public int getClassType() {
+        return classType;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // upload mode
+    ///////////////////////////////////////////////////////////////////////////
+
+    private int uploadMode;
+
+    public void setUploadMode(int uploadMode) {
+        this.uploadMode = uploadMode;
+    }
+
+    public int getUploadMode() {
+        return uploadMode;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // company name
+    ///////////////////////////////////////////////////////////////////////////
+
+    private String companyName;
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // manufacture date
+    ///////////////////////////////////////////////////////////////////////////
+
+    private String manufacureDate;
+
+    public void setManufacureDate(String manufacureDate) {
+        this.manufacureDate = manufacureDate;
+    }
+
+    public String getManufacureDate() {
+        return manufacureDate;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // model name
+    ///////////////////////////////////////////////////////////////////////////
+
+    private String modelName;
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // ble firmware
+    ///////////////////////////////////////////////////////////////////////////
+
+    private String bleFirmware;
+
+    public void setBleFirmware(String bleFirmware) {
+        this.bleFirmware = bleFirmware;
+    }
+
+    public String getBleFirmware() {
+        return bleFirmware;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // lora firmware
+    ///////////////////////////////////////////////////////////////////////////
+
+    private String loraFirmware;
+
+    public void setLoraFirmware(String loraFirmware) {
+        this.loraFirmware = loraFirmware;
+    }
+
+    public String getLoraFirmware() {
+        return loraFirmware;
+    }
 }

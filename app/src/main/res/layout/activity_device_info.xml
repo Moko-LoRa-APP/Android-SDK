@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_f2f2f2"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:background="@color/green_6caf10"
+            android:gravity="center"
+            android:text="Device Info"
+            android:textColor="@color/white_ffffff"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="back"
+            android:padding="16dp"
+            android:src="@drawable/ic_back" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_ffffff"
+        android:gravity="center_vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Company Name"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_company_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <View style="@style/divider_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_ffffff"
+        android:gravity="center_vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date of Manufacture"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_manufacture_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <View style="@style/divider_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_ffffff"
+        android:gravity="center_vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Model Name"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_model_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <View style="@style/divider_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_ffffff"
+        android:gravity="center_vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BLE Firmware"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_ble_firmware"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <View style="@style/divider_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_ffffff"
+        android:gravity="center_vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lora Firmware"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_lora_firmware"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <View style="@style/divider_line" />
+
+
+</LinearLayout>

@@ -26,4 +26,34 @@
     <string name="about_moko_url">http://doc.mokotechnology.com/index.php?s=/page/526</string>
     <string name="version_info">Version:%s</string>
 
+    <string-array name="connect_status">
+        <item>Disconnected</item>
+        <item>Connected</item>
+        <item>Connecting</item>
+    </string-array>
+    <string-array name="region">
+        <item>EU868</item>
+        <item>US915</item>
+        <item>US915HYBRID</item>
+        <item>CN779</item>
+        <item>EU433</item>
+        <item>AU915</item>
+        <item>AU915OLD</item>
+        <item>CN470</item>
+        <item>AS923</item>
+        <item>KR920</item>
+        <item>IN865</item>
+        <item>CN470PREQEL</item>
+        <item>STE920</item>
+    </string-array>
+    <string-array name="class_type">
+        <item>ClassA</item>
+        <item>ClassB</item>
+        <item>ClassC</item>
+    </string-array>
+    <string-array name="upload_mode">
+        <item>ABP</item>
+        <item>OTAA</item>
+    </string-array>
+
 </resources>

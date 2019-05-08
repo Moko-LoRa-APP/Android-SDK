@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.Message;
 
+import com.moko.lorawan.utils.OrderTaskCreator;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoConnStateCallback;
@@ -134,5 +135,14 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
         @Override
         protected void handleMessage(MokoService service, Message msg) {
         }
+    }
+
+    public void getBasicInfo() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getBasicInfo(this));
+    }
+
+
+    public void getDeviceInfo() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getDeviceInfo(this));
     }
 }
