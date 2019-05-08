@@ -2,10 +2,15 @@ package com.moko.lorawan.utils;
 
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.task.OrderTask;
+import com.moko.support.task.Read9AxisATask;
+import com.moko.support.task.Read9AxisAngleTask;
+import com.moko.support.task.Read9AxisGTask;
+import com.moko.support.task.Read9AxisMTask;
 import com.moko.support.task.ReadBleFirmwareTask;
 import com.moko.support.task.ReadClassTypeTask;
 import com.moko.support.task.ReadCompanyNameTask;
 import com.moko.support.task.ReadConnectStatusTask;
+import com.moko.support.task.ReadGPSTask;
 import com.moko.support.task.ReadLoraFirmwareTask;
 import com.moko.support.task.ReadManufactureDateTask;
 import com.moko.support.task.ReadModelNameTask;
@@ -35,6 +40,16 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadModelNameTask(callback));
         orderTasks.add(new ReadBleFirmwareTask(callback));
         orderTasks.add(new ReadLoraFirmwareTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
+    public static OrderTask[] getGPSAndSensor(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadGPSTask(callback));
+        orderTasks.add(new Read9AxisATask(callback));
+        orderTasks.add(new Read9AxisGTask(callback));
+        orderTasks.add(new Read9AxisMTask(callback));
+        orderTasks.add(new Read9AxisAngleTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 }

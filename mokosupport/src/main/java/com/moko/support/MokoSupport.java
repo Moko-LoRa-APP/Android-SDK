@@ -673,4 +673,64 @@ public class MokoSupport implements MokoResponseCallback {
     public String getLoraFirmware() {
         return loraFirmware;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // gps
+    ///////////////////////////////////////////////////////////////////////////
+
+    private String latitude;
+    private String longitude;
+    private String altitude;
+    private String speed;
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setAltitude(String altitude) {
+        this.altitude = altitude;
+    }
+
+    public String getAltitude() {
+        return altitude;
+    }
+
+    public void setSpeed(String speed) {
+        this.speed = speed;
+    }
+
+    public String getSpeed() {
+        return speed;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // sensor data
+    ///////////////////////////////////////////////////////////////////////////
+    public String ax;
+    public String ay;
+    public String az;
+
+    public String gx;
+    public String gy;
+    public String gz;
+
+    public String mx;
+    public String my;
+    public String mz;
+
+    public String x_angle;
+    public String y_angle;
 }
+

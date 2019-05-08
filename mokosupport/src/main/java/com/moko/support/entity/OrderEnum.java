@@ -19,6 +19,11 @@ public enum OrderEnum implements Serializable {
     READ_MODEL_NAME("读取设备名称", 0x04),
     READ_BLE_FIRMWARE("读取固件版本", 0x05),
     READ_LORA_FIRMWARE("读取Lora固件版本", 0x06),
+    READ_GPS("读取GPS数据", 0x16),
+    READ_9_AXIS_A("读取9轴A数据", 0x17),
+    READ_9_AXIS_G("读取9轴G数据", 0x18),
+    READ_9_AXIS_M("读取9轴M数据", 0x19),
+    READ_9_AXIS_ANGLE("读取9轴角度数据", 0x1A),
     ;
 
 

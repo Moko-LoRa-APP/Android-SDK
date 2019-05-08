@@ -145,4 +145,8 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public void getDeviceInfo() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getDeviceInfo(this));
     }
+
+    public void getGPSAndSensorData(){
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getGPSAndSensor(this));
+    }
 }

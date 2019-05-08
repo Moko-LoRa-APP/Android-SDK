@@ -10,15 +10,14 @@ import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
 
-public class ReadManufactureDateTask extends OrderTask {
+public class Read9AxisGTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public ReadManufactureDateTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_MANUFACTURE_DATE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public Read9AxisGTask(MokoOrderTaskCallback callback) {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_9_AXIS_G, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -32,20 +31,27 @@ public class ReadManufactureDateTask extends OrderTask {
 
     @Override
     public void parseValue(byte[] value) {
-        if (value.length != 7)
+        if (value.length != 9)
             return;
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x04 != (value[2] & 0xFF))
+        if (0x06 != (value[2] & 0xFF))
             return;
-        byte[] yearBytes = Arrays.copyOfRange(value, 3, 5);
-        byte[] yearBytesReverse = new byte[2];
-        yearBytesReverse[0] = yearBytes[1];
-        yearBytesReverse[1] = yearBytes[0];
-        int years = MokoUtils.toInt(yearBytesReverse);
-        int month = value[5] & 0xFF;
-        int day = value[6] & 0xFF;
-        MokoSupport.getInstance().setManufacureDate(String.format("%d%d%d", years, month, day));
+        byte[] gxBytes = Arrays.copyOfRange(value, 3, 5);
+        byte[] gxBytesReverse = new byte[2];
+        gxBytesReverse[0] = gxBytes[1];
+        gxBytesReverse[1] = gxBytes[0];
+        MokoSupport.getInstance().gx = String.format("%#x", MokoUtils.toInt(gxBytesReverse));
+        byte[] gyBytes = Arrays.copyOfRange(value, 5, 7);
+        byte[] gyBytesReverse = new byte[2];
+        gyBytesReverse[0] = gyBytes[1];
+        gyBytesReverse[1] = gyBytes[0];
+        MokoSupport.getInstance().gy = String.format("%#x", MokoUtils.toInt(gyBytesReverse));
+        byte[] gzBytes = Arrays.copyOfRange(value, 7, 9);
+        byte[] gzBytesReverse = new byte[2];
+        gzBytesReverse[0] = gzBytes[1];
+        gzBytesReverse[1] = gzBytes[0];
+        MokoSupport.getInstance().gz = String.format("%#x", MokoUtils.toInt(gzBytesReverse));
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

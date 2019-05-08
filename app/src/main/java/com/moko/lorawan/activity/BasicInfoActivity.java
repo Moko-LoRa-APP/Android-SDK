@@ -39,6 +39,8 @@ public class BasicInfoActivity extends BaseActivity {
     private String[] uploadModes;
     private MokoService mMokoService;
     private boolean mReceiverTag = false;
+    private String mDeviceName;
+    private String mDeviceMac;
 
 
     @Override
@@ -46,8 +48,9 @@ public class BasicInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_info);
         ButterKnife.bind(this);
-        String deviceName = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_NAME);
-        tvDeviceName.setText(deviceName);
+        mDeviceName = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_NAME);
+        mDeviceMac = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_MAC);
+        tvDeviceName.setText(mDeviceName);
         int connectStatus = MokoSupport.getInstance().getConnectStatus();
         int region = MokoSupport.getInstance().getRegion();
         int classType = MokoSupport.getInstance().getClassType();
@@ -110,6 +113,10 @@ public class BasicInfoActivity extends BaseActivity {
                             // 跳转设备信息页面
                             startActivity(new Intent(BasicInfoActivity.this, DeviceInfoActivity.class));
                             break;
+                        case READ_9_AXIS_ANGLE:
+                            // 跳转9轴和传感器页面
+                            startActivity(new Intent(BasicInfoActivity.this, GPSAndSensorDataActivity.class));
+                            break;
                     }
                 }
             }
@@ -159,6 +166,8 @@ public class BasicInfoActivity extends BaseActivity {
     }
 
     public void gpsAndSensorData(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getGPSAndSensorData();
     }
 
     public void uplinkTest(View view) {
@@ -170,6 +179,10 @@ public class BasicInfoActivity extends BaseActivity {
     }
 
     public void ota(View view) {
+        Intent intent = new Intent(this, OTAActivity.class);
+        intent.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mDeviceName);
+        intent.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mDeviceMac);
+        startActivity(intent);
     }
 
     public void log(View view) {

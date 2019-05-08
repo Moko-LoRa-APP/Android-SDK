@@ -10,15 +10,14 @@ import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
 
-public class ReadManufactureDateTask extends OrderTask {
+public class Read9AxisAngleTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public ReadManufactureDateTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_MANUFACTURE_DATE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public Read9AxisAngleTask(MokoOrderTaskCallback callback) {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_9_AXIS_M, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -38,14 +37,18 @@ public class ReadManufactureDateTask extends OrderTask {
             return;
         if (0x04 != (value[2] & 0xFF))
             return;
-        byte[] yearBytes = Arrays.copyOfRange(value, 3, 5);
-        byte[] yearBytesReverse = new byte[2];
-        yearBytesReverse[0] = yearBytes[1];
-        yearBytesReverse[1] = yearBytes[0];
-        int years = MokoUtils.toInt(yearBytesReverse);
-        int month = value[5] & 0xFF;
-        int day = value[6] & 0xFF;
-        MokoSupport.getInstance().setManufacureDate(String.format("%d%d%d", years, month, day));
+        byte[] xBytes = Arrays.copyOfRange(value, 3, 5);
+        byte[] xBytesReverse = new byte[2];
+        xBytesReverse[0] = xBytes[1];
+        xBytesReverse[1] = xBytes[0];
+        float x_angle = MokoUtils.toInt(xBytesReverse) * 0.01f;
+        MokoSupport.getInstance().x_angle = String.format("%f", x_angle);
+        byte[] yBytes = Arrays.copyOfRange(value, 5, 7);
+        byte[] yBytesReverse = new byte[2];
+        yBytesReverse[0] = yBytes[1];
+        yBytesReverse[1] = yBytes[0];
+        float y_angle = MokoUtils.toInt(yBytesReverse) * 0.01f;
+        MokoSupport.getInstance().y_angle = String.format("%f", y_angle);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

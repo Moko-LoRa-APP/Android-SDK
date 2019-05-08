@@ -7,18 +7,15 @@ import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
+import com.moko.support.utils.ByteArrayConveter;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-public class ReadManufactureDateTask extends OrderTask {
+public class ReadGPSTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public ReadManufactureDateTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_MANUFACTURE_DATE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadGPSTask(MokoOrderTaskCallback callback) {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_GPS, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -32,20 +29,20 @@ public class ReadManufactureDateTask extends OrderTask {
 
     @Override
     public void parseValue(byte[] value) {
-        if (value.length != 7)
+        if (value.length != 19)
             return;
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x04 != (value[2] & 0xFF))
+        if (0x10 != (value[2] & 0xFF))
             return;
-        byte[] yearBytes = Arrays.copyOfRange(value, 3, 5);
-        byte[] yearBytesReverse = new byte[2];
-        yearBytesReverse[0] = yearBytes[1];
-        yearBytesReverse[1] = yearBytes[0];
-        int years = MokoUtils.toInt(yearBytesReverse);
-        int month = value[5] & 0xFF;
-        int day = value[6] & 0xFF;
-        MokoSupport.getInstance().setManufacureDate(String.format("%d%d%d", years, month, day));
+        float latitude = ByteArrayConveter.getFloat(value, 3);
+        MokoSupport.getInstance().setLatitude(String.format("N,%f", latitude));
+        float longitude = ByteArrayConveter.getFloat(value, 7);
+        MokoSupport.getInstance().setLongitude(String.format("E,%f", longitude));
+        float sltitude = ByteArrayConveter.getFloat(value, 11);
+        MokoSupport.getInstance().setAltitude(String.format("%f", sltitude));
+        float speed = ByteArrayConveter.getFloat(value, 15);
+        MokoSupport.getInstance().setSpeed(String.format("%f", speed));
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

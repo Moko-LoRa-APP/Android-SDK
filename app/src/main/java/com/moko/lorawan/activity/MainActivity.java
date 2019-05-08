@@ -62,6 +62,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     private List<DeviceInfo> mDeviceInfos;
     private HashMap<String, DeviceInfo> mDeviceInfoHashMap;
     private String mSelectedDeviceName;
+    private String mSelectedDeviceMac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +157,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                             // 跳转基础信息页面
                             Intent i = new Intent(MainActivity.this, BasicInfoActivity.class);
                             i.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mSelectedDeviceName);
+                            i.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mSelectedDeviceMac);
                             startActivity(i);
                             break;
                     }
@@ -265,6 +267,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         final DeviceInfo deviceInfo = (DeviceInfo) adapter.getItem(position);
         mMokoService.connectBluetoothDevice(deviceInfo.mac);
         mSelectedDeviceName = deviceInfo.name;
+        mSelectedDeviceMac = deviceInfo.mac;
         showLoadingProgressDialog();
     }
 

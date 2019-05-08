@@ -15,6 +15,7 @@ public class AppConstants {
     // 设备列表
     public static final String EXTRA_KEY_RESPONSE_ORDER_TYPE = "EXTRA_KEY_RESPONSE_ORDER_TYPE";
     public static final String EXTRA_KEY_DEVICE_NAME = "EXTRA_KEY_DEVICE_NAME";
+    public static final String EXTRA_KEY_DEVICE_MAC = "EXTRA_KEY_DEVICE_MAC";
     // request_code
     public static final int REQUEST_CODE_TEMP_TARGET = 100;
     public static final int REQUEST_CODE_ENABLE_BT = 1001;
