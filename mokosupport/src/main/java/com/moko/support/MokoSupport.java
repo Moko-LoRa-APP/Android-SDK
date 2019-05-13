@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Message;
 import android.os.ParcelUuid;
 import android.text.TextUtils;
@@ -278,26 +277,18 @@ public class MokoSupport implements MokoResponseCallback {
 
     @Override
     public void onCharacteristicChanged(BluetoothGattCharacteristic characteristic, byte[] value) {
-        if (!isSyncData()) {
-            OrderType orderType = null;
-            // 延时应答
-            if (orderType != null) {
-                LogModule.i(orderType.getName());
-                Intent intent = new Intent(MokoConstants.ACTION_CURRENT_DATA);
-                intent.putExtra(MokoConstants.EXTRA_KEY_CURRENT_DATA_TYPE, OrderEnum.OPEN_NOTIFY);
-                mContext.sendBroadcast(intent);
-            }
-        } else {
-            // 非延时应答
-            OrderTask orderTask = mQueue.peek();
-            if (value != null && value.length > 0 && orderTask != null) {
-                OrderEnum orderEnum = orderTask.getOrder();
-                switch (orderEnum) {
-                    case OPEN_NOTIFY:
-                        formatCommonOrder(orderTask, value);
-                        break;
+        if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC.getUuid())) {
+            if (isSyncData()) {
+                // 非延时应答
+                OrderTask orderTask = mQueue.peek();
+                if (value != null && value.length > 0 && orderTask != null) {
+                    orderTask.parseValue(value);
                 }
-                orderTask.parseValue(value);
+            }
+        } else if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_LOG.getUuid())) {
+            if (value != null && value.length > 0) {
+                String log = new String(value);
+                LogModule.d(log);
             }
         }
 
@@ -319,8 +310,8 @@ public class MokoSupport implements MokoResponseCallback {
             return;
         }
         OrderTask orderTask = mQueue.peek();
-        LogModule.v("device to app CHARACTERISTIC : " + orderTask.orderType.getName());
-        LogModule.d(orderTask.order.getOrderName());
+        LogModule.v("device to app NOTIFY : " + orderTask.orderType.getName());
+        LogModule.i(orderTask.order.getOrderName());
         orderTask.orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         mQueue.poll();
         executeTask(orderTask.callback);
@@ -408,8 +399,9 @@ public class MokoSupport implements MokoResponseCallback {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            LogModule.d("开启特征通知");
+                            LogModule.i("开启特征通知");
                             sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
+                            sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
                         }
                     }, 2000);
                     break;
@@ -732,5 +724,23 @@ public class MokoSupport implements MokoResponseCallback {
 
     public String x_angle;
     public String y_angle;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // setting
+    ///////////////////////////////////////////////////////////////////////////
+
+    public String devAddr;
+    public String nwkSKey;
+    public String appSKey;
+    public String devEUI;
+    public String appEUI;
+    public String appKey;
+    public int uploadInterval;
+    public int ch_1;
+    public int ch_2;
+    public int dr_1;
+    public int dr_2;
+    public int power;
+    public int adr;
 }
 

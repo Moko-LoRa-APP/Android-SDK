@@ -14,8 +14,25 @@ import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.handler.BaseMessageHandler;
 import com.moko.support.log.LogModule;
+import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.task.WriteADRTask;
+import com.moko.support.task.WriteAppEUITask;
+import com.moko.support.task.WriteAppKeyTask;
+import com.moko.support.task.WriteAppSKeyTask;
+import com.moko.support.task.WriteCHTask;
+import com.moko.support.task.WriteClassTypeTask;
+import com.moko.support.task.WriteConnectTask;
+import com.moko.support.task.WriteDRTask;
+import com.moko.support.task.WriteDevAddrTask;
+import com.moko.support.task.WriteDevEUITask;
+import com.moko.support.task.WriteNwkSKeyTask;
+import com.moko.support.task.WritePowerTask;
+import com.moko.support.task.WriteRegionTask;
+import com.moko.support.task.WriteResetTask;
 import com.moko.support.task.WriteUplinkDataTestTask;
+import com.moko.support.task.WriteUploadIntervalTask;
+import com.moko.support.task.WriteUploadModeTask;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -147,12 +164,110 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getDeviceInfo(this));
     }
 
-    public void getGPSAndSensorData(){
+    public void getGPSAndSensorData() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getGPSAndSensor(this));
+    }
+
+    public void getDeviceSetting() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getDeviceSetting(this));
     }
 
 
     public void setUplinkDataTest() {
         MokoSupport.getInstance().sendOrder(new WriteUplinkDataTestTask(this));
+    }
+
+    public OrderTask getDevAddrOrderTask(String devAddr) {
+        WriteDevAddrTask orderTask = new WriteDevAddrTask(this);
+        orderTask.setOrderData(devAddr);
+        return orderTask;
+    }
+
+    public OrderTask getNwkSKeyOrderTask(String nwkSkey) {
+        WriteNwkSKeyTask orderTask = new WriteNwkSKeyTask(this);
+        orderTask.setOrderData(nwkSkey);
+        return orderTask;
+    }
+
+    public OrderTask getAppSKeyOrderTask(String appSkey) {
+        WriteAppSKeyTask orderTask = new WriteAppSKeyTask(this);
+        orderTask.setOrderData(appSkey);
+        return orderTask;
+    }
+
+    public OrderTask getDevEUIOrderTask(String devEUI) {
+        WriteDevEUITask orderTask = new WriteDevEUITask(this);
+        orderTask.setOrderData(devEUI);
+        return orderTask;
+    }
+
+    public OrderTask getAppEUIOrderTask(String appEUI) {
+        WriteAppEUITask orderTask = new WriteAppEUITask(this);
+        orderTask.setOrderData(appEUI);
+        return orderTask;
+    }
+
+    public OrderTask getAppKeyOrderTask(String appKey) {
+        WriteAppKeyTask orderTask = new WriteAppKeyTask(this);
+        orderTask.setOrderData(appKey);
+        return orderTask;
+    }
+
+    public OrderTask getRegionOrderTask(int region) {
+        WriteRegionTask orderTask = new WriteRegionTask(this);
+        orderTask.setOrderData(region);
+        return orderTask;
+    }
+
+    public OrderTask getClassTypeOrderTask(int classType) {
+        WriteClassTypeTask orderTask = new WriteClassTypeTask(this);
+        orderTask.setOrderData(classType);
+        return orderTask;
+    }
+
+    public OrderTask getUploadModeOrderTask(int uploadMode) {
+        WriteUploadModeTask orderTask = new WriteUploadModeTask(this);
+        orderTask.setOrderData(uploadMode);
+        return orderTask;
+    }
+
+    public OrderTask getUploadIntervalOrderTask(int uploadInterval) {
+        WriteUploadIntervalTask orderTask = new WriteUploadIntervalTask(this);
+        orderTask.setOrderData(uploadInterval);
+        return orderTask;
+    }
+
+    public OrderTask getCHOrderTask(int ch1, int ch2) {
+        WriteCHTask orderTask = new WriteCHTask(this);
+        orderTask.setOrderData(ch1, ch2);
+        return orderTask;
+    }
+
+    public OrderTask getDROrderTask(int dr1, int dr2) {
+        WriteDRTask orderTask = new WriteDRTask(this);
+        orderTask.setOrderData(dr1, dr2);
+        return orderTask;
+    }
+
+    public OrderTask getPowerOrderTask(int power) {
+        WritePowerTask orderTask = new WritePowerTask(this);
+        orderTask.setOrderData(power);
+        return orderTask;
+    }
+
+    public OrderTask getADROrderTask(int dar) {
+        WriteADRTask orderTask = new WriteADRTask(this);
+        orderTask.setOrderData(dar);
+        return orderTask;
+    }
+
+    public OrderTask getConnectOrderTask() {
+        WriteConnectTask orderTask = new WriteConnectTask(this);
+        return orderTask;
+    }
+
+    public OrderTask getResetOrderTask() {
+        WriteResetTask orderTask = new WriteResetTask(this);
+        return orderTask;
     }
 }

@@ -25,15 +25,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:padding="16dp"
             android:onClick="about"
+            android:padding="16dp"
             android:src="@drawable/about" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
         android:background="@color/white_ffffff">
 
         <View style="@style/divider_line" />
@@ -67,10 +66,13 @@
         android:id="@+id/srl_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="40dp"
         android:layout_weight="1.0"
         app:srlEnableLoadMore="false"
         app:srlEnableRefresh="true">
+
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_main"

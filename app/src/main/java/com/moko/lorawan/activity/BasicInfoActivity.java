@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -117,6 +118,10 @@ public class BasicInfoActivity extends BaseActivity {
                             // 跳转9轴和传感器页面
                             startActivity(new Intent(BasicInfoActivity.this, GPSAndSensorDataActivity.class));
                             break;
+                        case READ_ADR:
+                            // 跳转设置页面
+                            startActivityForResult(new Intent(BasicInfoActivity.this, DeviceSettingActivity.class), AppConstants.REQUEST_CODE_DEVICE_SETTING);
+                            break;
                     }
                 }
             }
@@ -163,6 +168,8 @@ public class BasicInfoActivity extends BaseActivity {
     }
 
     public void deviceSetting(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getDeviceSetting();
     }
 
     public void gpsAndSensorData(View view) {
@@ -187,5 +194,13 @@ public class BasicInfoActivity extends BaseActivity {
     }
 
     public void log(View view) {
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstants.REQUEST_CODE_DEVICE_SETTING && resultCode == RESULT_OK) {
+            backToHome();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.moko.support.log;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
@@ -10,9 +11,12 @@ import com.elvishew.xlog.flattener.PatternFlattener;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
+import com.elvishew.xlog.printer.file.backup.NeverBackupStrategy;
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * @Date 2017/12/7 0007
@@ -37,7 +41,7 @@ public class LogModule {
         }
         Printer filePrinter = new FilePrinter.Builder(PATH_LOGCAT)
                 .fileNameGenerator(new ChangelessFileNameGenerator(LOG_FILE))
-                .backupStrategy(new ClearLogBackStrategy())
+                .backupStrategy(new NeverBackupStrategy())
                 .logFlattener(new PatternFlattener("{d yyyy-MM-dd HH:mm:ss} {l}/{t}: {m}"))
                 .build();
         LogConfiguration config = new LogConfiguration.Builder()
@@ -47,8 +51,23 @@ public class LogModule {
         XLog.init(config, new AndroidPrinter(), filePrinter);
     }
 
+    public static void clearInfoForFile() {
+        File file = new File(PATH_LOGCAT + File.separator + LOG_FILE);
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("");
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void v(String msg) {
-        XLog.v(msg);
+        Log.v(TAG, msg);
     }
 
     public static void d(String msg) {
@@ -56,14 +75,14 @@ public class LogModule {
     }
 
     public static void i(String msg) {
-        XLog.i(msg);
+        Log.i(TAG, msg);
     }
 
     public static void w(String msg) {
-        XLog.w(msg);
+        Log.w(TAG, msg);
     }
 
     public static void e(String msg) {
-        XLog.e(msg);
+        Log.e(TAG, msg);
     }
 }

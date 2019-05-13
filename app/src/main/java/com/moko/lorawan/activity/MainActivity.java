@@ -30,6 +30,7 @@ import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTaskResponse;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -154,6 +155,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     OrderEnum orderEnum = response.order;
                     switch (orderEnum) {
                         case READ_UPLOAD_MODE:
+                            LogModule.clearInfoForFile();
                             // 跳转基础信息页面
                             Intent i = new Intent(MainActivity.this, BasicInfoActivity.class);
                             i.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mSelectedDeviceName);

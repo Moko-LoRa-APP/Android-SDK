@@ -65,6 +65,11 @@ public class MokoCharacteristicHandler {
                         mokoCharacteristicMap.put(OrderType.CHARACTERISTIC, new MokoCharacteristic(characteristic, OrderType.CHARACTERISTIC));
                         continue;
                     }
+                    if (characteristicUuid.equals(OrderType.CHARACTERISTIC_LOG.getUuid())) {
+                        gatt.setCharacteristicNotification(characteristic, true);
+                        mokoCharacteristicMap.put(OrderType.CHARACTERISTIC_LOG, new MokoCharacteristic(characteristic, OrderType.CHARACTERISTIC_LOG));
+                        continue;
+                    }
                 }
             }
 //            LogModule.i("service uuid:" + service.getUuid().toString());

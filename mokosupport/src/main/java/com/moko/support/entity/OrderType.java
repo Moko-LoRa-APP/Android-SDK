@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 public enum OrderType implements Serializable {
     CHARACTERISTIC("CHARACTERISTIC", "0000ff01-0000-1000-8000-00805f9b34fb"),
+    CHARACTERISTIC_LOG("CHARACTERISTIC_LOG", "0000ff02-0000-1000-8000-00805f9b34fb"),
     ;
 
 
