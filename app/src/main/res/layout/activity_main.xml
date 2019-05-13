@@ -67,12 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.0"
-        app:srlEnableLoadMore="false"
-        app:srlEnableRefresh="true">
-
-        <com.scwang.smartrefresh.layout.header.ClassicsHeader
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        app:srlEnableLoadMore="false">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_main"

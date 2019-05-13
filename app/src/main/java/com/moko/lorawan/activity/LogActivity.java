@@ -7,46 +7,26 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.moko.lorawan.R;
+import com.moko.lorawan.utils.Utils;
 import com.moko.support.MokoConstants;
-import com.moko.support.MokoSupport;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.log.LogModule;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import java.io.File;
 
-public class DeviceInfoActivity extends BaseActivity {
-
-    @Bind(R.id.tv_company_name)
-    TextView tvCompanyName;
-    @Bind(R.id.tv_manufacture_date)
-    TextView tvManufactureDate;
-    @Bind(R.id.tv_model_name)
-    TextView tvModelName;
-    @Bind(R.id.tv_ble_firmware)
-    TextView tvBleFirmware;
-    @Bind(R.id.tv_lora_firmware)
-    TextView tvLoraFirmware;
-
+public class LogActivity extends BaseActivity {
     private boolean mReceiverTag = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device_info);
-        ButterKnife.bind(this);
-        tvCompanyName.setText(MokoSupport.getInstance().getCompanyName());
-        tvManufactureDate.setText(MokoSupport.getInstance().getManufacureDate());
-        tvModelName.setText(MokoSupport.getInstance().getModelName());
-        tvBleFirmware.setText(MokoSupport.getInstance().getBleFirmware());
-        tvLoraFirmware.setText(MokoSupport.getInstance().getLoraFirmware());
+        setContentView(R.layout.activity_log);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -54,15 +34,6 @@ public class DeviceInfoActivity extends BaseActivity {
         registerReceiver(mReceiver, filter);
         mReceiverTag = true;
         EventBus.getDefault().register(this);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onConnectStatusEvent(ConnectStatusEvent event) {
-        String action = event.getAction();
-        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
-            // 设备断开
-            finish();
-        }
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -83,6 +54,15 @@ public class DeviceInfoActivity extends BaseActivity {
         }
     };
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectStatusEvent(ConnectStatusEvent event) {
+        String action = event.getAction();
+        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            // 设备断开
+            finish();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -96,5 +76,14 @@ public class DeviceInfoActivity extends BaseActivity {
 
     public void back(View view) {
         finish();
+    }
+
+    public void email(View view) {
+        File file = LogModule.getLogFile();
+        // 发送邮件
+        String address = "";
+        String title = "LoRaWAN Log";
+        String content = title;
+        Utils.sendEmail(LogActivity.this, address, content, title, "Choose Email Client", file);
     }
 }

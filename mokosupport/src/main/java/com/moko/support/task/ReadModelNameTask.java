@@ -32,8 +32,7 @@ public class ReadModelNameTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        int dataLength = value[2] & 0xFF;
-        byte[] modelName = Arrays.copyOfRange(value, 3, 2 + dataLength);
+        byte[] modelName = Arrays.copyOfRange(value, 3, value.length);
         MokoSupport.getInstance().setModelName(new String(modelName));
 
         LogModule.i(order.getOrderName() + "成功");

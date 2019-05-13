@@ -446,7 +446,7 @@
                 android:layout_marginBottom="6dp"
                 android:background="@drawable/shape_radius_edit_bg"
                 android:padding="6dp"
-                android:text="Note: Please do not modify advanced settings unless necessary)" />
+                android:text="Note: Please do not modify advanced settings unless necessary" />
 
             <LinearLayout
                 android:layout_width="match_parent"

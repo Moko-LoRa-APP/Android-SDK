@@ -22,8 +22,14 @@ import com.moko.lorawan.R;
 import com.moko.lorawan.service.DfuService;
 import com.moko.lorawan.utils.FileUtils;
 import com.moko.lorawan.utils.ToastUtils;
+import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
+import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.log.LogModule;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 
@@ -59,6 +65,7 @@ public class OTAActivity extends Activity {
         filter.setPriority(300);
         registerReceiver(mReceiver, filter);
         mReceiverTag = true;
+        EventBus.getDefault().register(this);
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -80,6 +87,15 @@ public class OTAActivity extends Activity {
         }
     };
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectStatusEvent(ConnectStatusEvent event) {
+        String action = event.getAction();
+        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            // 设备断开
+            finish();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -88,6 +104,7 @@ public class OTAActivity extends Activity {
             // 注销广播
             unregisterReceiver(mReceiver);
         }
+        EventBus.getDefault().unregister(this);
     }
 
     public void back(View view) {
@@ -107,8 +124,10 @@ public class OTAActivity extends Activity {
 
     public void upgrade(View view) {
         String filePath = tvFilePath.getText().toString();
-        if (TextUtils.isEmpty(filePath))
+        if (TextUtils.isEmpty(filePath)) {
+            ToastUtils.showToast(this, "select file first!");
             return;
+        }
         if (!MokoSupport.getInstance().isConnDevice(this, mDeviceMac)) {
             ToastUtils.showToast(this, "Device is disconnected");
             return;
@@ -192,7 +211,7 @@ public class OTAActivity extends Activity {
 
         @Override
         public void onDfuCompleted(String deviceAddress) {
-            Toast.makeText(OTAActivity.this, "DfuCompleted!", Toast.LENGTH_SHORT).show();
+            ToastUtils.showToast(OTAActivity.this, "DfuCompleted!");
             dismissDFUProgressDialog();
         }
 

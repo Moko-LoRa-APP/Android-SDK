@@ -16,7 +16,7 @@ public class ReadLoraFirmwareTask extends OrderTask {
     public byte[] orderData;
 
     public ReadLoraFirmwareTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_BLE_FIRMWARE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_LORA_FIRMWARE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -32,8 +32,7 @@ public class ReadLoraFirmwareTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        int dataLength = value[2] & 0xFF;
-        byte[] loraFirmware = Arrays.copyOfRange(value, 3, 2 + dataLength);
+        byte[] loraFirmware = Arrays.copyOfRange(value, 3, value.length);
         MokoSupport.getInstance().setLoraFirmware(new String(loraFirmware));
 
         LogModule.i(order.getOrderName() + "成功");

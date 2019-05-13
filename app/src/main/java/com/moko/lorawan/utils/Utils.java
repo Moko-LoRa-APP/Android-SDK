@@ -6,7 +6,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,14 +53,22 @@ public class Utils {
         Intent intent;
         if (files.length == 1) {
             intent = new Intent(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(files[0]));
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                uri = FileProvider.getUriForFile(context, "com.moko.lorawan.fileprovider", files[0]);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                uri = Uri.fromFile(files[0]);
+            }
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
             intent.putExtra(Intent.EXTRA_TEXT, body);
         } else {
+            intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             ArrayList<Uri> uris = new ArrayList<>();
             for (int i = 0; i < files.length; i++) {
-                uris.add(Uri.fromFile(files[i]));
+                Uri uri = Uri.fromFile(files[i]);
+                uris.add(uri);
             }
-            intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
             ArrayList<CharSequence> charSequences = new ArrayList<>();
             charSequences.add(body);

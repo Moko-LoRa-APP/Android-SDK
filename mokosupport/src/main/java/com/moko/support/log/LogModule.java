@@ -66,6 +66,18 @@ public class LogModule {
         }
     }
 
+    public static File getLogFile() {
+        File file = new File(PATH_LOGCAT + File.separator + LOG_FILE);
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
     public static void v(String msg) {
         Log.v(TAG, msg);
     }

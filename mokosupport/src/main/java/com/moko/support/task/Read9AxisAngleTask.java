@@ -17,7 +17,7 @@ public class Read9AxisAngleTask extends OrderTask {
     public byte[] orderData;
 
     public Read9AxisAngleTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_9_AXIS_M, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_9_AXIS_ANGLE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();

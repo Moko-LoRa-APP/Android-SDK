@@ -10,6 +10,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
+import com.moko.support.MokoConstants;
+import com.moko.support.MokoSupport;
+import com.moko.support.event.ConnectStatusEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,12 +62,55 @@ public class GPSAndSensorDataActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gps_sensor_data);
         ButterKnife.bind(this);
+
+        String longitude = MokoSupport.getInstance().getLongitude();
+        String latitude = MokoSupport.getInstance().getLatitude();
+        String speed = MokoSupport.getInstance().getSpeed();
+        String altitude = MokoSupport.getInstance().getAltitude();
+        String gx = MokoSupport.getInstance().gx;
+        String gy = MokoSupport.getInstance().gy;
+        String gz = MokoSupport.getInstance().gz;
+        String ax = MokoSupport.getInstance().ax;
+        String ay = MokoSupport.getInstance().ay;
+        String az = MokoSupport.getInstance().az;
+        String mx = MokoSupport.getInstance().mx;
+        String my = MokoSupport.getInstance().my;
+        String mz = MokoSupport.getInstance().mz;
+        String x_angle = MokoSupport.getInstance().x_angle;
+        String y_angle = MokoSupport.getInstance().y_angle;
+
+        tvLongitude.setText(longitude);
+        tvLatitude.setText(latitude);
+        tvSpeed.setText(speed);
+        tvAltitude.setText(altitude);
+        tvGx.setText(gx);
+        tvGy.setText(gy);
+        tvGz.setText(gz);
+        tvAx.setText(ax);
+        tvAy.setText(ay);
+        tvAz.setText(az);
+        tvMx.setText(mx);
+        tvMy.setText(my);
+        tvMz.setText(mz);
+        tvXAngle.setText(x_angle);
+        tvYAngle.setText(y_angle);
+
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.setPriority(300);
         registerReceiver(mReceiver, filter);
         mReceiverTag = true;
+        EventBus.getDefault().register(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectStatusEvent(ConnectStatusEvent event) {
+        String action = event.getAction();
+        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            // 设备断开
+            finish();
+        }
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -89,6 +139,7 @@ public class GPSAndSensorDataActivity extends BaseActivity {
             // 注销广播
             unregisterReceiver(mReceiver);
         }
+        EventBus.getDefault().unregister(this);
     }
 
 

@@ -17,7 +17,12 @@ import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.entity.OrderEnum;
+import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.task.OrderTaskResponse;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class UplinkDataTestActivity extends BaseActivity {
     private MokoService mMokoService;
@@ -28,6 +33,7 @@ public class UplinkDataTestActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uplink_data);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
+        EventBus.getDefault().register(this);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -72,6 +78,7 @@ public class UplinkDataTestActivity extends BaseActivity {
                     dismissLoadingProgressDialog();
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                    abortBroadcast();
                     OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
                     OrderEnum orderEnum = response.order;
                     switch (orderEnum) {
@@ -90,6 +97,15 @@ public class UplinkDataTestActivity extends BaseActivity {
         }
     };
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectStatusEvent(ConnectStatusEvent event) {
+        String action = event.getAction();
+        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            // 设备断开
+            finish();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -99,6 +115,7 @@ public class UplinkDataTestActivity extends BaseActivity {
             unregisterReceiver(mReceiver);
         }
         unbindService(mServiceConnection);
+        EventBus.getDefault().unregister(this);
     }
 
     private LoadingDialog mLoadingDialog;

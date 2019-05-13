@@ -39,13 +39,10 @@ public class ReadManufactureDateTask extends OrderTask {
         if (0x04 != (value[2] & 0xFF))
             return;
         byte[] yearBytes = Arrays.copyOfRange(value, 3, 5);
-        byte[] yearBytesReverse = new byte[2];
-        yearBytesReverse[0] = yearBytes[1];
-        yearBytesReverse[1] = yearBytes[0];
-        int years = MokoUtils.toInt(yearBytesReverse);
+        int years = MokoUtils.toInt(yearBytes);
         int month = value[5] & 0xFF;
         int day = value[6] & 0xFF;
-        MokoSupport.getInstance().setManufacureDate(String.format("%d%d%d", years, month, day));
+        MokoSupport.getInstance().setManufacureDate(String.format("%d.%d.%d", years, month, day));
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

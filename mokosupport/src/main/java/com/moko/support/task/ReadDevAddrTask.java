@@ -37,7 +37,7 @@ public class ReadDevAddrTask extends OrderTask {
             return;
         if (0x04 != (value[2] & 0xFF))
             return;
-        byte[] devAddr = Arrays.copyOfRange(value, 3, 6);
+        byte[] devAddr = Arrays.copyOfRange(value, 3, value.length);
         MokoSupport.getInstance().devAddr = MokoUtils.bytesToHexString(devAddr);
 
         LogModule.i(order.getOrderName() + "成功");

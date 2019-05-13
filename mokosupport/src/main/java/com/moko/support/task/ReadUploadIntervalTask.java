@@ -37,13 +37,8 @@ public class ReadUploadIntervalTask extends OrderTask {
             return;
         if (0x04 != (value[2] & 0xFF))
             return;
-        byte[] uploadIntervalBytes = Arrays.copyOfRange(value, 3, value.length - 1);
-        byte[] uploadIntervalBytesReverse = new byte[4];
-        uploadIntervalBytesReverse[0] = uploadIntervalBytes[3];
-        uploadIntervalBytesReverse[1] = uploadIntervalBytes[2];
-        uploadIntervalBytesReverse[2] = uploadIntervalBytes[1];
-        uploadIntervalBytesReverse[3] = uploadIntervalBytes[0];
-        MokoSupport.getInstance().uploadInterval = MokoUtils.toInt(uploadIntervalBytesReverse);
+        byte[] uploadIntervalBytes = Arrays.copyOfRange(value, 3, value.length);
+        MokoSupport.getInstance().uploadInterval = MokoUtils.toInt(uploadIntervalBytes);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

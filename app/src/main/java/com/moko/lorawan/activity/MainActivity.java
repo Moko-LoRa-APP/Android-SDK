@@ -34,6 +34,7 @@ import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTaskResponse;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.EventBus;
@@ -78,9 +79,12 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.shape_recycleview_divider));
         rvMain.addItemDecoration(itemDecoration);
+        rvMain.setAdapter(mAdapter);
         mAdapter.openLoadAnimation();
         mAdapter.setOnItemClickListener(this);
         srlMain.setOnRefreshListener(this);
+
+        srlMain.setRefreshHeader(new ClassicsHeader(this));
 
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
@@ -174,7 +178,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
             // 设备断开
             dismissLoadingProgressDialog();
-            ToastUtils.showToast(MainActivity.this, "connect failed");
+            ToastUtils.showToast(MainActivity.this, "Disconnected");
         }
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
             // 设备连接成功
@@ -267,6 +271,9 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         MokoSupport.getInstance().stopScanDevice();
         // 跳转
         final DeviceInfo deviceInfo = (DeviceInfo) adapter.getItem(position);
+        if (mMokoService == null || deviceInfo == null) {
+            return;
+        }
         mMokoService.connectBluetoothDevice(deviceInfo.mac);
         mSelectedDeviceName = deviceInfo.name;
         mSelectedDeviceMac = deviceInfo.mac;

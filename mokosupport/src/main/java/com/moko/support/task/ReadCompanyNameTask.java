@@ -7,7 +7,6 @@ import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 
 import java.util.Arrays;
 
@@ -33,8 +32,7 @@ public class ReadCompanyNameTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        int dataLength = value[2] & 0xFF;
-        byte[] companyName = Arrays.copyOfRange(value, 3, 2 + dataLength);
+        byte[] companyName = Arrays.copyOfRange(value, 3, value.length);
         MokoSupport.getInstance().setCompanyName(new String(companyName));
 
         LogModule.i(order.getOrderName() + "成功");

@@ -27,8 +27,13 @@ import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
+import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -148,10 +153,11 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         tvPower.setText(mSelectedPower + "");
         int adr = MokoSupport.getInstance().adr;
         if (adr == 0) {
-            cbAdr.setChecked(true);
-        } else {
             cbAdr.setChecked(false);
+        } else {
+            cbAdr.setChecked(true);
         }
+        EventBus.getDefault().register(this);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -174,6 +180,15 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         public void onServiceDisconnected(ComponentName name) {
         }
     };
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectStatusEvent(ConnectStatusEvent event) {
+        String action = event.getAction();
+        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            // 设备断开
+            finish();
+        }
+    }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -203,6 +218,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                     }
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                    abortBroadcast();
                     OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
                     OrderEnum orderEnum = response.order;
                     byte[] value = response.responseValue;
@@ -248,6 +264,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             unregisterReceiver(mReceiver);
         }
         unbindService(mServiceConnection);
+        EventBus.getDefault().unregister(this);
     }
 
     private LoadingDialog mLoadingDialog;
@@ -268,7 +285,10 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     }
 
     public void selectRegion(View view) {
-        ArrayList<String> regions = (ArrayList<String>) Arrays.asList(mRegions);
+        ArrayList<String> regions = new ArrayList<>();
+        for (int i = 0; i < mRegions.length; i++) {
+            regions.add(mRegions[i]);
+        }
         BottomDialog bottomDialog = new BottomDialog();
         bottomDialog.setDatas(regions, mSelectedRegion);
         bottomDialog.setListener(new BottomDialog.OnBottomListener() {
@@ -330,6 +350,10 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             public void onValueSelected(int value) {
                 mSelectedCh1 = value;
                 tvCh1.setText(mCHList.get(value));
+                if (mSelectedCh1 > mSelectedCh2) {
+                    mSelectedCh2 = mSelectedCh1;
+                    tvCh2.setText(mCHList.get(value));
+                }
             }
         });
         bottomDialog.show(getSupportFragmentManager());
@@ -341,7 +365,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             ch2List.add(i + "");
         }
         BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(ch2List, mSelectedCh2);
+        bottomDialog.setDatas(ch2List, mSelectedCh2 - mSelectedCh1);
         bottomDialog.setListener(new BottomDialog.OnBottomListener() {
             @Override
             public void onValueSelected(int value) {
@@ -360,6 +384,10 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             public void onValueSelected(int value) {
                 mSelectedDr1 = value;
                 tvDr1.setText(mDRList.get(value));
+                if (mSelectedDr1 > mSelectedDr2) {
+                    mSelectedDr2 = mSelectedDr1;
+                    tvDr2.setText(mDRList.get(value));
+                }
             }
         });
         bottomDialog.show(getSupportFragmentManager());
@@ -371,12 +399,12 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             dr2List.add("DR" + i);
         }
         BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(dr2List, mSelectedDr2);
+        bottomDialog.setDatas(dr2List, mSelectedDr2 - mSelectedDr1);
         bottomDialog.setListener(new BottomDialog.OnBottomListener() {
             @Override
             public void onValueSelected(int value) {
                 mSelectedDr2 = value + mSelectedDr1;
-                tvDr1.setText(dr2List.get(value));
+                tvDr2.setText(dr2List.get(value));
             }
         });
         bottomDialog.show(getSupportFragmentManager());
@@ -410,11 +438,11 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (nwkSkey.length() != 64) {
+            if (nwkSkey.length() != 32) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (appSkey.length() != 64) {
+            if (appSkey.length() != 32) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
@@ -426,15 +454,15 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             String devEui = etDevEui.getText().toString();
             String appEui = etAppEui.getText().toString();
             String appKey = etAppKey.getText().toString();
-            if (devEui.length() != 8) {
+            if (devEui.length() != 16) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (appEui.length() != 64) {
+            if (appEui.length() != 16) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (appKey.length() != 64) {
+            if (appKey.length() != 32) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
@@ -476,11 +504,11 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (nwkSkey.length() != 64) {
+            if (nwkSkey.length() != 32) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (appSkey.length() != 64) {
+            if (appSkey.length() != 32) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
@@ -492,15 +520,15 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             String devEui = etDevEui.getText().toString();
             String appEui = etAppEui.getText().toString();
             String appKey = etAppKey.getText().toString();
-            if (devEui.length() != 8) {
+            if (devEui.length() != 16) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (appEui.length() != 64) {
+            if (appEui.length() != 16) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (appKey.length() != 64) {
+            if (appKey.length() != 32) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }

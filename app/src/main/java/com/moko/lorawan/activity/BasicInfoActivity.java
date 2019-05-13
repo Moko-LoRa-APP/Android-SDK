@@ -17,10 +17,16 @@ import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.service.MokoService;
+import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
+import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.task.OrderTaskResponse;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -63,6 +69,7 @@ public class BasicInfoActivity extends BaseActivity {
         tvConnectStatus.setText(connectStatusStrs[connectStatus]);
         tvDeviceSetting.setText(String.format("%s/%s/%s", uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
+        EventBus.getDefault().register(this);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -86,6 +93,16 @@ public class BasicInfoActivity extends BaseActivity {
         }
     };
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectStatusEvent(ConnectStatusEvent event) {
+        String action = event.getAction();
+        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            // 设备断开
+            dismissLoadingProgressDialog();
+            finish();
+        }
+    }
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -107,20 +124,29 @@ public class BasicInfoActivity extends BaseActivity {
                     dismissLoadingProgressDialog();
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                    abortBroadcast();
                     OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
                     OrderEnum orderEnum = response.order;
                     switch (orderEnum) {
                         case READ_LORA_FIRMWARE:
                             // 跳转设备信息页面
-                            startActivity(new Intent(BasicInfoActivity.this, DeviceInfoActivity.class));
+                            startActivityForResult(new Intent(BasicInfoActivity.this, DeviceInfoActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                         case READ_9_AXIS_ANGLE:
                             // 跳转9轴和传感器页面
-                            startActivity(new Intent(BasicInfoActivity.this, GPSAndSensorDataActivity.class));
+                            startActivityForResult(new Intent(BasicInfoActivity.this, GPSAndSensorDataActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                         case READ_ADR:
                             // 跳转设置页面
                             startActivityForResult(new Intent(BasicInfoActivity.this, DeviceSettingActivity.class), AppConstants.REQUEST_CODE_DEVICE_SETTING);
+                            break;
+                        case READ_UPLOAD_MODE:
+                            int connectStatus = MokoSupport.getInstance().getConnectStatus();
+                            int region = MokoSupport.getInstance().getRegion();
+                            int classType = MokoSupport.getInstance().getClassType();
+                            int uploadMode = MokoSupport.getInstance().getUploadMode();
+                            tvConnectStatus.setText(connectStatusStrs[connectStatus]);
+                            tvDeviceSetting.setText(String.format("%s/%s/%s", uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
                             break;
                     }
                 }
@@ -137,6 +163,7 @@ public class BasicInfoActivity extends BaseActivity {
             unregisterReceiver(mReceiver);
         }
         unbindService(mServiceConnection);
+        EventBus.getDefault().unregister(this);
     }
 
     private LoadingDialog mLoadingDialog;
@@ -178,7 +205,7 @@ public class BasicInfoActivity extends BaseActivity {
     }
 
     public void uplinkTest(View view) {
-        startActivity(new Intent(this, UplinkDataTestActivity.class));
+        startActivityForResult(new Intent(this, UplinkDataTestActivity.class), AppConstants.REQUEST_CODE_REFRESH);
     }
 
     public void deviceInfo(View view) {
@@ -190,17 +217,36 @@ public class BasicInfoActivity extends BaseActivity {
         Intent intent = new Intent(this, OTAActivity.class);
         intent.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mDeviceName);
         intent.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mDeviceMac);
-        startActivity(intent);
+        startActivityForResult(intent, AppConstants.REQUEST_CODE_REFRESH);
     }
 
     public void log(View view) {
+        startActivityForResult(new Intent(this, LogActivity.class), AppConstants.REQUEST_CODE_REFRESH);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AppConstants.REQUEST_CODE_DEVICE_SETTING && resultCode == RESULT_OK) {
-            backToHome();
+        if (requestCode == AppConstants.REQUEST_CODE_DEVICE_SETTING) {
+            if (resultCode == RESULT_OK) {
+                backToHome();
+            } else {
+                showLoadingProgressDialog();
+                tvDeviceName.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMokoService.getBasicInfo();
+                    }
+                }, 500);
+            }
+        } else if (requestCode == AppConstants.REQUEST_CODE_REFRESH) {
+            showLoadingProgressDialog();
+            tvDeviceName.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mMokoService.getBasicInfo();
+                }
+            }, 500);
         }
     }
 }

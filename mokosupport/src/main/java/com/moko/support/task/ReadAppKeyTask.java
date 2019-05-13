@@ -31,13 +31,13 @@ public class ReadAppKeyTask extends OrderTask {
 
     @Override
     public void parseValue(byte[] value) {
-        if (value.length != 0x23)
+        if (value.length != 0x13)
             return;
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x20 != (value[2] & 0xFF))
+        if (0x10 != (value[2] & 0xFF))
             return;
-        byte[] appKey = Arrays.copyOfRange(value, 3, value.length - 1);
+        byte[] appKey = Arrays.copyOfRange(value, 3, value.length);
         MokoSupport.getInstance().appKey = MokoUtils.bytesToHexString(appKey);
 
         LogModule.i(order.getOrderName() + "成功");

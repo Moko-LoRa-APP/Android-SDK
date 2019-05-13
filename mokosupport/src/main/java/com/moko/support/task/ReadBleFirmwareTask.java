@@ -32,8 +32,7 @@ public class ReadBleFirmwareTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        int dataLength = value[2] & 0xFF;
-        byte[] bleFirmware = Arrays.copyOfRange(value, 3, 2 + dataLength);
+        byte[] bleFirmware = Arrays.copyOfRange(value, 3, value.length);
         MokoSupport.getInstance().setBleFirmware(new String(bleFirmware));
 
         LogModule.i(order.getOrderName() + "成功");

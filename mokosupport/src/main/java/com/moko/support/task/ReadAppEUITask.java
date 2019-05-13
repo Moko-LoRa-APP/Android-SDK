@@ -37,7 +37,7 @@ public class ReadAppEUITask extends OrderTask {
             return;
         if (0x08 != (value[2] & 0xFF))
             return;
-        byte[] appEUI = Arrays.copyOfRange(value, 3, value.length - 1);
+        byte[] appEUI = Arrays.copyOfRange(value, 3, value.length);
         MokoSupport.getInstance().appEUI = MokoUtils.bytesToHexString(appEUI);
 
         LogModule.i(order.getOrderName() + "成功");
