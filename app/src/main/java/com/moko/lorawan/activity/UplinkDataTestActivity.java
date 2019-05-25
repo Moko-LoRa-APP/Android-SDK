@@ -84,10 +84,10 @@ public class UplinkDataTestActivity extends BaseActivity {
                     switch (orderEnum) {
                         case WRITE_UPLINK_DATA_TEST:
                             byte[] value = response.responseValue;
-                            if (value[3] == 0xAA) {
+                            if ((value[3] & 0xff) == 0xAA) {
                                 ToastUtils.showToast(UplinkDataTestActivity.this, "Success");
                             }
-                            if (value[3] == 0xBB) {
+                            if ((value[3] & 0xff) == 0xBB) {
                                 ToastUtils.showToast(UplinkDataTestActivity.this, "Device Disconnected");
                             }
                             break;

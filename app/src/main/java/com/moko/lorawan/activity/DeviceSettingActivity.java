@@ -238,12 +238,12 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                         case WRITE_POWER:
                         case WRITE_ADR:
                         case WRITE_CONNECT:
-                            if (value[3] == 0xBB) {
+                            if ((value[3] & 0xff) == 0xBB) {
                                 mIsFailed = true;
                             }
                             break;
                         case WRITE_RESET:
-                            if (value[3] == 0xBB) {
+                            if ((value[3] & 0xff) == 0xBB) {
                                 mIsFailed = true;
                             } else {
                                 mIsResetSuccess = true;
@@ -312,6 +312,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                 MokoSupport.getInstance().sendOrder(mMokoService.getResetOrderTask());
             }
         });
+        dialog.show(getSupportFragmentManager());
     }
 
     private static ArrayList<String> mCHList;
