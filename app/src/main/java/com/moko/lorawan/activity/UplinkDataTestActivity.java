@@ -10,21 +10,34 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
+import android.widget.TextView;
 
+import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
+import com.moko.lorawan.utils.Utils;
 import com.moko.support.MokoConstants;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class UplinkDataTestActivity extends BaseActivity {
+    @Bind(R.id.tv_uplink_data)
+    TextView tvUplinkData;
     private MokoService mMokoService;
     private boolean mReceiverTag = false;
 
@@ -32,6 +45,7 @@ public class UplinkDataTestActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uplink_data);
+        ButterKnife.bind(this);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
     }
@@ -133,7 +147,11 @@ public class UplinkDataTestActivity extends BaseActivity {
 
     public void sendData(View view) {
         showLoadingProgressDialog();
-        mMokoService.setUplinkDataTest();
+        Calendar calendar = Calendar.getInstance();
+        String text = Utils.calendar2strDate(calendar, "yyyy-MM-dd HH:mm:ss");
+        tvUplinkData.append(text+"MOKO");
+        tvUplinkData.append("\n");
+        mMokoService.setUplinkDataTest(calendar);
     }
 
     public void back(View view) {

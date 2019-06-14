@@ -3,6 +3,7 @@ package com.moko.support.utils;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.text.TextUtils;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,6 +148,25 @@ public class MokoUtils {
         }
         return iOutcome;
     }
+
+    /**
+     * 字节数组到long的转换.
+     */
+    public static long byteToLong(byte[] b) {
+        long s = 0;
+        long s0 = b[0] & 0xff;// 最低位
+        long s1 = b[1] & 0xff;
+        long s2 = b[2] & 0xff;
+        long s3 = b[3] & 0xff;
+
+        // s0不变
+        s1 <<= 8;
+        s2 <<= 16;
+        s3 <<= 24;
+        s = s0 | s1 | s2 | s3;
+        return s;
+    }
+
 
     /**
      * @Date 2017/8/14 0014

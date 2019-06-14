@@ -17,7 +17,6 @@ import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.service.MokoService;
-import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
@@ -67,7 +66,7 @@ public class BasicInfoActivity extends BaseActivity {
         classTypes = getResources().getStringArray(R.array.class_type);
         uploadModes = getResources().getStringArray(R.array.upload_mode);
         tvConnectStatus.setText(connectStatusStrs[connectStatus]);
-        tvDeviceSetting.setText(String.format("%s/%s/%s", uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
+        tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
     }
@@ -146,7 +145,7 @@ public class BasicInfoActivity extends BaseActivity {
                             int classType = MokoSupport.getInstance().getClassType();
                             int uploadMode = MokoSupport.getInstance().getUploadMode();
                             tvConnectStatus.setText(connectStatusStrs[connectStatus]);
-                            tvDeviceSetting.setText(String.format("%s/%s/%s", uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
+                            tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
                             break;
                     }
                 }

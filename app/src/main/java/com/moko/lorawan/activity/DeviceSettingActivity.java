@@ -45,8 +45,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
 
     @Bind(R.id.rb_modem_abp)
     RadioButton rbModemAbp;
-    @Bind(R.id.rb_modem_oatt)
-    RadioButton rbModemOatt;
+    @Bind(R.id.rb_modem_otaa)
+    RadioButton rbModemOtaa;
     @Bind(R.id.rg_modem)
     RadioGroup rgModem;
     @Bind(R.id.et_dev_eui)
@@ -55,8 +55,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     EditText etAppEui;
     @Bind(R.id.et_app_key)
     EditText etAppKey;
-    @Bind(R.id.ll_modem_oatt)
-    LinearLayout llModemOatt;
+    @Bind(R.id.ll_modem_otaa)
+    LinearLayout llModemOtaa;
     @Bind(R.id.et_dev_addr)
     EditText etDevAddr;
     @Bind(R.id.et_nwk_skey)
@@ -116,7 +116,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         if (uploadMode == 1) {
             rbModemAbp.setChecked(true);
         } else {
-            rbModemOatt.setChecked(true);
+            rbModemOtaa.setChecked(true);
         }
         String devEUI = MokoSupport.getInstance().devEUI;
         etDevEui.setText(devEUI);
@@ -139,7 +139,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         } else {
             rbTypeClassc.setChecked(true);
         }
-        int uploadInterval = MokoSupport.getInstance().uploadInterval;
+        long uploadInterval = MokoSupport.getInstance().uploadInterval;
         etReportInterval.setText(uploadInterval + "");
         mSelectedCh1 = MokoSupport.getInstance().ch_1;
         tvCh1.setText(mSelectedCh1 + "");
@@ -477,13 +477,14 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             ToastUtils.showToast(this, "Reporting Interval is empty");
             return;
         }
-        int interval = Integer.parseInt(reportInterval);
+        long interval = Long.parseLong(reportInterval);
         if (interval < 1 || interval > 14400) {
             ToastUtils.showToast(this, "Reporting Interval range 1~14400");
             return;
         }
+        int intervalInt = Integer.parseInt(reportInterval);
         mIsFailed = false;
-        orderTasks.add(mMokoService.getUploadIntervalOrderTask(interval));
+        orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         // 保存
         orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
         orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
@@ -567,11 +568,11 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         switch (checkedId) {
             case R.id.rb_modem_abp:
                 llModemAbp.setVisibility(View.VISIBLE);
-                llModemOatt.setVisibility(View.GONE);
+                llModemOtaa.setVisibility(View.GONE);
                 break;
-            case R.id.rb_modem_oatt:
+            case R.id.rb_modem_otaa:
                 llModemAbp.setVisibility(View.GONE);
-                llModemOatt.setVisibility(View.VISIBLE);
+                llModemOtaa.setVisibility(View.VISIBLE);
                 break;
         }
     }

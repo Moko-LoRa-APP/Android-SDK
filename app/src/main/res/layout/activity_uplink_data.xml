@@ -30,9 +30,25 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:text="Note: Please check the server to see if the uplink data has been received." />
+
+    <TextView
+        android:id="@+id/tv_uplink_data"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="12dp"
+        android:layout_weight="1.0"
+        android:background="@drawable/shape_radius_edit_bg"
+        android:padding="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_margin="12dp"
         android:background="@drawable/shape_radius_btn_bg"
+        android:gravity="center"
         android:onClick="sendData"
         android:paddingLeft="40dp"
         android:paddingTop="10dp"

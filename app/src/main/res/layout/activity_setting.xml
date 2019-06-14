@@ -58,7 +58,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LoRaWAN Modem"
+                    android:text="LoRaWAN Mode"
                     android:textSize="15sp" />
 
                 <RadioGroup
@@ -84,7 +84,7 @@
                         android:text="ABP" />
 
                     <RadioButton
-                        android:id="@+id/rb_modem_oatt"
+                        android:id="@+id/rb_modem_otaa"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.0"
@@ -92,7 +92,7 @@
                         android:checked="true"
                         android:drawableLeft="@drawable/selector_rb_btn"
                         android:drawablePadding="10dp"
-                        android:text="OATT" />
+                        android:text="OTAA" />
                 </RadioGroup>
             </LinearLayout>
 
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:id="@+id/ll_modem_oatt"
+                    android:id="@+id/ll_modem_otaa"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -127,8 +127,8 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="1.0"
                             android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                            android:maxLength="32"
+                            android:digits="0123456789abcdefABCDEF"
+                            android:maxLength="16"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:singleLine="true"
@@ -157,8 +157,8 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="1.0"
                             android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                            android:maxLength="32"
+                            android:digits="0123456789abcdefABCDEF"
+                            android:maxLength="16"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:textSize="15sp" />
@@ -186,8 +186,8 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="1.0"
                             android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                            android:maxLength="64"
+                            android:digits="0123456789abcdefABCDEF"
+                            android:maxLength="32"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:textSize="15sp" />
@@ -223,7 +223,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="1.0"
                             android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                            android:digits="0123456789abcdefABCDEF"
                             android:maxLength="8"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -253,8 +253,8 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="1.0"
                             android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                            android:maxLength="64"
+                            android:digits="0123456789abcdefABCDEF"
+                            android:maxLength="32"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:textSize="15sp" />
@@ -282,8 +282,8 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="1.0"
                             android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                            android:maxLength="64"
+                            android:digits="0123456789abcdefABCDEF"
+                            android:maxLength="32"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:textSize="15sp" />
@@ -391,10 +391,10 @@
                     android:layout_weight="1.0"
                     android:background="@drawable/shape_radius_edit_bg"
                     android:inputType="number"
-                    android:lines="1"
-                    android:ems="5"
+                    android:maxLength="10"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
+                    android:singleLine="true"
                     android:text=""
                     android:textSize="15sp" />
 

@@ -12,7 +12,10 @@ import android.support.v4.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class Utils {
 
@@ -113,5 +116,10 @@ public class Utils {
             return true;
         }
         return false;
+    }
+
+    public static String calendar2strDate(Calendar calendar, String pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.US);
+        return sdf.format(calendar.getTime());
     }
 }

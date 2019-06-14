@@ -735,7 +735,7 @@ public class MokoSupport implements MokoResponseCallback {
     public String devEUI;
     public String appEUI;
     public String appKey;
-    public int uploadInterval;
+    public long uploadInterval;
     public int ch_1;
     public int ch_2;
     public int dr_1;

@@ -14,7 +14,7 @@ public class WriteClassTypeTask extends OrderTask {
     public byte[] orderData;
 
     public WriteClassTypeTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_APP_KEY, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_CLASS_TYPE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setOrderData(int classType) {

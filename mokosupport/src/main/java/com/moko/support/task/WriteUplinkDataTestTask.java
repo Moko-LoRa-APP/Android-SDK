@@ -15,9 +15,8 @@ public class WriteUplinkDataTestTask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteUplinkDataTestTask(MokoOrderTaskCallback callback) {
+    public WriteUplinkDataTestTask(MokoOrderTaskCallback callback, Calendar calendar) {
         super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_UPLINK_DATA_TEST, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
-        Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR) - 2000;
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);

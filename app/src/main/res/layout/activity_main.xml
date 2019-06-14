@@ -16,7 +16,7 @@
             android:layout_height="54dp"
             android:background="@color/green_6caf10"
             android:gravity="center"
-            android:text="@string/app_name"
+            android:text="Moko LoRaWAN"
             android:textColor="@color/white_ffffff"
             android:textSize="18sp" />
 

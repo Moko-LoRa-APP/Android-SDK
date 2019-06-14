@@ -36,6 +36,8 @@ import com.moko.support.task.WriteUploadModeTask;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Calendar;
+
 
 /**
  * @Date 2017/12/7 0007
@@ -173,8 +175,8 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     }
 
 
-    public void setUplinkDataTest() {
-        MokoSupport.getInstance().sendOrder(new WriteUplinkDataTestTask(this));
+    public void setUplinkDataTest(Calendar calendar) {
+        MokoSupport.getInstance().sendOrder(new WriteUplinkDataTestTask(this,calendar));
     }
 
     public OrderTask getDevAddrOrderTask(String devAddr) {

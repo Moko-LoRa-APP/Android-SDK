@@ -269,6 +269,10 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
         srlMain.finishRefresh();
         MokoSupport.getInstance().stopScanDevice();
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            MokoSupport.getInstance().enableBluetooth();
+            return;
+        }
         // 跳转
         final DeviceInfo deviceInfo = (DeviceInfo) adapter.getItem(position);
         if (mMokoService == null || deviceInfo == null) {
