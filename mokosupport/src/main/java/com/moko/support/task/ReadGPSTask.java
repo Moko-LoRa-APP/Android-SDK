@@ -7,7 +7,6 @@ import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.ByteArrayConveter;
 import com.moko.support.utils.MokoUtils;
 
 public class ReadGPSTask extends OrderTask {
@@ -36,13 +35,13 @@ public class ReadGPSTask extends OrderTask {
             return;
         if (0x10 != (value[2] & 0xFF))
             return;
-        float latitude = ByteArrayConveter.byte2float(value, 3);
+        float latitude = MokoUtils.byte2float(value, 3);
         MokoSupport.getInstance().setLatitude(String.format("N,%s", MokoUtils.getDecimalFormat("#.####").format(latitude)));
-        float longitude = ByteArrayConveter.byte2float(value, 7);
+        float longitude = MokoUtils.byte2float(value, 7);
         MokoSupport.getInstance().setLongitude(String.format("E,%s", MokoUtils.getDecimalFormat("#.####").format(longitude)));
-        float sltitude = ByteArrayConveter.byte2float(value, 11);
+        float sltitude = MokoUtils.byte2float(value, 11);
         MokoSupport.getInstance().setAltitude(MokoUtils.getDecimalFormat("#.####").format(sltitude));
-        float speed = ByteArrayConveter.byte2float(value, 15);
+        float speed = MokoUtils.byte2float(value, 15);
         MokoSupport.getInstance().setSpeed(MokoUtils.getDecimalFormat("#.####").format(speed));
 
         LogModule.i(order.getOrderName() + "成功");

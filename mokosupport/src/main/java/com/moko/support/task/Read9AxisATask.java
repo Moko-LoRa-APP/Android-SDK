@@ -7,7 +7,6 @@ import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.ByteArrayConveter;
 import com.moko.support.utils.MokoUtils;
 
 import java.util.Arrays;
