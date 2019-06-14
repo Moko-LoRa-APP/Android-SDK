@@ -41,17 +41,17 @@ public class Read9AxisMTask extends OrderTask {
         byte[] mxBytesReverse = new byte[2];
         mxBytesReverse[0] = mxBytes[1];
         mxBytesReverse[1] = mxBytes[0];
-        MokoSupport.getInstance().mx = String.format("%#x", MokoUtils.toInt(mxBytesReverse));
+        MokoSupport.getInstance().mx = MokoUtils.bytesToHexString(mxBytesReverse);
         byte[] myBytes = Arrays.copyOfRange(value, 5, 7);
         byte[] myBytesReverse = new byte[2];
         myBytesReverse[0] = myBytes[1];
         myBytesReverse[1] = myBytes[0];
-        MokoSupport.getInstance().my = String.format("%#x", MokoUtils.toInt(myBytesReverse));
+        MokoSupport.getInstance().my = MokoUtils.bytesToHexString(myBytesReverse);
         byte[] mzBytes = Arrays.copyOfRange(value, 7, 9);
         byte[] mzBytesReverse = new byte[2];
         mzBytesReverse[0] = mzBytes[1];
         mzBytesReverse[1] = mzBytes[0];
-        MokoSupport.getInstance().mz = String.format("%#x", MokoUtils.toInt(mzBytesReverse));
+        MokoSupport.getInstance().mz = MokoUtils.bytesToHexString(mzBytesReverse);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

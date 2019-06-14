@@ -9,6 +9,7 @@ import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class Read9AxisAngleTask extends OrderTask {
@@ -42,13 +43,13 @@ public class Read9AxisAngleTask extends OrderTask {
         xBytesReverse[0] = xBytes[1];
         xBytesReverse[1] = xBytes[0];
         float x_angle = MokoUtils.toInt(xBytesReverse) * 0.01f;
-        MokoSupport.getInstance().x_angle = String.format("%f", x_angle);
+        MokoSupport.getInstance().x_angle = MokoUtils.getDecimalFormat("#.##").format(x_angle);
         byte[] yBytes = Arrays.copyOfRange(value, 5, 7);
         byte[] yBytesReverse = new byte[2];
         yBytesReverse[0] = yBytes[1];
         yBytesReverse[1] = yBytes[0];
         float y_angle = MokoUtils.toInt(yBytesReverse) * 0.01f;
-        MokoSupport.getInstance().y_angle = String.format("%f", y_angle);
+        MokoSupport.getInstance().y_angle = MokoUtils.getDecimalFormat("#.##").format(y_angle);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

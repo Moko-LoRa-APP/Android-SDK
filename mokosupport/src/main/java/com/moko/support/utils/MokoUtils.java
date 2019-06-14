@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.text.TextUtils;
 
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -232,5 +234,13 @@ public class MokoUtils {
         }
 
         return result;
+    }
+
+    public static DecimalFormat getDecimalFormat(String pattern) {
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
+        DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+        dfs.setDecimalSeparator('.');
+        decimalFormat.setDecimalFormatSymbols(dfs);
+        return decimalFormat;
     }
 }
