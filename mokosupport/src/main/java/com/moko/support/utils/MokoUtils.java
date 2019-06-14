@@ -3,7 +3,6 @@ package com.moko.support.utils;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.text.TextUtils;
 
-import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -247,7 +246,7 @@ public class MokoUtils {
     /**
      * 字节转换为浮点
      *
-     * @param b 字节（至少4个字节）
+     * @param b     字节（至少4个字节）
      * @param index 开始位置
      * @return
      */
@@ -261,5 +260,12 @@ public class MokoUtils {
         l &= 0xffffff;
         l |= ((long) b[index + 3] << 24);
         return Float.intBitsToFloat(l);
+    }
+
+    public static short byte2short(byte[] bytes) {
+        byte high = bytes[0];
+        byte low = bytes[1];
+        short z = (short) (((high & 0x00FF) << 8) | (0x00FF & low));
+        return z;
     }
 }
