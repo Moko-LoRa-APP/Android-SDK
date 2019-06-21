@@ -32,8 +32,6 @@ import butterknife.ButterKnife;
 
 public class BasicInfoActivity extends BaseActivity {
 
-    @Bind(R.id.tv_device_name)
-    TextView tvDeviceName;
     @Bind(R.id.tv_connect_status)
     TextView tvConnectStatus;
     @Bind(R.id.tv_device_setting)
@@ -56,7 +54,6 @@ public class BasicInfoActivity extends BaseActivity {
         ButterKnife.bind(this);
         mDeviceName = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_NAME);
         mDeviceMac = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_MAC);
-        tvDeviceName.setText(mDeviceName);
         int connectStatus = MokoSupport.getInstance().getConnectStatus();
         int region = MokoSupport.getInstance().getRegion();
         int classType = MokoSupport.getInstance().getClassType();
@@ -231,7 +228,7 @@ public class BasicInfoActivity extends BaseActivity {
                 backToHome();
             } else {
                 showLoadingProgressDialog();
-                tvDeviceName.postDelayed(new Runnable() {
+                tvConnectStatus.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mMokoService.getBasicInfo();
@@ -240,7 +237,7 @@ public class BasicInfoActivity extends BaseActivity {
             }
         } else if (requestCode == AppConstants.REQUEST_CODE_REFRESH) {
             showLoadingProgressDialog();
-            tvDeviceName.postDelayed(new Runnable() {
+            tvConnectStatus.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mMokoService.getBasicInfo();

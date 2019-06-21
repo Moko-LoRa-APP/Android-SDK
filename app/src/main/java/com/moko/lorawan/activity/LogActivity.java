@@ -81,7 +81,7 @@ public class LogActivity extends BaseActivity {
     public void email(View view) {
         File file = LogModule.getLogFile();
         // 发送邮件
-        String address = "";
+        String address = "Development@mokotechnology.com";
         String title = "LoRaWAN Log";
         String content = title;
         Utils.sendEmail(LogActivity.this, address, content, title, "Choose Email Client", file);
