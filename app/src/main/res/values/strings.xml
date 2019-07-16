@@ -24,7 +24,7 @@
 
     <string name="main_scan_name">Name</string>
     <string name="main_scan_rssi">RSSI</string>
-    <string name="about_moko_url">http://doc.mokotechnology.com/index.php?s=/89&amp;page_id=598</string>
+    <string name="about_moko_url">http://doc.mokotechnology.com/index.php?s=/Home/Item/show/item_id/2</string>
     <string name="version_info">Version:%s</string>
 
     <string-array name="connect_status">
