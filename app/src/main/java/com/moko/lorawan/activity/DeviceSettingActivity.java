@@ -104,6 +104,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     private int mSelectedPower;
     private boolean mIsFailed;
     private boolean mIsResetSuccess;
+    private boolean mReadCHDR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +209,9 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
 
                 }
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+                    if (mReadCHDR) {
+                        return;
+                    }
                     dismissLoadingProgressDialog();
                     if (!mIsFailed) {
                         ToastUtils.showToast(DeviceSettingActivity.this, "Success");
@@ -229,7 +233,6 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                         case WRITE_DEV_EUI:
                         case WRITE_APP_EUI:
                         case WRITE_APP_KEY:
-                        case WRITE_REGION:
                         case WRITE_CLASS_TYPE:
                         case WRITE_UPLOAD_MODE:
                         case WRITE_UPLOAD_INTERVAL:
@@ -242,12 +245,33 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                                 mIsFailed = true;
                             }
                             break;
+                        case WRITE_REGION:
+                            if ((value[3] & 0xff) == 0xBB) {
+                                mIsFailed = true;
+                            } else {
+                                if (mReadCHDR) {
+                                    mMokoService.getCHDR();
+                                }
+                            }
+                            break;
                         case WRITE_RESET:
                             if ((value[3] & 0xff) == 0xBB) {
                                 mIsFailed = true;
                             } else {
                                 mIsResetSuccess = true;
                             }
+                            break;
+                        case READ_CH:
+                        case READ_DR:
+                            mReadCHDR = false;
+                            mSelectedCh1 = MokoSupport.getInstance().ch_1;
+                            tvCh1.setText(mSelectedCh1 + "");
+                            mSelectedCh2 = MokoSupport.getInstance().ch_2;
+                            tvCh2.setText(mSelectedCh2 + "");
+                            mSelectedDr1 = MokoSupport.getInstance().dr_1;
+                            tvDr1.setText("DR" + mSelectedDr1);
+                            mSelectedDr2 = MokoSupport.getInstance().dr_2;
+                            tvDr2.setText("DR" + mSelectedDr2);
                             break;
                     }
                 }
@@ -294,8 +318,11 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         bottomDialog.setListener(new BottomDialog.OnBottomListener() {
             @Override
             public void onValueSelected(int value) {
+                mReadCHDR = true;
                 mSelectedRegion = value;
                 tvRegion.setText(mRegions[mSelectedRegion]);
+                showLoadingProgressDialog();
+                MokoSupport.getInstance().sendOrder(mMokoService.getRegionOrderTask(mSelectedRegion));
             }
         });
         bottomDialog.show(getSupportFragmentManager());

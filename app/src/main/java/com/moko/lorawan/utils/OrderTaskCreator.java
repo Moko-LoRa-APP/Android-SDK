@@ -79,5 +79,12 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadADRTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
+
+    public static OrderTask[] getCHDR(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadCHTask(callback));
+        orderTasks.add(new ReadDRTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
 }
 
