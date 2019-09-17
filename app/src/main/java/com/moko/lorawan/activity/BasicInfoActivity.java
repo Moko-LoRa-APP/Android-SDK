@@ -36,6 +36,8 @@ public class BasicInfoActivity extends BaseActivity {
     TextView tvConnectStatus;
     @Bind(R.id.tv_device_setting)
     TextView tvDeviceSetting;
+    @Bind(R.id.tv_device_name)
+    TextView tvDeviceName;
 
     private String[] connectStatusStrs;
     private String[] regions;
@@ -58,12 +60,14 @@ public class BasicInfoActivity extends BaseActivity {
         int region = MokoSupport.getInstance().getRegion();
         int classType = MokoSupport.getInstance().getClassType();
         int uploadMode = MokoSupport.getInstance().getUploadMode();
+        String modelName = MokoSupport.getInstance().getModelName();
         connectStatusStrs = getResources().getStringArray(R.array.connect_status);
         regions = getResources().getStringArray(R.array.region);
         classTypes = getResources().getStringArray(R.array.class_type);
         uploadModes = getResources().getStringArray(R.array.upload_mode);
         tvConnectStatus.setText(connectStatusStrs[connectStatus]);
         tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
+        tvDeviceName.setText(modelName);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
     }
@@ -136,6 +140,10 @@ public class BasicInfoActivity extends BaseActivity {
                             // 跳转设置页面
                             startActivityForResult(new Intent(BasicInfoActivity.this, DeviceSettingActivity.class), AppConstants.REQUEST_CODE_DEVICE_SETTING);
                             break;
+                        case READ_HUMI:
+                            // 跳转温湿度传感器页面
+                            startActivityForResult(new Intent(BasicInfoActivity.this, SensorDataActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
                         case READ_UPLOAD_MODE:
                             int connectStatus = MokoSupport.getInstance().getConnectStatus();
                             int region = MokoSupport.getInstance().getRegion();
@@ -193,6 +201,11 @@ public class BasicInfoActivity extends BaseActivity {
     public void deviceSetting(View view) {
         showLoadingProgressDialog();
         mMokoService.getDeviceSetting();
+    }
+
+    public void thSensorData(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getSensorData();
     }
 
     public void gpsAndSensorData(View view) {

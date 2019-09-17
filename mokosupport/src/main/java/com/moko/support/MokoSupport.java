@@ -742,5 +742,18 @@ public class MokoSupport implements MokoResponseCallback {
     public int dr_2;
     public int power;
     public int adr;
+    ///////////////////////////////////////////////////////////////////////////
+    // TH
+    ///////////////////////////////////////////////////////////////////////////
+    public long i2cInterval;
+    public int tempEnable;
+    public String tempLow;
+    public String tempHigh;
+    public String tempCurrent;
+
+    public int humiEnable;
+    public String humiLow;
+    public String humiHigh;
+    public String humiCurrent;
 }
 

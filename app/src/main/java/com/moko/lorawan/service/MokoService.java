@@ -26,10 +26,13 @@ import com.moko.support.task.WriteConnectTask;
 import com.moko.support.task.WriteDRTask;
 import com.moko.support.task.WriteDevAddrTask;
 import com.moko.support.task.WriteDevEUITask;
+import com.moko.support.task.WriteHumiDataTask;
+import com.moko.support.task.WriteI2CIntervalTask;
 import com.moko.support.task.WriteNwkSKeyTask;
 import com.moko.support.task.WritePowerTask;
 import com.moko.support.task.WriteRegionTask;
 import com.moko.support.task.WriteResetTask;
+import com.moko.support.task.WriteTempDataTask;
 import com.moko.support.task.WriteUplinkDataTestTask;
 import com.moko.support.task.WriteUploadIntervalTask;
 import com.moko.support.task.WriteUploadModeTask;
@@ -177,6 +180,9 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public void getCHDR() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getCHDR(this));
     }
+    public void getSensorData() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getSensorData(this));
+    }
 
 
     public void setUplinkDataTest(Calendar calendar) {
@@ -274,6 +280,24 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
 
     public OrderTask getResetOrderTask() {
         WriteResetTask orderTask = new WriteResetTask(this);
+        return orderTask;
+    }
+
+    public OrderTask getI2CIntervalOrderTask(int i2cInterval) {
+        WriteI2CIntervalTask orderTask = new WriteI2CIntervalTask(this);
+        orderTask.setOrderData(i2cInterval);
+        return orderTask;
+    }
+
+    public OrderTask getTempDataOrderTask(int onoff, int tempLow, int tempHigh) {
+        WriteTempDataTask orderTask = new WriteTempDataTask(this);
+        orderTask.setOrderData(onoff, tempLow, tempHigh);
+        return orderTask;
+    }
+
+    public OrderTask getHumiDataOrderTask(int onoff, int humiLow, int humiHigh) {
+        WriteHumiDataTask orderTask = new WriteHumiDataTask(this);
+        orderTask.setOrderData(onoff, humiLow, humiHigh);
         return orderTask;
     }
 }

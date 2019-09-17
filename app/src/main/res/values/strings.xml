@@ -26,6 +26,7 @@
     <string name="main_scan_rssi">RSSI</string>
     <string name="about_moko_url">http://doc.mokotechnology.com/index.php?s=/Home/Item/show/item_id/2</string>
     <string name="version_info">Version:%s</string>
+    <string name="th_sensor_data"><![CDATA[T&H Sensor Data]]></string>
 
     <string-array name="connect_status">
         <item>Disconnected</item>
@@ -55,6 +56,14 @@
     <string-array name="upload_mode">
         <item>ABP</item>
         <item>OTAA</item>
+    </string-array>
+    <string-array name="alarm">
+        <item>Disable</item>
+        <item>Enable</item>
+    </string-array>
+    <string-array name="OTA">
+        <item>BLE</item>
+        <item>MCU</item>
     </string-array>
 
 

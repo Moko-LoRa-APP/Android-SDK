@@ -19,12 +19,15 @@ import com.moko.support.task.ReadDRTask;
 import com.moko.support.task.ReadDevAddrTask;
 import com.moko.support.task.ReadDevEUITask;
 import com.moko.support.task.ReadGPSTask;
+import com.moko.support.task.ReadHumiDataTask;
+import com.moko.support.task.ReadI2CIntervalTask;
 import com.moko.support.task.ReadLoraFirmwareTask;
 import com.moko.support.task.ReadManufactureDateTask;
 import com.moko.support.task.ReadModelNameTask;
 import com.moko.support.task.ReadNwkSKeyTask;
 import com.moko.support.task.ReadPowerTask;
 import com.moko.support.task.ReadRegionTask;
+import com.moko.support.task.ReadTempDataTask;
 import com.moko.support.task.ReadUploadIntervalTask;
 import com.moko.support.task.ReadUploadModeTask;
 
@@ -40,6 +43,7 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadConnectStatusTask(callback));
         orderTasks.add(new ReadRegionTask(callback));
         orderTasks.add(new ReadClassTypeTask(callback));
+        orderTasks.add(new ReadModelNameTask(callback));
         orderTasks.add(new ReadUploadModeTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
@@ -84,6 +88,14 @@ public class OrderTaskCreator {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadCHTask(callback));
         orderTasks.add(new ReadDRTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
+    public static OrderTask[] getSensorData(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadI2CIntervalTask(callback));
+        orderTasks.add(new ReadTempDataTask(callback));
+        orderTasks.add(new ReadHumiDataTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 }
