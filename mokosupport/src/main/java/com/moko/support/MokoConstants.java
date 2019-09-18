@@ -3,6 +3,7 @@ package com.moko.support;
 public class MokoConstants {
     // 发送头
     public static final int HEADER_SEND = 0xED;
+    public static final int HEADER_MCU = 0xEB;
     // 读取发送尾
     public static final int END_READ = 0xEE;
     // 应答头

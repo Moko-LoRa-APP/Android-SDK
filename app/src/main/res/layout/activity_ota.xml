@@ -68,6 +68,34 @@
 
     <View style="@style/divider_line" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:onClick="selectFile"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upgrade Module"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_ota"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:background="@drawable/shape_radius_btn_bg"
+            android:gravity="center"
+            android:onClick="selectOTAType"
+            android:padding="12dp"
+            android:text="MCU"
+            android:textColor="@color/white_ffffff"
+            android:textSize="15sp" />
+    </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

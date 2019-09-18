@@ -70,6 +70,10 @@ public enum OrderEnum implements Serializable {
     WRITE_RS485_ADR("设置RS485设备个数，地址", 0x65),
     WRITE_TEMP("设置温度报警使能标志和阈值（小端模式）", 0x66),
     WRITE_HUMI("设置湿度报警使能标志和阈值（小端模式）", 0x67),
+
+    UPGRADE_MCU("升级包概况", 0x41),
+    UPGRADE_MCU_DETAIL("升级包详情", 0x42),
+
     ;
 
 

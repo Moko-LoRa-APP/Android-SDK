@@ -16,6 +16,8 @@ import com.moko.support.handler.BaseMessageHandler;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.task.UpgradeMCUDetailTask;
+import com.moko.support.task.UpgradeMCUTask;
 import com.moko.support.task.WriteADRTask;
 import com.moko.support.task.WriteAppEUITask;
 import com.moko.support.task.WriteAppKeyTask;
@@ -180,6 +182,7 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public void getCHDR() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getCHDR(this));
     }
+
     public void getSensorData() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getSensorData(this));
     }
@@ -298,6 +301,17 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public OrderTask getHumiDataOrderTask(int onoff, int humiLow, int humiHigh) {
         WriteHumiDataTask orderTask = new WriteHumiDataTask(this);
         orderTask.setOrderData(onoff, humiLow, humiHigh);
+        return orderTask;
+    }
+
+    public OrderTask getUpgradeMCUOrderTask(byte[] indexCount, byte[] fileCount) {
+        UpgradeMCUTask orderTask = new UpgradeMCUTask(this);
+        orderTask.setOrderData(indexCount, fileCount);
+        return orderTask;
+    }
+
+    public OrderTask getUpgradeMCUDetailOrderTask(byte[] packageIndex, byte[] fileBytes) {
+        UpgradeMCUDetailTask orderTask = new UpgradeMCUDetailTask(this, packageIndex, fileBytes);
         return orderTask;
     }
 }

@@ -191,11 +191,12 @@
 
                 <TextView
                     android:id="@+id/tv_temp_alarm"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="50dp"
                     android:background="@drawable/shape_radius_btn_bg"
+                    android:gravity="center"
                     android:onClick="selectTempAlarm"
                     android:padding="12dp"
                     android:text="Disable"
@@ -310,11 +311,12 @@
 
                 <TextView
                     android:id="@+id/tv_humi_alarm"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="50dp"
                     android:background="@drawable/shape_radius_btn_bg"
+                    android:gravity="center"
                     android:onClick="selectHumiAlarm"
                     android:padding="12dp"
                     android:text="Disable"
