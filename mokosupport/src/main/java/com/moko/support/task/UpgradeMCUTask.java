@@ -13,8 +13,6 @@ public class UpgradeMCUTask extends OrderTask {
     // 固件升级
     private byte[] orderData;
 
-    private boolean isSuccess;
-
     public UpgradeMCUTask(MokoOrderTaskCallback callback) {
         super(OrderType.CHARACTERISTIC_MCU, OrderEnum.UPGRADE_MCU, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
 
@@ -50,12 +48,8 @@ public class UpgradeMCUTask extends OrderTask {
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
 
-        callback.onOrderResult(response);
-        if (!isSuccess) {
-            isSuccess = true;
-            return;
-        }
         MokoSupport.getInstance().pollTask();
+        callback.onOrderResult(response);
         MokoSupport.getInstance().executeTask(callback);
     }
 }

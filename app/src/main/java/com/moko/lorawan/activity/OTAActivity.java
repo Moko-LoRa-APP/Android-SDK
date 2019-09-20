@@ -54,7 +54,7 @@ import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
 import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 
-public class OTAActivity extends BaseActivity implements MokoSupport.IUpgradeDataListener {
+public class OTAActivity extends BaseActivity {
     public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
 
     @Bind(R.id.tv_file_path)
@@ -68,7 +68,6 @@ public class OTAActivity extends BaseActivity implements MokoSupport.IUpgradeDat
     private String[] mOTAs;
     private int mOTASelected;
     private MokoService mMokoService;
-    private boolean mIsUpgrade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,14 +119,21 @@ public class OTAActivity extends BaseActivity implements MokoSupport.IUpgradeDat
                     }
                 }
                 if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+                    abortBroadcast();
+                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
 
+                    OrderEnum orderEnum = response.order;
+                    byte[] value = response.responseValue;
+                    switch (orderEnum) {
+                        case UPGRADE_MCU:
+                            onUpgradeFailure();
+                            break;
+                        case UPGRADE_MCU_DETAIL:
+                            onUpgradeFailure();
+                            break;
+                    }
                 }
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                    if (mIsUpgrade) {
-                        isStop = true;
-                        dismissDFUProgressDialog();
-                        ToastUtils.showToast(OTAActivity.this, "DfuCompleted!");
-                    }
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                     abortBroadcast();
@@ -142,14 +148,30 @@ public class OTAActivity extends BaseActivity implements MokoSupport.IUpgradeDat
                                 onUpgradeFailure();
                                 return;
                             }
-                            if (!mIsUpgrade) {
-                                mIsUpgrade = true;
-                                tvFilePath.postDelayed(new Runnable() {
+                            tvFilePath.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendUpgradeFile();
+                                }
+                            });
+                            break;
+                        case UPGRADE_MCU_DETAIL:
+                            if ((value[1] & 0xFF) == orderEnum.getOrderHeader()) {
+                                // 升级成功
+                                isStop = true;
+                                dismissDFUProgressDialog();
+                                ToastUtils.showToast(OTAActivity.this, "DfuCompleted!");
+                            } else if ((value[1] & 0xFF) == 0x43) {
+                                tvFilePath.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        sendUpgradeFile();
+                                        try {
+                                            sendData();
+                                        } catch (IOException e) {
+                                            onUpgradeFailure();
+                                        }
                                     }
-                                }, 300);
+                                });
                             }
                             break;
                     }
@@ -191,24 +213,20 @@ public class OTAActivity extends BaseActivity implements MokoSupport.IUpgradeDat
             long length = firmwareFile.length();
             int read = (int) (length - unReadLength);
             final int percent = (int) (((float) read / (float) length) * 100);
-            LogModule.i(String.format("百分比：%d%%", percent));
+            mDFUDialog.setMessage("Progress:" + percent + "%");
         } else {
             in.close();
             in = null;
         }
     }
 
-    private byte[] mUpgradeData;
-
     public void upgradeBand(byte[] packageIndex, byte[] fileBytes) {
         OrderTask task = mMokoService.getUpgradeMCUDetailOrderTask(packageIndex, fileBytes);
-        mUpgradeData = task.assemble();
-        MokoSupport.getInstance().sendUpgradeOrder(task, this);
+        MokoSupport.getInstance().sendOrder(task);
     }
 
     private void onUpgradeFailure() {
         isStop = true;
-        mIsUpgrade = false;
         dismissDFUProgressDialog();
         ToastUtils.showToast(this, "Error:DFU Failed");
     }
@@ -272,10 +290,14 @@ public class OTAActivity extends BaseActivity implements MokoSupport.IUpgradeDat
                 starter.start(this, DfuService.class);
                 showDFUProgressDialog("Waiting...");
             } else {
-                mIsUpgrade = false;
                 showLoadingProgressDialog();
                 int fileLength = (int) firmwareFile.length();
-                int indexLength = fileLength / 14;
+                int indexLength;
+                if (fileLength % 14 > 0) {
+                    indexLength = fileLength / 14 + 1;
+                } else {
+                    indexLength = fileLength / 14;
+                }
                 byte[] indexCount = MokoUtils.toByteArray(indexLength, 4);
                 byte[] fileCount = MokoUtils.toByteArray(fileLength, 4);
                 MokoSupport.getInstance().sendOrder(mMokoService.getUpgradeMCUOrderTask(indexCount, fileCount));
@@ -447,14 +469,5 @@ public class OTAActivity extends BaseActivity implements MokoSupport.IUpgradeDat
             }
         });
         bottomDialog.show(getSupportFragmentManager());
-    }
-
-    @Override
-    public void onDataSendSuccess() {
-        try {
-            sendData();
-        } catch (IOException e) {
-            onUpgradeFailure();
-        }
     }
 }

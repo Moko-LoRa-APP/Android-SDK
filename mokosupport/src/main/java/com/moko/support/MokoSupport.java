@@ -283,12 +283,6 @@ public class MokoSupport implements MokoResponseCallback {
                 // 非延时应答
                 OrderTask orderTask = mQueue.peek();
                 if (value != null && value.length > 0 && orderTask != null) {
-                    if ((value[0] & 0xff) == MokoConstants.HEADER_MCU && (value[1] & 0xff) == 0x43) {
-                        if (mIUpgradeDataListener != null) {
-                            mIUpgradeDataListener.onDataSendSuccess();
-                        }
-                        return;
-                    }
                     orderTask.parseValue(value);
                 }
             }
@@ -527,32 +521,6 @@ public class MokoSupport implements MokoResponseCallback {
                 mBluetoothGatt.writeCharacteristic(mokoCharacteristic.characteristic);
             }
         });
-    }
-
-    public interface IUpgradeDataListener {
-        void onDataSendSuccess();
-    }
-
-    private IUpgradeDataListener mIUpgradeDataListener;
-
-    // 发送升级命令
-    public void sendUpgradeOrder(OrderTask orderTask, IUpgradeDataListener IUpgradeDataListener) {
-        mIUpgradeDataListener = IUpgradeDataListener;
-        if (mCharacteristicMap == null || mCharacteristicMap.isEmpty()) {
-            LogModule.e("发送升级：特征为空！！！");
-            disConnectBle();
-            return;
-        }
-        final MokoCharacteristic mokoCharacteristic = mCharacteristicMap.get(orderTask.orderType);
-        if (mokoCharacteristic == null) {
-            LogModule.i("executeTask : mokoCharacteristic is null");
-            return;
-        }
-        LogModule.i("app to device WRITE no response : " + orderTask.orderType.getName());
-        LogModule.i(MokoUtils.bytesToHexString(orderTask.assemble()));
-        mokoCharacteristic.characteristic.setValue(orderTask.assemble());
-        mokoCharacteristic.characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
-        mBluetoothGatt.writeCharacteristic(mokoCharacteristic.characteristic);
     }
 
     /**
