@@ -12,6 +12,7 @@ import com.moko.support.task.ReadAppEUITask;
 import com.moko.support.task.ReadAppKeyTask;
 import com.moko.support.task.ReadAppSKeyTask;
 import com.moko.support.task.ReadBleFirmwareTask;
+import com.moko.support.task.ReadBleTask;
 import com.moko.support.task.ReadCHTask;
 import com.moko.support.task.ReadClassTypeTask;
 import com.moko.support.task.ReadCompanyNameTask;
@@ -105,6 +106,12 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadI2CIntervalTask(callback));
         orderTasks.add(new ReadTempDataTask(callback));
         orderTasks.add(new ReadHumiDataTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
+    public static OrderTask[] getBleInfo(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadBleTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 }

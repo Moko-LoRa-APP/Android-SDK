@@ -45,6 +45,7 @@ public enum OrderEnum implements Serializable {
     READ_RS485_ADR("读取RS485设备个数，地址", 0x26),
     READ_TEMP("读取温度报警使能标志和阈值和当前值（小端模式）", 0x27),
     READ_HUMI("读取湿度报警使能标志和阈值和当前值（小端模式）", 0x28),
+    READ_BLE("读取蓝牙开机保持时间", 0x29),
 
     WRITE_UPLINK_DATA_TEST("设置上行测试数据", 0xBB),
     WRITE_DEV_ADDR("设置DevAddr", 0x37),
@@ -71,6 +72,7 @@ public enum OrderEnum implements Serializable {
     WRITE_RS485_ADR("设置RS485设备个数，地址", 0x65),
     WRITE_TEMP("设置温度报警使能标志和阈值（小端模式）", 0x66),
     WRITE_HUMI("设置湿度报警使能标志和阈值（小端模式）", 0x67),
+    WRITE_BLE("设置蓝牙开机保持时间", 0x68),
 
     UPGRADE_MCU("升级包概况", 0x41),
     UPGRADE_MCU_DETAIL("升级包详情", 0x42),

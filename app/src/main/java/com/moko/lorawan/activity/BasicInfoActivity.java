@@ -41,6 +41,8 @@ public class BasicInfoActivity extends BaseActivity {
     TextView tvDeviceName;
     @Bind(R.id.ll_gps_axis)
     LinearLayout llGpsAxis;
+    @Bind(R.id.ll_ble_setting)
+    LinearLayout llBleSetting;
 
     private String[] connectStatusStrs;
     private String[] regions;
@@ -157,6 +159,10 @@ public class BasicInfoActivity extends BaseActivity {
                             tvConnectStatus.setText(connectStatusStrs[connectStatus]);
                             tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
                             break;
+                        case READ_BLE:
+                            // 跳转蓝牙设置页面
+                            startActivityForResult(new Intent(BasicInfoActivity.this, BleSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
                     }
                 }
             }
@@ -262,5 +268,10 @@ public class BasicInfoActivity extends BaseActivity {
                 }
             }, 500);
         }
+    }
+
+    public void bleSetting(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getBleInfo();
     }
 }

@@ -22,6 +22,7 @@ import com.moko.support.task.WriteADRTask;
 import com.moko.support.task.WriteAppEUITask;
 import com.moko.support.task.WriteAppKeyTask;
 import com.moko.support.task.WriteAppSKeyTask;
+import com.moko.support.task.WriteBleOpeningTimeTask;
 import com.moko.support.task.WriteCHTask;
 import com.moko.support.task.WriteClassTypeTask;
 import com.moko.support.task.WriteConnectTask;
@@ -178,6 +179,9 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public void getDeviceSetting() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getDeviceSetting(this));
     }
+    public void getBleInfo() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getBleInfo(this));
+    }
 
     public void getCHDR() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getCHDR(this));
@@ -249,6 +253,12 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public OrderTask getUploadIntervalOrderTask(int uploadInterval) {
         WriteUploadIntervalTask orderTask = new WriteUploadIntervalTask(this);
         orderTask.setOrderData(uploadInterval);
+        return orderTask;
+    }
+
+    public OrderTask getBleOpeningTimeOrderTask(int bleOpeningTime) {
+        WriteBleOpeningTimeTask orderTask = new WriteBleOpeningTimeTask(this);
+        orderTask.setOrderData(bleOpeningTime);
         return orderTask;
     }
 
