@@ -1,5 +1,6 @@
 package com.moko.lorawan.utils;
 
+import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.Read9AxisATask;
@@ -23,6 +24,7 @@ import com.moko.support.task.ReadGPSTask;
 import com.moko.support.task.ReadHumiDataTask;
 import com.moko.support.task.ReadI2CIntervalTask;
 import com.moko.support.task.ReadLoraFirmwareTask;
+import com.moko.support.task.ReadMCUFirmwareTask;
 import com.moko.support.task.ReadManufactureDateTask;
 import com.moko.support.task.ReadModelNameTask;
 import com.moko.support.task.ReadNwkSKeyTask;
@@ -53,9 +55,14 @@ public class OrderTaskCreator {
     public static OrderTask[] getDeviceInfo(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadCompanyNameTask(callback));
-        orderTasks.add(new ReadManufactureDateTask(callback));
+        if (MokoSupport.getInstance().getDeviceType() == 1) {
+            orderTasks.add(new ReadManufactureDateTask(callback));
+        }
         orderTasks.add(new ReadModelNameTask(callback));
         orderTasks.add(new ReadBleFirmwareTask(callback));
+        if (MokoSupport.getInstance().getDeviceType() == 1) {
+            orderTasks.add(new ReadMCUFirmwareTask(callback));
+        }
         orderTasks.add(new ReadLoraFirmwareTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }

@@ -36,6 +36,10 @@ public class DeviceInfoActivity extends BaseActivity {
     TextView tvLoraFirmware;
     @Bind(R.id.ll_manufacture_date)
     LinearLayout llManufactureDate;
+    @Bind(R.id.tv_mcu_firmware)
+    TextView tvMcuFirmware;
+    @Bind(R.id.ll_mcu_firmware)
+    LinearLayout llMcuFirmware;
 
     private boolean mReceiverTag = false;
 
@@ -46,12 +50,19 @@ public class DeviceInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_device_info);
         ButterKnife.bind(this);
         tvCompanyName.setText(MokoSupport.getInstance().getCompanyName());
-        tvManufactureDate.setText(MokoSupport.getInstance().getManufacureDate());
+
         tvModelName.setText(MokoSupport.getInstance().getModelName());
         tvBleFirmware.setText(MokoSupport.getInstance().getBleFirmware());
         tvLoraFirmware.setText(MokoSupport.getInstance().getLoraFirmware());
         int deviceType = MokoSupport.getInstance().getDeviceType();
         llManufactureDate.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
+        if (deviceType != 1) {
+            tvManufactureDate.setText(MokoSupport.getInstance().getManufacureDate());
+        }
+        if (deviceType == 1) {
+            tvMcuFirmware.setText(MokoSupport.getInstance().getMCUFirmware());
+        }
+        llMcuFirmware.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
