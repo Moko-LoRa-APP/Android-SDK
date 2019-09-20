@@ -321,14 +321,6 @@ public class MokoSupport implements MokoResponseCallback {
         }
     }
 
-    private void formatCommonOrder(OrderTask task, byte[] value) {
-        task.orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
-        task.response.responseValue = value;
-        mQueue.poll();
-        task.callback.onOrderResult(task.response);
-        executeTask(task.callback);
-    }
-
     public void onOpenNotifyTimeout() {
         if (!mQueue.isEmpty()) {
             mQueue.clear();
@@ -597,7 +589,19 @@ public class MokoSupport implements MokoResponseCallback {
     public int getUploadMode() {
         return uploadMode;
     }
+    ///////////////////////////////////////////////////////////////////////////
+    // device type
+    ///////////////////////////////////////////////////////////////////////////
 
+    private int  deviceType;
+
+    public void setDeviceType(int deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public int getDeviceType() {
+        return deviceType;
+    }
     ///////////////////////////////////////////////////////////////////////////
     // company name
     ///////////////////////////////////////////////////////////////////////////

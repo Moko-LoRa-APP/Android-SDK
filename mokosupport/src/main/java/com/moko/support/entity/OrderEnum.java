@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 public enum OrderEnum implements Serializable {
     OPEN_NOTIFY("打开设备通知", 0),
+    READ_DEVICE_TYPE("读取产品类型", 0x01),
     READ_COMPANY_NAME("读取公司名称", 0x02),
     READ_MANUFACTURE_DATE("读取生产日期", 0x03),
     READ_MODEL_NAME("读取设备名称", 0x04),

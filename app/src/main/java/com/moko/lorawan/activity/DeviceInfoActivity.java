@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
@@ -33,6 +34,8 @@ public class DeviceInfoActivity extends BaseActivity {
     TextView tvBleFirmware;
     @Bind(R.id.tv_lora_firmware)
     TextView tvLoraFirmware;
+    @Bind(R.id.ll_manufacture_date)
+    LinearLayout llManufactureDate;
 
     private boolean mReceiverTag = false;
 
@@ -47,6 +50,8 @@ public class DeviceInfoActivity extends BaseActivity {
         tvModelName.setText(MokoSupport.getInstance().getModelName());
         tvBleFirmware.setText(MokoSupport.getInstance().getBleFirmware());
         tvLoraFirmware.setText(MokoSupport.getInstance().getLoraFirmware());
+        int deviceType = MokoSupport.getInstance().getDeviceType();
+        llManufactureDate.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);

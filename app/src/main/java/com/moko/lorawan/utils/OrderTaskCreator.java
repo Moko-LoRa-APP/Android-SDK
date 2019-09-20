@@ -18,6 +18,7 @@ import com.moko.support.task.ReadConnectStatusTask;
 import com.moko.support.task.ReadDRTask;
 import com.moko.support.task.ReadDevAddrTask;
 import com.moko.support.task.ReadDevEUITask;
+import com.moko.support.task.ReadDeviceTypeTask;
 import com.moko.support.task.ReadGPSTask;
 import com.moko.support.task.ReadHumiDataTask;
 import com.moko.support.task.ReadI2CIntervalTask;
@@ -44,6 +45,7 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadRegionTask(callback));
         orderTasks.add(new ReadClassTypeTask(callback));
         orderTasks.add(new ReadModelNameTask(callback));
+        orderTasks.add(new ReadDeviceTypeTask(callback));
         orderTasks.add(new ReadUploadModeTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }

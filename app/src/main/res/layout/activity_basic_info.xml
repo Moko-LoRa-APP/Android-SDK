@@ -118,6 +118,7 @@
     <View style="@style/divider_line" />
 
     <LinearLayout
+        android:id="@+id/ll_gps_axis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white_ffffff"

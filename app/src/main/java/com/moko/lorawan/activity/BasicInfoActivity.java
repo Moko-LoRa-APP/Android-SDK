@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.moko.lorawan.AppConstants;
@@ -38,6 +39,8 @@ public class BasicInfoActivity extends BaseActivity {
     TextView tvDeviceSetting;
     @Bind(R.id.tv_device_name)
     TextView tvDeviceName;
+    @Bind(R.id.ll_gps_axis)
+    LinearLayout llGpsAxis;
 
     private String[] connectStatusStrs;
     private String[] regions;
@@ -60,6 +63,8 @@ public class BasicInfoActivity extends BaseActivity {
         int region = MokoSupport.getInstance().getRegion();
         int classType = MokoSupport.getInstance().getClassType();
         int uploadMode = MokoSupport.getInstance().getUploadMode();
+        int deviceType = MokoSupport.getInstance().getDeviceType();
+        llGpsAxis.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
         String modelName = MokoSupport.getInstance().getModelName();
         connectStatusStrs = getResources().getStringArray(R.array.connect_status);
         regions = getResources().getStringArray(R.array.region);
