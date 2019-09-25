@@ -89,6 +89,7 @@ public class SensorDataActivity extends BaseActivity {
         etTempHigh.setText(MokoSupport.getInstance().tempHigh);
         etTempHigh.setSelection(MokoSupport.getInstance().tempHigh.length());
         tvTempCurrent.setText(MokoSupport.getInstance().tempCurrent);
+        tvTempAlarm.setText(mAlarms[mTempSelected]);
 
         mHumiSelected = MokoSupport.getInstance().humiEnable;
         llHumiAlarm.setVisibility(mHumiSelected == 0 ? View.GONE : View.VISIBLE);
@@ -97,6 +98,7 @@ public class SensorDataActivity extends BaseActivity {
         etHumiHigh.setText(MokoSupport.getInstance().humiHigh);
         etHumiHigh.setSelection(MokoSupport.getInstance().humiHigh.length());
         tvHumiCurrent.setText(MokoSupport.getInstance().humiCurrent);
+        tvHumiAlarm.setText(mAlarms[mHumiSelected]);
 
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
@@ -293,6 +295,8 @@ public class SensorDataActivity extends BaseActivity {
                 return;
             }
             orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, (int) (tempLowInt * 100), (int) (tempHighInt * 100)));
+        } else {
+            orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, 0, 0));
         }
         if (mHumiSelected == 1) {
             String humiLow = etHumiLow.getText().toString();
@@ -321,6 +325,8 @@ public class SensorDataActivity extends BaseActivity {
                 return;
             }
             orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected, (int) (humiLowInt * 100), (int) (humiHighInt * 100)));
+        } else {
+            orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected, 0, 0));
         }
         mIsFailed = false;
         int intervalInt = Integer.parseInt(i2cInterval);
