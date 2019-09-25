@@ -28,6 +28,7 @@ import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
+import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.log.LogModule;
@@ -277,6 +278,13 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         final DeviceInfo deviceInfo = (DeviceInfo) adapter.getItem(position);
         if (mMokoService == null || deviceInfo == null) {
             return;
+        }
+        if (deviceInfo.name.contains("BG")) {
+            MokoSupport.deviceTypeEnum = DeviceTypeEnum.LW001_BG;
+        } else if (deviceInfo.name.contains("TH")) {
+            MokoSupport.deviceTypeEnum = DeviceTypeEnum.LW002_TH;
+        } else {
+            MokoSupport.deviceTypeEnum = DeviceTypeEnum.LW003_B;
         }
         mMokoService.connectBluetoothDevice(deviceInfo.mac);
         mSelectedDeviceName = deviceInfo.name;

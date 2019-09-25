@@ -26,6 +26,7 @@ import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
+import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.task.OrderTask;
@@ -36,7 +37,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -91,6 +91,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     CheckBox cbAdr;
     @Bind(R.id.tv_region)
     TextView tvRegion;
+    @Bind(R.id.ll_power)
+    LinearLayout llPower;
 
 
     private MokoService mMokoService;
@@ -150,8 +152,13 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         tvDr1.setText("DR" + mSelectedDr1);
         mSelectedDr2 = MokoSupport.getInstance().dr_2;
         tvDr2.setText("DR" + mSelectedDr2);
-        mSelectedPower = MokoSupport.getInstance().power;
-        tvPower.setText(mSelectedPower + "");
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+            llPower.setVisibility(View.VISIBLE);
+            mSelectedPower = MokoSupport.getInstance().power;
+            tvPower.setText(mSelectedPower + "");
+        } else {
+            llPower.setVisibility(View.GONE);
+        }
         int adr = MokoSupport.getInstance().adr;
         if (adr == 0) {
             cbAdr.setChecked(false);
@@ -517,7 +524,9 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
         orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
         orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
-        orderTasks.add(mMokoService.getPowerOrderTask(mSelectedPower));
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+            orderTasks.add(mMokoService.getPowerOrderTask(mSelectedPower));
+        }
         orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
@@ -584,7 +593,9 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
         orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
         orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
-        orderTasks.add(mMokoService.getPowerOrderTask(mSelectedPower));
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+            orderTasks.add(mMokoService.getPowerOrderTask(mSelectedPower));
+        }
         orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
         orderTasks.add(mMokoService.getConnectOrderTask());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));

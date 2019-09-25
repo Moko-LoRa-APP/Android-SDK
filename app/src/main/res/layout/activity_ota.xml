@@ -34,39 +34,42 @@
         android:layout_marginTop="75dp"
         android:src="@drawable/ic_ota" />
 
-    <View
-        style="@style/divider_line"
-        android:layout_marginTop="75dp" />
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white_ffffff"
-        android:gravity="center_vertical"
-        android:onClick="selectFile"
+        android:layout_marginTop="75dp"
         android:padding="12dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select File"
+            android:text="Firmware"
             android:textSize="18sp" />
-
 
         <TextView
             android:id="@+id/tv_file_path"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1.0"
-            android:gravity="right"
+            android:background="@drawable/shape_radius_edit_bg"
+            android:gravity="center_vertical"
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
             android:text=""
-            android:textColor="@color/grey_808080"
-            android:textSize="15sp" />
+            android:textColor="@color/black_333333"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/iv_select_ca_file"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:onClick="selectFile"
+            android:src="@drawable/select_file" />
     </LinearLayout>
 
-    <View style="@style/divider_line" />
 
     <LinearLayout
         android:layout_width="match_parent"

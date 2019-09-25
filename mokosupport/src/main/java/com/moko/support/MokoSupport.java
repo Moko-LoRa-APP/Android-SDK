@@ -16,6 +16,7 @@ import com.moko.support.callback.MokoConnStateCallback;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.callback.MokoResponseCallback;
 import com.moko.support.callback.MokoScanDeviceCallback;
+import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.MokoCharacteristic;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
@@ -66,6 +67,8 @@ public class MokoSupport implements MokoResponseCallback {
     private static final UUID SERVICE_UUID = UUID.fromString("0000ffc3-0000-1000-8000-00805f9b34fb");
 
     private static volatile MokoSupport INSTANCE;
+
+    public static DeviceTypeEnum deviceTypeEnum;
 
     private MokoSupport() {
         //no instance
@@ -166,6 +169,7 @@ public class MokoSupport implements MokoResponseCallback {
                     continue;
                 }
                 mQueue.offer(ordertask);
+                LogModule.w("添加" + ordertask.order.getOrderName());
             }
             executeTask(null);
         } else {
@@ -184,7 +188,7 @@ public class MokoSupport implements MokoResponseCallback {
      * @Author wenzheng.liu
      * @Description 执行命令
      */
-    public void executeTask(MokoOrderTaskCallback callback) {
+    public synchronized void executeTask(MokoOrderTaskCallback callback) {
         if (callback != null && !isSyncData()) {
             callback.onOrderFinish();
             return;
@@ -393,9 +397,22 @@ public class MokoSupport implements MokoResponseCallback {
                         @Override
                         public void run() {
                             LogModule.i("开启特征通知");
-                            sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
-                            sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
-                            sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_MCU, OrderEnum.OPEN_NOTIFY, null));
+                            switch (deviceTypeEnum) {
+                                case LW001_BG:
+                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
+                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
+                                    break;
+                                case LW002_TH:
+                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
+                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
+                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_MCU, OrderEnum.OPEN_NOTIFY, null));
+                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_PERIPHERAL, OrderEnum.OPEN_NOTIFY, null));
+                                    break;
+                                case LW003_B:
+                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
+                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
+                                    break;
+                            }
                         }
                     }, 2000);
                     break;
@@ -593,15 +610,15 @@ public class MokoSupport implements MokoResponseCallback {
     // device type
     ///////////////////////////////////////////////////////////////////////////
 
-    private int  deviceType;
-
-    public void setDeviceType(int deviceType) {
-        this.deviceType = deviceType;
-    }
-
-    public int getDeviceType() {
-        return deviceType;
-    }
+//    private int  deviceType;
+//
+//    public void setDeviceType(int deviceType) {
+//        this.deviceType = deviceType;
+//    }
+//
+//    public int getDeviceType() {
+//        return deviceType;
+//    }
     ///////////////////////////////////////////////////////////////////////////
     // company name
     ///////////////////////////////////////////////////////////////////////////

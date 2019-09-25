@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
@@ -34,12 +34,12 @@ public class DeviceInfoActivity extends BaseActivity {
     TextView tvBleFirmware;
     @Bind(R.id.tv_lora_firmware)
     TextView tvLoraFirmware;
-    @Bind(R.id.ll_manufacture_date)
-    LinearLayout llManufactureDate;
     @Bind(R.id.tv_mcu_firmware)
     TextView tvMcuFirmware;
-    @Bind(R.id.ll_mcu_firmware)
-    LinearLayout llMcuFirmware;
+    @Bind(R.id.rl_manufacture_date)
+    RelativeLayout rlManufactureDate;
+    @Bind(R.id.rl_mcu_firmware)
+    RelativeLayout rlMcuFirmware;
 
     private boolean mReceiverTag = false;
 
@@ -54,15 +54,15 @@ public class DeviceInfoActivity extends BaseActivity {
         tvModelName.setText(MokoSupport.getInstance().getModelName());
         tvBleFirmware.setText(MokoSupport.getInstance().getBleFirmware());
         tvLoraFirmware.setText(MokoSupport.getInstance().getLoraFirmware());
-        int deviceType = MokoSupport.getInstance().getDeviceType();
-        llManufactureDate.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
+        int deviceType = MokoSupport.deviceTypeEnum.getDeviceType();
+        rlManufactureDate.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
         if (deviceType != 1) {
             tvManufactureDate.setText(MokoSupport.getInstance().getManufacureDate());
         }
         if (deviceType == 1) {
             tvMcuFirmware.setText(MokoSupport.getInstance().getMCUFirmware());
         }
-        llMcuFirmware.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
+        rlMcuFirmware.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);

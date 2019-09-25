@@ -36,20 +36,34 @@ public class UpgradeMCUDetailTask extends OrderTask {
 
     @Override
     public void parseValue(byte[] value) {
-        if ((value.length == 4)
-                && (value[1] & 0xFF) == order.getOrderHeader()
-                && (value[2] & 0xFF) == 0x01
-                && (value[3] & 0xff) == 0xAA) {
+        if ((value.length == 4)) {
+            if ((value[1] & 0xFF) != order.getOrderHeader())
+                return;
+            if ((value[2] & 0xFF) != 0x01)
+                return;
+            if ((value[3] & 0xff) != 0xAA)
+                return;
             LogModule.i(order.getOrderName() + "成功");
-        } else if ((value.length == 7)
-                && (value[1] & 0xFF) == 0x43
-                && (value[6] & 0xFF) != 0xAA) {
+        } else if ((value.length == 7)) {
+            if ((value[1] & 0xFF) != 0x43)
+                return;
+            if ((value[6] & 0xFF) != 0xAA)
+                return;
+        } else {
             return;
         }
         response.responseValue = value;
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         MokoSupport.getInstance().pollTask();
         callback.onOrderResult(response);
-        MokoSupport.getInstance().executeTask(callback);
+//        MokoSupport.getInstance().executeTask(callback);
+//        LogModule.w("执行下一个任务");
+    }
+
+    @Override
+    public boolean timeoutPreTask() {
+        MokoSupport.getInstance().pollTask();
+        callback.onOrderTimeout(response);
+        return false;
     }
 }

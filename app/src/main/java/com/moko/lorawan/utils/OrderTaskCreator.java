@@ -2,6 +2,7 @@ package com.moko.lorawan.utils;
 
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoOrderTaskCallback;
+import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.Read9AxisATask;
 import com.moko.support.task.Read9AxisAngleTask;
@@ -20,7 +21,6 @@ import com.moko.support.task.ReadConnectStatusTask;
 import com.moko.support.task.ReadDRTask;
 import com.moko.support.task.ReadDevAddrTask;
 import com.moko.support.task.ReadDevEUITask;
-import com.moko.support.task.ReadDeviceTypeTask;
 import com.moko.support.task.ReadGPSTask;
 import com.moko.support.task.ReadHumiDataTask;
 import com.moko.support.task.ReadI2CIntervalTask;
@@ -48,7 +48,7 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadRegionTask(callback));
         orderTasks.add(new ReadClassTypeTask(callback));
         orderTasks.add(new ReadModelNameTask(callback));
-        orderTasks.add(new ReadDeviceTypeTask(callback));
+//        orderTasks.add(new ReadDeviceTypeTask(callback));
         orderTasks.add(new ReadUploadModeTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
@@ -56,12 +56,12 @@ public class OrderTaskCreator {
     public static OrderTask[] getDeviceInfo(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadCompanyNameTask(callback));
-        if (MokoSupport.getInstance().getDeviceType() == 1) {
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
             orderTasks.add(new ReadManufactureDateTask(callback));
         }
         orderTasks.add(new ReadModelNameTask(callback));
         orderTasks.add(new ReadBleFirmwareTask(callback));
-        if (MokoSupport.getInstance().getDeviceType() == 1) {
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW002_TH) {
             orderTasks.add(new ReadMCUFirmwareTask(callback));
         }
         orderTasks.add(new ReadLoraFirmwareTask(callback));
@@ -89,7 +89,9 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadUploadIntervalTask(callback));
         orderTasks.add(new ReadCHTask(callback));
         orderTasks.add(new ReadDRTask(callback));
-        orderTasks.add(new ReadPowerTask(callback));
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+            orderTasks.add(new ReadPowerTask(callback));
+        }
         orderTasks.add(new ReadADRTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }

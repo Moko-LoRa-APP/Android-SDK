@@ -29,6 +29,7 @@ import com.moko.lorawan.utils.FileUtils;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
+import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.log.LogModule;
@@ -79,6 +80,10 @@ public class OTAActivity extends BaseActivity {
         mOTAs = getResources().getStringArray(R.array.OTA);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+            mOTASelected = 1;
+            tvOta.setText(mOTAs[mOTASelected]);
+        }
     }
 
 
@@ -126,10 +131,18 @@ public class OTAActivity extends BaseActivity {
                     byte[] value = response.responseValue;
                     switch (orderEnum) {
                         case UPGRADE_MCU:
-                            onUpgradeFailure();
-                            break;
                         case UPGRADE_MCU_DETAIL:
                             onUpgradeFailure();
+                            tvFilePath.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        sendData();
+                                    } catch (IOException e) {
+                                        onUpgradeFailure();
+                                    }
+                                }
+                            });
                             break;
                     }
                 }
@@ -161,18 +174,17 @@ public class OTAActivity extends BaseActivity {
                                 isStop = true;
                                 dismissDFUProgressDialog();
                                 ToastUtils.showToast(OTAActivity.this, "DfuCompleted!");
-                            } else if ((value[1] & 0xFF) == 0x43) {
-                                tvFilePath.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            sendData();
-                                        } catch (IOException e) {
-                                            onUpgradeFailure();
-                                        }
-                                    }
-                                });
                             }
+                            tvFilePath.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        sendData();
+                                    } catch (IOException e) {
+                                        onUpgradeFailure();
+                                    }
+                                }
+                            });
                             break;
                     }
                 }
@@ -455,6 +467,9 @@ public class OTAActivity extends BaseActivity {
     }
 
     public void selectOTAType(View view) {
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+            return;
+        }
         ArrayList<String> otas = new ArrayList<>();
         for (int i = 0; i < mOTAs.length; i++) {
             otas.add(mOTAs[i]);

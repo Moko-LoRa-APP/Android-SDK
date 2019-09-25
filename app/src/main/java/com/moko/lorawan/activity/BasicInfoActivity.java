@@ -12,12 +12,14 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.service.MokoService;
+import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
@@ -39,10 +41,12 @@ public class BasicInfoActivity extends BaseActivity {
     TextView tvDeviceSetting;
     @Bind(R.id.tv_device_name)
     TextView tvDeviceName;
-    @Bind(R.id.ll_gps_axis)
-    LinearLayout llGpsAxis;
-    @Bind(R.id.ll_ble_setting)
-    LinearLayout llBleSetting;
+    @Bind(R.id.rl_gps_axis)
+    RelativeLayout rlGpsAxis;
+    @Bind(R.id.rl_ble_setting)
+    RelativeLayout rlBleSetting;
+    @Bind(R.id.rl_sensor_data)
+    RelativeLayout rlSensorData;
 
     private String[] connectStatusStrs;
     private String[] regions;
@@ -65,8 +69,10 @@ public class BasicInfoActivity extends BaseActivity {
         int region = MokoSupport.getInstance().getRegion();
         int classType = MokoSupport.getInstance().getClassType();
         int uploadMode = MokoSupport.getInstance().getUploadMode();
-        int deviceType = MokoSupport.getInstance().getDeviceType();
-        llGpsAxis.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
+        int deviceType = MokoSupport.deviceTypeEnum.getDeviceType();
+        rlGpsAxis.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
+        rlBleSetting.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
+        rlSensorData.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         String modelName = MokoSupport.getInstance().getModelName();
         connectStatusStrs = getResources().getStringArray(R.array.connect_status);
         regions = getResources().getStringArray(R.array.region);
@@ -125,7 +131,13 @@ public class BasicInfoActivity extends BaseActivity {
                     }
                 }
                 if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
-
+                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
+                    OrderEnum orderEnum = response.order;
+                    switch (orderEnum) {
+                        case READ_BLE:
+                            ToastUtils.showToast(BasicInfoActivity.this, "Error");
+                            break;
+                    }
                 }
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                     dismissLoadingProgressDialog();
