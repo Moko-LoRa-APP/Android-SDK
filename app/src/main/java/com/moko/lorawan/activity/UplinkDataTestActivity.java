@@ -86,6 +86,13 @@ public class UplinkDataTestActivity extends BaseActivity {
                     }
                 }
                 if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
+                    OrderEnum orderEnum = response.order;
+                    switch (orderEnum) {
+                        case WRITE_UPLINK_DATA_TEST:
+                            ToastUtils.showToast(UplinkDataTestActivity.this, "Fail");
+                            break;
+                    }
 
                 }
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
@@ -100,8 +107,7 @@ public class UplinkDataTestActivity extends BaseActivity {
                             byte[] value = response.responseValue;
                             if ((value[3] & 0xff) == 0xAA) {
                                 ToastUtils.showToast(UplinkDataTestActivity.this, "Success");
-                            }
-                            if ((value[3] & 0xff) == 0xBB) {
+                            } else {
                                 ToastUtils.showToast(UplinkDataTestActivity.this, "Device Disconnected");
                             }
                             break;
@@ -149,7 +155,7 @@ public class UplinkDataTestActivity extends BaseActivity {
         showLoadingProgressDialog();
         Calendar calendar = Calendar.getInstance();
         String text = Utils.calendar2strDate(calendar, "yyyy-MM-dd HH:mm:ss");
-        tvUplinkData.append(text+"MOKO");
+        tvUplinkData.append(text + "MOKO");
         tvUplinkData.append("\n");
         mMokoService.setUplinkDataTest(calendar);
     }

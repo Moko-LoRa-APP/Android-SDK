@@ -153,6 +153,8 @@ public class SensorDataActivity extends BaseActivity {
                     dismissLoadingProgressDialog();
                     if (!mIsFailed) {
                         ToastUtils.showToast(SensorDataActivity.this, "Success");
+                    } else {
+                        ToastUtils.showToast(SensorDataActivity.this, "Error");
                     }
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
@@ -164,7 +166,7 @@ public class SensorDataActivity extends BaseActivity {
                         case WRITE_I2C:
                         case WRITE_TEMP:
                         case WRITE_HUMI:
-                            if ((value[3] & 0xff) == 0xBB) {
+                            if ((value[3] & 0xff) != 0xAA) {
                                 mIsFailed = true;
                             }
                             break;
@@ -286,9 +288,11 @@ public class SensorDataActivity extends BaseActivity {
                 ToastUtils.showToast(this, "High Temperature Threshold range 0~65");
                 return;
             }
+            if (tempLowInt >=  tempHighInt) {
+                ToastUtils.showToast(this, "Temperature Threshold error");
+                return;
+            }
             orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, (int) (tempLowInt * 100), (int) (tempHighInt * 100)));
-        } else {
-            orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, 0, 0));
         }
         if (mHumiSelected == 1) {
             String humiLow = etHumiLow.getText().toString();
@@ -312,9 +316,11 @@ public class SensorDataActivity extends BaseActivity {
                 ToastUtils.showToast(this, "High Humidity Threshold range 0~90");
                 return;
             }
+            if (humiLowInt >=  humiHighInt) {
+                ToastUtils.showToast(this, "Humidity Threshold error");
+                return;
+            }
             orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected, (int) (humiLowInt * 100), (int) (humiHighInt * 100)));
-        } else {
-            orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected, 0, 0));
         }
         mIsFailed = false;
         int intervalInt = Integer.parseInt(i2cInterval);

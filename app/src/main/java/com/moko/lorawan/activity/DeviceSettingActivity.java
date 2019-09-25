@@ -248,12 +248,12 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                         case WRITE_POWER:
                         case WRITE_ADR:
                         case WRITE_CONNECT:
-                            if ((value[3] & 0xff) == 0xBB) {
+                            if ((value[3] & 0xff) != 0xAA) {
                                 mIsFailed = true;
                             }
                             break;
                         case WRITE_REGION:
-                            if ((value[3] & 0xff) == 0xBB) {
+                            if ((value[3] & 0xff) != 0xAA) {
                                 mIsFailed = true;
                             } else {
                                 if (mReadCHDR) {
@@ -262,7 +262,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                             }
                             break;
                         case WRITE_RESET:
-                            if ((value[3] & 0xff) == 0xBB) {
+                            if ((value[3] & 0xff) != 0xAA) {
                                 mIsFailed = true;
                             } else {
                                 mIsResetSuccess = true;
@@ -512,8 +512,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             return;
         }
         long interval = Long.parseLong(reportInterval);
-        if (interval < 1 || interval > 14400) {
-            ToastUtils.showToast(this, "Reporting Interval range 1~14400");
+        if (interval < 1 || interval > 65535) {
+            ToastUtils.showToast(this, "Reporting Interval range 1~65535");
             return;
         }
         int intervalInt = Integer.parseInt(reportInterval);
@@ -581,8 +581,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             return;
         }
         long interval = Long.parseLong(reportInterval);
-        if (interval < 1 || interval > 14400) {
-            ToastUtils.showToast(this, "Reporting Interval range 1~14400");
+        if (interval < 1 || interval > 65535) {
+            ToastUtils.showToast(this, "Reporting Interval range 1~65535");
             return;
         }
         int intervalInt = Integer.parseInt(reportInterval);

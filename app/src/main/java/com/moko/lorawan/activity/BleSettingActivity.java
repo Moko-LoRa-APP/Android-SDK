@@ -114,7 +114,7 @@ public class BleSettingActivity extends BaseActivity {
                     byte[] value = response.responseValue;
                     switch (orderEnum) {
                         case WRITE_BLE:
-                            if ((value[3] & 0xff) == 0xBB) {
+                            if ((value[3] & 0xff) != 0xAA) {
                                 mIsFailed = true;
                             }
                             break;
@@ -161,8 +161,8 @@ public class BleSettingActivity extends BaseActivity {
         }
 
         long time = Long.parseLong(bleOpeningTime);
-        if (time < 1 || time > 14400) {
-            ToastUtils.showToast(this, "Ble Opening Time range 1~14400");
+        if (time < 1 || time > 255) {
+            ToastUtils.showToast(this, "Ble Opening Time range 1~255");
             return;
         }
         int timeInt = Integer.parseInt(bleOpeningTime);
