@@ -184,25 +184,39 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
                     android:padding="12dp"
                     android:text="Temperature Alarm"
-                    android:textColor="@color/green_6caf10"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/tv_temp_alarm"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                <RadioGroup
+                    android:id="@+id/rg_temp"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="50dp"
-                    android:background="@drawable/shape_radius_btn_bg"
-                    android:gravity="center"
-                    android:onClick="selectTempAlarm"
-                    android:padding="12dp"
-                    android:text="Disable"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp" />
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_temp_disable"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:button="@null"
+                        android:checked="true"
+                        android:drawableLeft="@drawable/selector_rb_btn"
+                        android:drawablePadding="10dp"
+                        android:text="Disable" />
+
+                    <RadioButton
+                        android:id="@+id/rb_temp_enable"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/selector_rb_btn"
+                        android:drawablePadding="10dp"
+                        android:text="Enable" />
+                </RadioGroup>
 
             </RelativeLayout>
 
@@ -304,25 +318,40 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
                     android:padding="12dp"
                     android:text="Humidity Alarm"
-                    android:textColor="@color/green_6caf10"
                     android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/tv_humi_alarm"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                <RadioGroup
+                    android:id="@+id/rg_humi"
+                    android:layout_width="160dp"
+                    android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="50dp"
-                    android:background="@drawable/shape_radius_btn_bg"
-                    android:gravity="center"
-                    android:onClick="selectHumiAlarm"
-                    android:padding="12dp"
-                    android:text="Disable"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp" />
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+
+
+                    <RadioButton
+                        android:id="@+id/rb_humi_disable"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:button="@null"
+                        android:checked="true"
+                        android:drawableLeft="@drawable/selector_rb_btn"
+                        android:drawablePadding="10dp"
+                        android:text="Disable" />
+
+                    <RadioButton
+                        android:id="@+id/rb_humi_enable"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.0"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/selector_rb_btn"
+                        android:drawablePadding="10dp"
+                        android:text="Enable" />
+                </RadioGroup>
 
             </RelativeLayout>
 

@@ -370,10 +370,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_report_invterval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="12dp"
                 android:paddingTop="6dp"
+                android:visibility="visible"
                 android:paddingRight="12dp"
                 android:paddingBottom="6dp">
 
@@ -516,40 +518,6 @@
                     android:gravity="center"
                     android:onClick="selectDr2"
                     android:text="" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_power"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingTop="6dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="6dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Power"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_power"
-                    android:layout_width="90dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="17dp"
-                    android:background="@drawable/shape_radius_edit_bg"
-                    android:gravity="center"
-                    android:onClick="selectPower"
-                    android:text="" />
-
-                <TextView
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center"
-                    android:text="dBm" />
             </LinearLayout>
 
             <CheckBox

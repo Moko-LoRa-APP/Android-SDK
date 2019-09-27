@@ -16,6 +16,7 @@ public class DeviceInfo implements Serializable {
     public String mac;
     public String scanRecord;
     public ScanResult scanResult;
+    public DeviceTypeEnum deviceTypeEnum;
 
     @Override
     public String toString() {

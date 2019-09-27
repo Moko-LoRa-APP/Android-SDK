@@ -29,7 +29,6 @@ import com.moko.support.task.ReadMCUFirmwareTask;
 import com.moko.support.task.ReadManufactureDateTask;
 import com.moko.support.task.ReadModelNameTask;
 import com.moko.support.task.ReadNwkSKeyTask;
-import com.moko.support.task.ReadPowerTask;
 import com.moko.support.task.ReadRegionTask;
 import com.moko.support.task.ReadTempDataTask;
 import com.moko.support.task.ReadUploadIntervalTask;
@@ -86,11 +85,10 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadDevAddrTask(callback));
         orderTasks.add(new ReadNwkSKeyTask(callback));
         orderTasks.add(new ReadAppSKeyTask(callback));
-        orderTasks.add(new ReadUploadIntervalTask(callback));
         orderTasks.add(new ReadCHTask(callback));
         orderTasks.add(new ReadDRTask(callback));
         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
-            orderTasks.add(new ReadPowerTask(callback));
+            orderTasks.add(new ReadUploadIntervalTask(callback));
         }
         orderTasks.add(new ReadADRTask(callback));
         return orderTasks.toArray(new OrderTask[]{});

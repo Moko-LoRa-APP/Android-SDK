@@ -81,8 +81,6 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     TextView tvDr1;
     @Bind(R.id.tv_dr_2)
     TextView tvDr2;
-    @Bind(R.id.tv_power)
-    TextView tvPower;
     @Bind(R.id.tv_save)
     TextView tvSave;
     @Bind(R.id.tv_connect)
@@ -91,8 +89,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     CheckBox cbAdr;
     @Bind(R.id.tv_region)
     TextView tvRegion;
-    @Bind(R.id.ll_power)
-    LinearLayout llPower;
+    @Bind(R.id.ll_report_invterval)
+    LinearLayout llReportInvterval;
 
 
     private MokoService mMokoService;
@@ -103,7 +101,6 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     private int mSelectedCh2;
     private int mSelectedDr1;
     private int mSelectedDr2;
-    private int mSelectedPower;
     private boolean mIsFailed;
     private boolean mIsResetSuccess;
     private boolean mReadCHDR;
@@ -142,8 +139,6 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         } else {
             rbTypeClassc.setChecked(true);
         }
-        long uploadInterval = MokoSupport.getInstance().uploadInterval;
-        etReportInterval.setText(uploadInterval + "");
         mSelectedCh1 = MokoSupport.getInstance().ch_1;
         tvCh1.setText(mSelectedCh1 + "");
         mSelectedCh2 = MokoSupport.getInstance().ch_2;
@@ -153,11 +148,11 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         mSelectedDr2 = MokoSupport.getInstance().dr_2;
         tvDr2.setText("DR" + mSelectedDr2);
         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
-            llPower.setVisibility(View.VISIBLE);
-            mSelectedPower = MokoSupport.getInstance().power;
-            tvPower.setText(mSelectedPower + "");
+            llReportInvterval.setVisibility(View.VISIBLE);
+            long uploadInterval = MokoSupport.getInstance().uploadInterval;
+            etReportInterval.setText(uploadInterval + "");
         } else {
-            llPower.setVisibility(View.GONE);
+            llReportInvterval.setVisibility(View.GONE);
         }
         int adr = MokoSupport.getInstance().adr;
         if (adr == 0) {
@@ -351,7 +346,6 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
 
     private static ArrayList<String> mCHList;
     private static ArrayList<String> mDRList;
-    private static ArrayList<String> mPowerList;
 
     static {
         mCHList = new ArrayList<>();
@@ -362,18 +356,6 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         for (int i = 0; i <= 15; i++) {
             mDRList.add("DR" + i);
         }
-        mPowerList = new ArrayList<>();
-        mPowerList.add("10");
-        mPowerList.add("12");
-        mPowerList.add("14");
-        mPowerList.add("16");
-        mPowerList.add("18");
-        mPowerList.add("20");
-        mPowerList.add("22");
-        mPowerList.add("24");
-        mPowerList.add("26");
-        mPowerList.add("28");
-        mPowerList.add("30");
     }
 
 
@@ -445,24 +427,6 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         bottomDialog.show(getSupportFragmentManager());
     }
 
-    public void selectPower(View view) {
-        int index = 0;
-        for (int i = 0; i < mPowerList.size(); i++) {
-            if (mSelectedPower == Integer.parseInt(mPowerList.get(i)))
-                index = i;
-        }
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(mPowerList, index);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mSelectedPower = Integer.parseInt(mPowerList.get(value));
-                tvPower.setText(mPowerList.get(value));
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
-    }
-
     public void onSave(View view) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         if (rbModemAbp.isChecked()) {
@@ -506,27 +470,26 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             orderTasks.add(mMokoService.getAppKeyOrderTask(appKey));
             orderTasks.add(mMokoService.getUploadModeOrderTask(2));
         }
-        String reportInterval = etReportInterval.getText().toString();
-        if (TextUtils.isEmpty(reportInterval)) {
-            ToastUtils.showToast(this, "Reporting Interval is empty");
-            return;
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+            String reportInterval = etReportInterval.getText().toString();
+            if (TextUtils.isEmpty(reportInterval)) {
+                ToastUtils.showToast(this, "Reporting Interval is empty");
+                return;
+            }
+            long interval = Long.parseLong(reportInterval);
+            if (interval < 1 || interval > 65535) {
+                ToastUtils.showToast(this, "Reporting Interval range 1~65535");
+                return;
+            }
+            int intervalInt = Integer.parseInt(reportInterval);
+            orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         }
-        long interval = Long.parseLong(reportInterval);
-        if (interval < 1 || interval > 65535) {
-            ToastUtils.showToast(this, "Reporting Interval range 1~65535");
-            return;
-        }
-        int intervalInt = Integer.parseInt(reportInterval);
         mIsFailed = false;
-        orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         // 保存
         orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
         orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
         orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
         orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
-            orderTasks.add(mMokoService.getPowerOrderTask(mSelectedPower));
-        }
         orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
@@ -575,27 +538,26 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             orderTasks.add(mMokoService.getAppKeyOrderTask(appKey));
             orderTasks.add(mMokoService.getUploadModeOrderTask(2));
         }
-        String reportInterval = etReportInterval.getText().toString();
-        if (TextUtils.isEmpty(reportInterval)) {
-            ToastUtils.showToast(this, "Reporting Interval is empty");
-            return;
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+            String reportInterval = etReportInterval.getText().toString();
+            if (TextUtils.isEmpty(reportInterval)) {
+                ToastUtils.showToast(this, "Reporting Interval is empty");
+                return;
+            }
+            long interval = Long.parseLong(reportInterval);
+            if (interval < 1 || interval > 65535) {
+                ToastUtils.showToast(this, "Reporting Interval range 1~65535");
+                return;
+            }
+            int intervalInt = Integer.parseInt(reportInterval);
+            orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         }
-        long interval = Long.parseLong(reportInterval);
-        if (interval < 1 || interval > 65535) {
-            ToastUtils.showToast(this, "Reporting Interval range 1~65535");
-            return;
-        }
-        int intervalInt = Integer.parseInt(reportInterval);
         mIsFailed = false;
-        orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         // 保存并连接
         orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
         orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
         orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
         orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
-            orderTasks.add(mMokoService.getPowerOrderTask(mSelectedPower));
-        }
         orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
         orderTasks.add(mMokoService.getConnectOrderTask());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));

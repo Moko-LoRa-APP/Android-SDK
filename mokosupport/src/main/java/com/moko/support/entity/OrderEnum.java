@@ -34,7 +34,6 @@ public enum OrderEnum implements Serializable {
     READ_CONNECT_STATUS("读取连接状态", 0x11),
     READ_CH("读取CH", 0x12),
     READ_DR("读取DR", 0x13),
-    READ_POWER("读取Power", 0x14),
     READ_ADR("读取ADR状态", 0x15),
     READ_MCU("读取MCU固件版本", 0x20),
     READ_I2C("读取I2C采集间隔", 0x21),

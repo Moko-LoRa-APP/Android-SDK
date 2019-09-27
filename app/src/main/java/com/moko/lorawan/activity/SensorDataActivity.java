@@ -13,11 +13,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.AlertMessageDialog;
-import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SensorDataActivity extends BaseActivity {
+public class SensorDataActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
 
 
     @Bind(R.id.tv_temp_current)
@@ -46,16 +47,12 @@ public class SensorDataActivity extends BaseActivity {
     TextView tvHumiCurrent;
     @Bind(R.id.et_i2c_interval)
     EditText etI2cInterval;
-    @Bind(R.id.tv_temp_alarm)
-    TextView tvTempAlarm;
     @Bind(R.id.et_temp_low)
     EditText etTempLow;
     @Bind(R.id.et_temp_high)
     EditText etTempHigh;
     @Bind(R.id.ll_temp_alarm)
     LinearLayout llTempAlarm;
-    @Bind(R.id.tv_humi_alarm)
-    TextView tvHumiAlarm;
     @Bind(R.id.et_humi_low)
     EditText etHumiLow;
     @Bind(R.id.et_humi_high)
@@ -64,6 +61,18 @@ public class SensorDataActivity extends BaseActivity {
     LinearLayout llHumiAlarm;
     @Bind(R.id.tv_save)
     TextView tvSave;
+    @Bind(R.id.rb_temp_disable)
+    RadioButton rbTempDisable;
+    @Bind(R.id.rb_temp_enable)
+    RadioButton rbTempEnable;
+    @Bind(R.id.rg_temp)
+    RadioGroup rgTemp;
+    @Bind(R.id.rb_humi_disable)
+    RadioButton rbHumiDisable;
+    @Bind(R.id.rb_humi_enable)
+    RadioButton rbHumiEnable;
+    @Bind(R.id.rg_humi)
+    RadioGroup rgHumi;
     private MokoService mMokoService;
     private boolean mReceiverTag = false;
     private String[] mAlarms;
@@ -89,8 +98,12 @@ public class SensorDataActivity extends BaseActivity {
         etTempHigh.setText(MokoSupport.getInstance().tempHigh);
         etTempHigh.setSelection(MokoSupport.getInstance().tempHigh.length());
         tvTempCurrent.setText(MokoSupport.getInstance().tempCurrent);
-        tvTempAlarm.setText(mAlarms[mTempSelected]);
-
+        rgTemp.setOnCheckedChangeListener(this);
+        if (mTempSelected == 0) {
+            rbTempDisable.setChecked(true);
+        } else {
+            rbTempEnable.setChecked(true);
+        }
         mHumiSelected = MokoSupport.getInstance().humiEnable;
         llHumiAlarm.setVisibility(mHumiSelected == 0 ? View.GONE : View.VISIBLE);
         etHumiLow.setText(MokoSupport.getInstance().humiLow);
@@ -98,8 +111,12 @@ public class SensorDataActivity extends BaseActivity {
         etHumiHigh.setText(MokoSupport.getInstance().humiHigh);
         etHumiHigh.setSelection(MokoSupport.getInstance().humiHigh.length());
         tvHumiCurrent.setText(MokoSupport.getInstance().humiCurrent);
-        tvHumiAlarm.setText(mAlarms[mHumiSelected]);
-
+        rgHumi.setOnCheckedChangeListener(this);
+        if (mHumiSelected == 0) {
+            rbHumiDisable.setChecked(true);
+        } else {
+            rbHumiEnable.setChecked(true);
+        }
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
     }
@@ -207,42 +224,6 @@ public class SensorDataActivity extends BaseActivity {
         finish();
     }
 
-    public void selectTempAlarm(View view) {
-        ArrayList<String> alarms = new ArrayList<>();
-        for (int i = 0; i < mAlarms.length; i++) {
-            alarms.add(mAlarms[i]);
-        }
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(alarms, mTempSelected);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mTempSelected = value;
-                tvTempAlarm.setText(mAlarms[mTempSelected]);
-                llTempAlarm.setVisibility(mTempSelected == 0 ? View.GONE : View.VISIBLE);
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
-    }
-
-    public void selectHumiAlarm(View view) {
-        ArrayList<String> alarms = new ArrayList<>();
-        for (int i = 0; i < mAlarms.length; i++) {
-            alarms.add(mAlarms[i]);
-        }
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(alarms, mHumiSelected);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mHumiSelected = value;
-                tvHumiAlarm.setText(mAlarms[mHumiSelected]);
-                llHumiAlarm.setVisibility(mHumiSelected == 0 ? View.GONE : View.VISIBLE);
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
-    }
-
     public void resetData(View view) {
         AlertMessageDialog dialog = new AlertMessageDialog();
         dialog.setTitle("Reset All Parameters");
@@ -290,7 +271,7 @@ public class SensorDataActivity extends BaseActivity {
                 ToastUtils.showToast(this, "High Temperature Threshold range 0~65");
                 return;
             }
-            if (tempLowInt >=  tempHighInt) {
+            if (tempLowInt >= tempHighInt) {
                 ToastUtils.showToast(this, "Temperature Threshold error");
                 return;
             }
@@ -320,7 +301,7 @@ public class SensorDataActivity extends BaseActivity {
                 ToastUtils.showToast(this, "High Humidity Threshold range 0~90");
                 return;
             }
-            if (humiLowInt >=  humiHighInt) {
+            if (humiLowInt >= humiHighInt) {
                 ToastUtils.showToast(this, "Humidity Threshold error");
                 return;
             }
@@ -333,5 +314,27 @@ public class SensorDataActivity extends BaseActivity {
         orderTasks.add(mMokoService.getI2CIntervalOrderTask(intervalInt));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch (checkedId) {
+            case R.id.rb_temp_disable:
+                mTempSelected = 0;
+                llTempAlarm.setVisibility(View.GONE);
+                break;
+            case R.id.rb_temp_enable:
+                mTempSelected = 1;
+                llTempAlarm.setVisibility(View.VISIBLE);
+                break;
+            case R.id.rb_humi_disable:
+                mHumiSelected = 0;
+                llHumiAlarm.setVisibility(View.GONE);
+                break;
+            case R.id.rb_humi_enable:
+                mHumiSelected = 1;
+                llHumiAlarm.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 }

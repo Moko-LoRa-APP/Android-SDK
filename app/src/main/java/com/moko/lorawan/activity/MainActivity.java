@@ -9,11 +9,14 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -33,6 +36,7 @@ import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.utils.MokoUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
@@ -43,13 +47,18 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import no.nordicsemi.android.support.v18.scanner.ScanRecord;
+import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 
 public class MainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemClickListener, OnRefreshListener {
@@ -212,6 +221,24 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
     @Override
     public void onScanDevice(DeviceInfo deviceInfo) {
+        ScanResult result = deviceInfo.scanResult;
+        ScanRecord record = result.getScanRecord();
+        SparseArray<byte[]> manufacturer = result.getScanRecord().getManufacturerSpecificData();
+        if (manufacturer != null && manufacturer.size() != 0) {
+            byte[] manufacturerSpecificDataByte = record.getManufacturerSpecificData(manufacturer.keyAt(0));
+            if (manufacturerSpecificDataByte.length > 5) {
+                int deviceType = manufacturerSpecificDataByte[5] & 0xff;
+                if (deviceType == 1) {
+                    deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW002_TH;
+                } else if (deviceType == 2) {
+                    deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW003_B;
+                } else {
+                    deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW001_BG;
+                }
+            } else {
+                deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW001_BG;
+            }
+        }
         mDeviceInfoHashMap.put(deviceInfo.mac, deviceInfo);
         updateDevices();
     }
@@ -279,13 +306,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (mMokoService == null || deviceInfo == null) {
             return;
         }
-        if (deviceInfo.name.contains("BG")) {
-            MokoSupport.deviceTypeEnum = DeviceTypeEnum.LW001_BG;
-        } else if (deviceInfo.name.contains("TH")) {
-            MokoSupport.deviceTypeEnum = DeviceTypeEnum.LW002_TH;
-        } else {
-            MokoSupport.deviceTypeEnum = DeviceTypeEnum.LW003_B;
-        }
+        MokoSupport.deviceTypeEnum = deviceInfo.deviceTypeEnum;
         mMokoService.connectBluetoothDevice(deviceInfo.mac);
         mSelectedDeviceName = deviceInfo.name;
         mSelectedDeviceMac = deviceInfo.mac;
