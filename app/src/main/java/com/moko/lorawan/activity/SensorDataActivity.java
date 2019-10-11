@@ -246,7 +246,7 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
             return;
         }
         long interval = Long.parseLong(i2cInterval);
-        if (interval < 10 || interval > 864000) {
+        if (interval < 1 || interval > 86400) {
             ToastUtils.showToast(this, "Reporting Interval range 10~864000");
             return;
         }
@@ -311,7 +311,7 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
         }
         mIsFailed = false;
         int intervalInt = Integer.parseInt(i2cInterval);
-        orderTasks.add(mMokoService.getI2CIntervalOrderTask(intervalInt));
+        orderTasks.add(mMokoService.getI2CIntervalOrderTask(intervalInt * 10));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
     }

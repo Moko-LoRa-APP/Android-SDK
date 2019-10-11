@@ -1,15 +1,5 @@
 apply plugin: 'com.android.application'
 
-static def gitLatestTag() {
-    try {
-        def cmd = 'git describe --abbrev=0 --tags'
-        def result = cmd.execute().text.trim()
-        return result
-    } catch (Exception e) {
-        return '1.0.0'
-    }
-}
-
 android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
@@ -19,7 +9,7 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode rootProject.versionCode
-        versionName gitLatestTag()
+        versionName rootProject.versionName
 
         javaCompileOptions {
             annotationProcessorOptions {
