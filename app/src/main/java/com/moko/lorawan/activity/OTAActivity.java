@@ -80,7 +80,8 @@ public class OTAActivity extends BaseActivity {
         mOTAs = getResources().getStringArray(R.array.OTA);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG
+                || MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW003_B) {
             mOTASelected = 1;
             tvOta.setText(mOTAs[mOTASelected]);
         }
@@ -467,7 +468,8 @@ public class OTAActivity extends BaseActivity {
     }
 
     public void selectOTAType(View view) {
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG
+                || MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW003_B) {
             return;
         }
         ArrayList<String> otas = new ArrayList<>();

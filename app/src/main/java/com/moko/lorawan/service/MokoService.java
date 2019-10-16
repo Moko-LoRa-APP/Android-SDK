@@ -29,12 +29,15 @@ import com.moko.support.task.WriteConnectTask;
 import com.moko.support.task.WriteDRTask;
 import com.moko.support.task.WriteDevAddrTask;
 import com.moko.support.task.WriteDevEUITask;
+import com.moko.support.task.WriteFilterNameTask;
+import com.moko.support.task.WriteFilterRSSITask;
 import com.moko.support.task.WriteHumiDataTask;
 import com.moko.support.task.WriteI2CIntervalTask;
 import com.moko.support.task.WriteNwkSKeyTask;
 import com.moko.support.task.WritePowerTask;
 import com.moko.support.task.WriteRegionTask;
 import com.moko.support.task.WriteResetTask;
+import com.moko.support.task.WriteScanTimeTask;
 import com.moko.support.task.WriteTempDataTask;
 import com.moko.support.task.WriteUplinkDataTestTask;
 import com.moko.support.task.WriteUploadIntervalTask;
@@ -179,8 +182,13 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public void getDeviceSetting() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getDeviceSetting(this));
     }
+
     public void getBleInfo() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getBleInfo(this));
+    }
+
+    public void getScanSetting() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getScanSetting(this));
     }
 
     public void getCHDR() {
@@ -311,6 +319,25 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public OrderTask getHumiDataOrderTask(int onoff, int humiLow, int humiHigh) {
         WriteHumiDataTask orderTask = new WriteHumiDataTask(this);
         orderTask.setOrderData(onoff, humiLow, humiHigh);
+        return orderTask;
+    }
+
+    public OrderTask getFilterNameOrderTask(String filterName) {
+        WriteFilterNameTask orderTask = new WriteFilterNameTask(this);
+        orderTask.setOrderData(filterName);
+        return orderTask;
+    }
+
+    public OrderTask getFilterRssiOrderTask(int filterRsssi) {
+        WriteFilterRSSITask orderTask = new WriteFilterRSSITask(this);
+        orderTask.setOrderData(filterRsssi);
+        return orderTask;
+    }
+
+
+    public OrderTask getScanTimeOrderTask(int scanTime) {
+        WriteScanTimeTask orderTask = new WriteScanTimeTask(this);
+        orderTask.setOrderData(scanTime);
         return orderTask;
     }
 

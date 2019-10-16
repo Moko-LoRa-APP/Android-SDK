@@ -55,8 +55,8 @@ public class DeviceInfoActivity extends BaseActivity {
         tvBleFirmware.setText(MokoSupport.getInstance().getBleFirmware());
         tvLoraFirmware.setText(MokoSupport.getInstance().getLoraFirmware());
         int deviceType = MokoSupport.deviceTypeEnum.getDeviceType();
-        rlManufactureDate.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
-        if (deviceType != 1) {
+        rlManufactureDate.setVisibility(deviceType == 0 ? View.VISIBLE : View.GONE);
+        if (deviceType == 0) {
             tvManufactureDate.setText(MokoSupport.getInstance().getManufacureDate());
         }
         if (deviceType == 1) {

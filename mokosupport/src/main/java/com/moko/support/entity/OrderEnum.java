@@ -45,6 +45,9 @@ public enum OrderEnum implements Serializable {
     READ_TEMP("读取温度报警使能标志和阈值和当前值（小端模式）", 0x27),
     READ_HUMI("读取湿度报警使能标志和阈值和当前值（小端模式）", 0x28),
     READ_BLE("读取蓝牙开机保持时间", 0x29),
+    READ_SCAN_TIME("读取蓝牙扫描保持时间", 0x2A),
+    READ_FILTER_NAME("读取蓝牙过滤名称", 0x2B),
+    READ_FILTER_RSSI("读取蓝牙过滤RSSI", 0x2C),
 
     WRITE_UPLINK_DATA_TEST("设置上行测试数据", 0xBB),
     WRITE_DEV_ADDR("设置DevAddr", 0x37),
@@ -72,6 +75,9 @@ public enum OrderEnum implements Serializable {
     WRITE_TEMP("设置温度报警使能标志和阈值（小端模式）", 0x66),
     WRITE_HUMI("设置湿度报警使能标志和阈值（小端模式）", 0x67),
     WRITE_BLE("设置蓝牙开机保持时间", 0x68),
+    WRITE_SCAN_TIME("设置蓝牙扫描保持时间", 0x69),
+    WRITE_FILTER_NAME("设置蓝牙过滤名称", 0x6A),
+    WRITE_FILTER_RSSI("设置蓝牙过滤RSSI", 0x6B),
 
     UPGRADE_MCU("升级包概况", 0x41),
     UPGRADE_MCU_DETAIL("升级包详情", 0x42),

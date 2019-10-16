@@ -21,6 +21,8 @@ import com.moko.support.task.ReadConnectStatusTask;
 import com.moko.support.task.ReadDRTask;
 import com.moko.support.task.ReadDevAddrTask;
 import com.moko.support.task.ReadDevEUITask;
+import com.moko.support.task.ReadFilterNameTask;
+import com.moko.support.task.ReadFilterRSSITask;
 import com.moko.support.task.ReadGPSTask;
 import com.moko.support.task.ReadHumiDataTask;
 import com.moko.support.task.ReadI2CIntervalTask;
@@ -30,6 +32,7 @@ import com.moko.support.task.ReadManufactureDateTask;
 import com.moko.support.task.ReadModelNameTask;
 import com.moko.support.task.ReadNwkSKeyTask;
 import com.moko.support.task.ReadRegionTask;
+import com.moko.support.task.ReadScanTimeTask;
 import com.moko.support.task.ReadTempDataTask;
 import com.moko.support.task.ReadUploadIntervalTask;
 import com.moko.support.task.ReadUploadModeTask;
@@ -112,6 +115,15 @@ public class OrderTaskCreator {
     public static OrderTask[] getBleInfo(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadBleTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
+    public static OrderTask[] getScanSetting(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadFilterNameTask(callback));
+        orderTasks.add(new ReadFilterRSSITask(callback));
+        orderTasks.add(new ReadUploadIntervalTask(callback));
+        orderTasks.add(new ReadScanTimeTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 }

@@ -793,5 +793,11 @@ public class MokoSupport implements MokoResponseCallback {
     public String humiLow;
     public String humiHigh;
     public String humiCurrent;
+    ///////////////////////////////////////////////////////////////////////////
+    // B
+    ///////////////////////////////////////////////////////////////////////////
+    public int scanTime;
+    public String filterName;
+    public int filterRssi;
 }
 

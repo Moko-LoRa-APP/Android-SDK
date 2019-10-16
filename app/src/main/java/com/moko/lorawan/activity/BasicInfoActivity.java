@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,6 +46,8 @@ public class BasicInfoActivity extends BaseActivity {
     RelativeLayout rlBleSetting;
     @Bind(R.id.rl_sensor_data)
     RelativeLayout rlSensorData;
+    @Bind(R.id.rl_scan_setting)
+    RelativeLayout rlScanSetting;
 
     private String[] connectStatusStrs;
     private String[] regions;
@@ -70,9 +71,10 @@ public class BasicInfoActivity extends BaseActivity {
         int classType = MokoSupport.getInstance().getClassType();
         int uploadMode = MokoSupport.getInstance().getUploadMode();
         int deviceType = MokoSupport.deviceTypeEnum.getDeviceType();
-        rlGpsAxis.setVisibility(deviceType == 1 ? View.GONE : View.VISIBLE);
+        rlGpsAxis.setVisibility(deviceType == 0 ? View.VISIBLE : View.GONE);
         rlBleSetting.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         rlSensorData.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
+        rlScanSetting.setVisibility(deviceType == 2 ? View.VISIBLE : View.GONE);
         String modelName = MokoSupport.getInstance().getModelName();
         connectStatusStrs = getResources().getStringArray(R.array.connect_status);
         regions = getResources().getStringArray(R.array.region);
@@ -174,6 +176,10 @@ public class BasicInfoActivity extends BaseActivity {
                         case READ_BLE:
                             // 跳转蓝牙设置页面
                             startActivityForResult(new Intent(BasicInfoActivity.this, BleSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
+                        case READ_SCAN_TIME:
+                            // 跳转扫描设置页面
+                            startActivityForResult(new Intent(BasicInfoActivity.this, ScanSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                     }
                 }
@@ -285,5 +291,10 @@ public class BasicInfoActivity extends BaseActivity {
     public void bleSetting(View view) {
         showLoadingProgressDialog();
         mMokoService.getBleInfo();
+    }
+
+    public void scanSetting(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getScanSetting();
     }
 }
