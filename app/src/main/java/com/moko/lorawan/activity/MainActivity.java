@@ -236,11 +236,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW001_BG;
                 }
             } else {
-                if (deviceInfo.name.contains("LW003-B")) {
-                    deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW003_B;
-                } else {
-                    deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW001_BG;
-                }
+                deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW001_BG;
             }
         }
         mDeviceInfoHashMap.put(deviceInfo.mac, deviceInfo);

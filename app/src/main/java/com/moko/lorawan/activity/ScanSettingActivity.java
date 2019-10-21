@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -40,6 +42,7 @@ import butterknife.ButterKnife;
 public class ScanSettingActivity extends BaseActivity {
 
 
+    private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";
     @Bind(R.id.cb_scan_switch)
     CheckBox cbScanSwitch;
     @Bind(R.id.et_filter_name)
@@ -66,7 +69,8 @@ public class ScanSettingActivity extends BaseActivity {
         llScanFilter.setVisibility(MokoSupport.getInstance().scanTime == 0 ? View.GONE : View.VISIBLE);
         cbScanSwitch.setChecked(MokoSupport.getInstance().scanTime != 0);
         etFilterName.setText(MokoSupport.getInstance().filterName);
-        etFilterRssi.setText(String.format("-%d", MokoSupport.getInstance().filterRssi));
+        int filterRssi = MokoSupport.getInstance().filterRssi;
+        etFilterRssi.setText(filterRssi == 0 ? "0" : String.format("-%d", MokoSupport.getInstance().filterRssi));
         etScanTime.setText(MokoSupport.getInstance().scanTime + "");
         etReportInterval.setText(MokoSupport.getInstance().uploadInterval + "");
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
@@ -77,6 +81,17 @@ public class ScanSettingActivity extends BaseActivity {
                 llScanFilter.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             }
         });
+        InputFilter inputFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (!(source + "").matches(FILTER_ASCII)) {
+                    return "";
+                }
+
+                return null;
+            }
+        };
+        etFilterName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11), inputFilter});
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -129,7 +144,7 @@ public class ScanSettingActivity extends BaseActivity {
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                     dismissLoadingProgressDialog();
                     if (!mIsFailed) {
-                        ToastUtils.showToast(ScanSettingActivity.this, "Success");
+                        ToastUtils.showToast(ScanSettingActivity.this, "Execute after bluetooth disconnect");
                     } else {
                         ToastUtils.showToast(ScanSettingActivity.this, "Error");
                     }
@@ -199,10 +214,6 @@ public class ScanSettingActivity extends BaseActivity {
             int intervalInt = Integer.parseInt(reportInterval);
 
             String filterName = etFilterName.getText().toString();
-            if (TextUtils.isEmpty(filterName)) {
-                ToastUtils.showToast(this, "Filter Name is empty");
-                return;
-            }
 
             String filterRssi = etFilterRssi.getText().toString();
             if (TextUtils.isEmpty(filterRssi)) {

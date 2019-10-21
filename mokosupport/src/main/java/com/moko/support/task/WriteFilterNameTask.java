@@ -1,16 +1,17 @@
 package com.moko.support.task;
 
 
+import android.text.TextUtils;
+
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 
 public class WriteFilterNameTask extends OrderTask {
-    private static final int ORDERDATA_LENGTH = 7;
+    private static final int ORDERDATA_LENGTH = 4;
 
     public byte[] orderData;
 
@@ -19,14 +20,22 @@ public class WriteFilterNameTask extends OrderTask {
     }
 
     public void setOrderData(String filterName) {
-        byte[] filterNameBytes = filterName.getBytes();
-        int lengh = filterNameBytes.length;
-        orderData = new byte[3 + lengh];
-        orderData[0] = (byte) MokoConstants.HEADER_SEND;
-        orderData[1] = (byte) order.getOrderHeader();
-        orderData[2] = (byte) lengh;
-        for (int i = 0; i < lengh; i++) {
-            orderData[3 + i] = filterNameBytes[i];
+        if (TextUtils.isEmpty(filterName)) {
+            orderData = new byte[ORDERDATA_LENGTH];
+            orderData[0] = (byte) MokoConstants.HEADER_SEND;
+            orderData[1] = (byte) order.getOrderHeader();
+            orderData[2] = (byte) 0;
+            orderData[3] = (byte) 0;
+        } else {
+            byte[] filterNameBytes = filterName.getBytes();
+            int lengh = filterNameBytes.length;
+            orderData = new byte[3 + lengh];
+            orderData[0] = (byte) MokoConstants.HEADER_SEND;
+            orderData[1] = (byte) order.getOrderHeader();
+            orderData[2] = (byte) lengh;
+            for (int i = 0; i < lengh; i++) {
+                orderData[3 + i] = filterNameBytes[i];
+            }
         }
     }
 
