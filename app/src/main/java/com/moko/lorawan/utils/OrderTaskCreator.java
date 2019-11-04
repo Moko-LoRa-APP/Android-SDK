@@ -28,7 +28,6 @@ import com.moko.support.task.ReadHumiDataTask;
 import com.moko.support.task.ReadI2CIntervalTask;
 import com.moko.support.task.ReadLoraFirmwareTask;
 import com.moko.support.task.ReadMCUFirmwareTask;
-import com.moko.support.task.ReadManufactureDateTask;
 import com.moko.support.task.ReadModelNameTask;
 import com.moko.support.task.ReadNwkSKeyTask;
 import com.moko.support.task.ReadRegionTask;
@@ -58,9 +57,6 @@ public class OrderTaskCreator {
     public static OrderTask[] getDeviceInfo(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadCompanyNameTask(callback));
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
-            orderTasks.add(new ReadManufactureDateTask(callback));
-        }
         orderTasks.add(new ReadModelNameTask(callback));
         orderTasks.add(new ReadBleFirmwareTask(callback));
         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW002_TH) {

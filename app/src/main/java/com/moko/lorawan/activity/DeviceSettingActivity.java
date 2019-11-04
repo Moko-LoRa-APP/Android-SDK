@@ -29,6 +29,7 @@ import com.moko.support.MokoSupport;
 import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
 
@@ -553,6 +554,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         }
         mIsFailed = false;
+        LogModule.clearInfoForFile();
         // 保存并连接
         orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
         orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));

@@ -36,8 +36,6 @@ public class DeviceInfoActivity extends BaseActivity {
     TextView tvLoraFirmware;
     @Bind(R.id.tv_mcu_firmware)
     TextView tvMcuFirmware;
-    @Bind(R.id.rl_manufacture_date)
-    RelativeLayout rlManufactureDate;
     @Bind(R.id.rl_mcu_firmware)
     RelativeLayout rlMcuFirmware;
 
@@ -55,10 +53,6 @@ public class DeviceInfoActivity extends BaseActivity {
         tvBleFirmware.setText(MokoSupport.getInstance().getBleFirmware());
         tvLoraFirmware.setText(MokoSupport.getInstance().getLoraFirmware());
         int deviceType = MokoSupport.deviceTypeEnum.getDeviceType();
-        rlManufactureDate.setVisibility(deviceType == 0 ? View.VISIBLE : View.GONE);
-        if (deviceType == 0) {
-            tvManufactureDate.setText(MokoSupport.getInstance().getManufacureDate());
-        }
         if (deviceType == 1) {
             tvMcuFirmware.setText(MokoSupport.getInstance().getMCUFirmware());
         }

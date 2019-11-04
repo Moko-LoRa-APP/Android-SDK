@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -80,6 +82,32 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
     private int mHumiSelected;
     private boolean mIsFailed;
 
+    private InputFilter inputFilter = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            // 删除等特殊字符，直接返回
+            if (TextUtils.isEmpty(source)) {
+                return null;
+            }
+            String dValue = dest.toString();
+            String[] splitArray = dValue.split("\\.");
+            if (splitArray.length > 1) {
+                String dotValue = splitArray[1];
+                int dotIndex = dValue.indexOf(".");
+                if (dend <= dotIndex) {
+                    return null;
+                } else {
+                    // 2 表示输入框的小数位数
+                    int diff = dotValue.length() + 1 - 2;
+                    if (diff > 0) {
+                        return source.subSequence(start, end - diff);
+                    }
+                }
+            }
+            return null;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +145,10 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
         } else {
             rbHumiEnable.setChecked(true);
         }
+        etTempLow.setFilters(new InputFilter[]{inputFilter});
+        etTempHigh.setFilters(new InputFilter[]{inputFilter});
+        etHumiLow.setFilters(new InputFilter[]{inputFilter});
+        etHumiHigh.setFilters(new InputFilter[]{inputFilter});
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
     }

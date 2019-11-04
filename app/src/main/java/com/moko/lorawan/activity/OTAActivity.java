@@ -213,6 +213,8 @@ public class OTAActivity extends BaseActivity {
     }
 
     private void sendData() throws IOException {
+        if (in == null)
+            return;
         int unReadLength = in.available();
         if (unReadLength > 0 && !isStop) {
             byte[] packageIndex = MokoUtils.toByteArray(index, 4);
@@ -242,6 +244,7 @@ public class OTAActivity extends BaseActivity {
         isStop = true;
         dismissDFUProgressDialog();
         ToastUtils.showToast(this, "Error:DFU Failed");
+        mMokoService.disConnectBle();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
