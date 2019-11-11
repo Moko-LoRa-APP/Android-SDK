@@ -7,25 +7,22 @@ import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 
-public class WriteScanTimeTask extends OrderTask {
-    private static final int ORDERDATA_LENGTH = 5;
+public class WriteScanSwitchTask extends OrderTask {
+    private static final int ORDERDATA_LENGTH = 4;
 
     public byte[] orderData;
 
-    public WriteScanTimeTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_SCAN_TIME, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteScanSwitchTask(MokoOrderTaskCallback callback) {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_SCAN_SWITCH, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
-    public void setOrderData(int scanTime) {
+    public void setOrderData(int scanSwitch) {
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
-        orderData[2] = (byte) 0x02;
-        byte[] bleOpeningTimeBytes = MokoUtils.toByteArray(scanTime, 2);
-        orderData[3] = bleOpeningTimeBytes[1];
-        orderData[4] = bleOpeningTimeBytes[0];
+        orderData[2] = (byte) 0x01;
+        orderData[3] = (byte) scanSwitch;
     }
 
     @Override

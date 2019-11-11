@@ -177,7 +177,7 @@ public class BasicInfoActivity extends BaseActivity {
                             // 跳转蓝牙设置页面
                             startActivityForResult(new Intent(BasicInfoActivity.this, BleSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
-                        case READ_SCAN_TIME:
+                        case READ_SCAN_SWITCH:
                             // 跳转扫描设置页面
                             startActivityForResult(new Intent(BasicInfoActivity.this, ScanSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;

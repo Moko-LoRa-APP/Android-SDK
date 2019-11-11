@@ -37,7 +37,8 @@ import com.moko.support.task.WriteNwkSKeyTask;
 import com.moko.support.task.WritePowerTask;
 import com.moko.support.task.WriteRegionTask;
 import com.moko.support.task.WriteResetTask;
-import com.moko.support.task.WriteScanTimeTask;
+import com.moko.support.task.WriteScanSwitchTask;
+import com.moko.support.task.WriteScanUploadIntervalTask;
 import com.moko.support.task.WriteTempDataTask;
 import com.moko.support.task.WriteUplinkDataTestTask;
 import com.moko.support.task.WriteUploadIntervalTask;
@@ -264,6 +265,12 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
         return orderTask;
     }
 
+    public OrderTask getScanUploadIntervalOrderTask(int uploadInterval) {
+        WriteScanUploadIntervalTask orderTask = new WriteScanUploadIntervalTask(this);
+        orderTask.setOrderData(uploadInterval);
+        return orderTask;
+    }
+
     public OrderTask getBleOpeningTimeOrderTask(int bleOpeningTime) {
         WriteBleOpeningTimeTask orderTask = new WriteBleOpeningTimeTask(this);
         orderTask.setOrderData(bleOpeningTime);
@@ -335,9 +342,9 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     }
 
 
-    public OrderTask getScanTimeOrderTask(int scanTime) {
-        WriteScanTimeTask orderTask = new WriteScanTimeTask(this);
-        orderTask.setOrderData(scanTime);
+    public OrderTask getScanSwitchOrderTask(int scanSwitch) {
+        WriteScanSwitchTask orderTask = new WriteScanSwitchTask(this);
+        orderTask.setOrderData(scanSwitch);
         return orderTask;
     }
 

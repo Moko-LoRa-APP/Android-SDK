@@ -796,8 +796,9 @@ public class MokoSupport implements MokoResponseCallback {
     ///////////////////////////////////////////////////////////////////////////
     // B
     ///////////////////////////////////////////////////////////////////////////
-    public int scanTime;
+    public int scanSwitch;
     public String filterName;
+    public int scanUploadInterval;
     public int filterRssi;
 }
 

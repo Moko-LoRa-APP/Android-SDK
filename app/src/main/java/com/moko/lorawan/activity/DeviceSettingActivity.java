@@ -148,12 +148,12 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         tvDr1.setText("DR" + mSelectedDr1);
         mSelectedDr2 = MokoSupport.getInstance().dr_2;
         tvDr2.setText("DR" + mSelectedDr2);
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW002_TH) {
+            llReportInvterval.setVisibility(View.GONE);
+        } else {
             llReportInvterval.setVisibility(View.VISIBLE);
             long uploadInterval = MokoSupport.getInstance().uploadInterval;
             etReportInterval.setText(uploadInterval + "");
-        } else {
-            llReportInvterval.setVisibility(View.GONE);
         }
         int adr = MokoSupport.getInstance().adr;
         if (adr == 0) {
@@ -471,18 +471,17 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             orderTasks.add(mMokoService.getAppKeyOrderTask(appKey));
             orderTasks.add(mMokoService.getUploadModeOrderTask(2));
         }
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW002_TH) {
             String reportInterval = etReportInterval.getText().toString();
             if (TextUtils.isEmpty(reportInterval)) {
                 ToastUtils.showToast(this, "Reporting Interval is empty");
                 return;
             }
-            long interval = Long.parseLong(reportInterval);
-            if (interval < 1 || interval > 65535) {
-                ToastUtils.showToast(this, "Reporting Interval range 1~65535");
+            int intervalInt = Integer.parseInt(reportInterval);
+            if (intervalInt < 1 || intervalInt > 14400) {
+                ToastUtils.showToast(this, "Reporting Interval range 1~14400");
                 return;
             }
-            int intervalInt = Integer.parseInt(reportInterval);
             orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         }
         mIsFailed = false;
@@ -539,7 +538,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             orderTasks.add(mMokoService.getAppKeyOrderTask(appKey));
             orderTasks.add(mMokoService.getUploadModeOrderTask(2));
         }
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW002_TH) {
             String reportInterval = etReportInterval.getText().toString();
             if (TextUtils.isEmpty(reportInterval)) {
                 ToastUtils.showToast(this, "Reporting Interval is empty");

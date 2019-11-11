@@ -49,8 +49,6 @@ public class ScanSettingActivity extends BaseActivity {
     EditText etFilterName;
     @Bind(R.id.et_filter_rssi)
     EditText etFilterRssi;
-    @Bind(R.id.et_scan_time)
-    EditText etScanTime;
     @Bind(R.id.et_report_interval)
     EditText etReportInterval;
     @Bind(R.id.ll_scan_filter)
@@ -66,13 +64,12 @@ public class ScanSettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_setting);
         ButterKnife.bind(this);
-        llScanFilter.setVisibility(MokoSupport.getInstance().scanTime == 0 ? View.GONE : View.VISIBLE);
-        cbScanSwitch.setChecked(MokoSupport.getInstance().scanTime != 0);
+        llScanFilter.setVisibility(MokoSupport.getInstance().scanSwitch == 0 ? View.GONE : View.VISIBLE);
+        cbScanSwitch.setChecked(MokoSupport.getInstance().scanSwitch != 0);
         etFilterName.setText(MokoSupport.getInstance().filterName);
         int filterRssi = MokoSupport.getInstance().filterRssi;
         etFilterRssi.setText(filterRssi == 0 ? "0" : String.format("-%d", MokoSupport.getInstance().filterRssi));
-        etScanTime.setText(MokoSupport.getInstance().scanTime + "");
-        etReportInterval.setText(MokoSupport.getInstance().uploadInterval + "");
+        etReportInterval.setText(MokoSupport.getInstance().scanUploadInterval + "");
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
         cbScanSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -157,8 +154,8 @@ public class ScanSettingActivity extends BaseActivity {
                     switch (orderEnum) {
                         case WRITE_FILTER_NAME:
                         case WRITE_FILTER_RSSI:
-                        case WRITE_UPLOAD_INTERVAL:
-                        case WRITE_SCAN_TIME:
+                        case WRITE_SCAN_UPLOAD_INTERVAL:
+                        case WRITE_SCAN_SWITCH:
                             if ((value[3] & 0xff) != 0xAA) {
                                 mIsFailed = true;
                             }
@@ -206,13 +203,11 @@ public class ScanSettingActivity extends BaseActivity {
                 ToastUtils.showToast(this, "Report Interval is empty");
                 return;
             }
-            long interval = Long.parseLong(reportInterval);
-            if (interval < 1 || interval > 65535) {
-                ToastUtils.showToast(this, "Report Interval range 1~65535");
+            int intervalInt = Integer.parseInt(reportInterval);
+            if (intervalInt < 10 || intervalInt > 65535) {
+                ToastUtils.showToast(this, "Report Interval range 10~65535");
                 return;
             }
-            int intervalInt = Integer.parseInt(reportInterval);
-
             String filterName = etFilterName.getText().toString();
 
             String filterRssi = etFilterRssi.getText().toString();
@@ -226,25 +221,13 @@ public class ScanSettingActivity extends BaseActivity {
                 return;
             }
 
-            String scanTime = etScanTime.getText().toString();
-            if (TextUtils.isEmpty(scanTime)) {
-                ToastUtils.showToast(this, "Scan Time is empty");
-                return;
-            }
-            long scanTimeLong = Long.parseLong(scanTime);
-            if (scanTimeLong < 1 || scanTimeLong > 65535) {
-                ToastUtils.showToast(this, "Scan Time range 1~65535");
-                return;
-            }
-            int scanTimeInt = Integer.parseInt(scanTime);
-
-            orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
+            orderTasks.add(mMokoService.getScanUploadIntervalOrderTask(intervalInt));
             orderTasks.add(mMokoService.getFilterNameOrderTask(filterName));
             orderTasks.add(mMokoService.getFilterRssiOrderTask(filterRssiInt));
-            orderTasks.add(mMokoService.getScanTimeOrderTask(scanTimeInt));
+            orderTasks.add(mMokoService.getScanSwitchOrderTask(1));
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         } else {
-            orderTasks.add(mMokoService.getScanTimeOrderTask(0));
+            orderTasks.add(mMokoService.getScanSwitchOrderTask(0));
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
         showLoadingProgressDialog();

@@ -7,17 +7,14 @@ import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 
-import java.util.Arrays;
-
-public class ReadScanTimeTask extends OrderTask {
+public class ReadScanSwitchTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public ReadScanTimeTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_SCAN_TIME, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadScanSwitchTask(MokoOrderTaskCallback callback) {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_SCAN_SWITCH, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -31,14 +28,14 @@ public class ReadScanTimeTask extends OrderTask {
 
     @Override
     public void parseValue(byte[] value) {
-        if (value.length != 0x05)
+        if (value.length != 0x04)
             return;
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        if (0x02 != (value[2] & 0xFF))
+        if (0x01 != (value[2] & 0xFF))
             return;
-        byte[] scanTimeBytes = Arrays.copyOfRange(value, 3, value.length);
-        MokoSupport.getInstance().scanTime = MokoUtils.toInt(scanTimeBytes);
+
+        MokoSupport.getInstance().scanSwitch = value[3] & 0xFF;
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

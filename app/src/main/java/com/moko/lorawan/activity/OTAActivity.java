@@ -252,7 +252,13 @@ public class OTAActivity extends BaseActivity {
         String action = event.getAction();
         if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
             // 设备断开
-            finish();
+            tvFilePath.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 1000);
+
         }
     }
 

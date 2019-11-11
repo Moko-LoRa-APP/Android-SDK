@@ -31,7 +31,8 @@ import com.moko.support.task.ReadMCUFirmwareTask;
 import com.moko.support.task.ReadModelNameTask;
 import com.moko.support.task.ReadNwkSKeyTask;
 import com.moko.support.task.ReadRegionTask;
-import com.moko.support.task.ReadScanTimeTask;
+import com.moko.support.task.ReadScanSwitchTask;
+import com.moko.support.task.ReadScanUploadIntervalTask;
 import com.moko.support.task.ReadTempDataTask;
 import com.moko.support.task.ReadUploadIntervalTask;
 import com.moko.support.task.ReadUploadModeTask;
@@ -86,7 +87,7 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadAppSKeyTask(callback));
         orderTasks.add(new ReadCHTask(callback));
         orderTasks.add(new ReadDRTask(callback));
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG) {
+        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW002_TH) {
             orderTasks.add(new ReadUploadIntervalTask(callback));
         }
         orderTasks.add(new ReadADRTask(callback));
@@ -118,8 +119,8 @@ public class OrderTaskCreator {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadFilterNameTask(callback));
         orderTasks.add(new ReadFilterRSSITask(callback));
-        orderTasks.add(new ReadUploadIntervalTask(callback));
-        orderTasks.add(new ReadScanTimeTask(callback));
+        orderTasks.add(new ReadScanUploadIntervalTask(callback));
+        orderTasks.add(new ReadScanSwitchTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 }
