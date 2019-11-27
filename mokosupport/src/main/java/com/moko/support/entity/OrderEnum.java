@@ -80,6 +80,7 @@ public enum OrderEnum implements Serializable {
     WRITE_SCAN_SWITCH("设置蓝牙扫描开关", 0x6D),
     WRITE_FILTER_NAME("设置蓝牙过滤名称", 0x6A),
     WRITE_FILTER_RSSI("设置蓝牙过滤RSSI", 0x6B),
+    WRITE_RTC_TIME("设置RTC时间", 0x6C),
 
     UPGRADE_MCU("升级包概况", 0x41),
     UPGRADE_MCU_DETAIL("升级包详情", 0x42),

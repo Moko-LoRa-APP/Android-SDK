@@ -80,11 +80,8 @@ public class OTAActivity extends BaseActivity {
         mOTAs = getResources().getStringArray(R.array.OTA);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG
-                || MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW003_B) {
-            mOTASelected = 1;
-            tvOta.setText(mOTAs[mOTASelected]);
-        }
+        mOTASelected = 1;
+        tvOta.setText(mOTAs[mOTASelected]);
     }
 
 
@@ -477,23 +474,23 @@ public class OTAActivity extends BaseActivity {
     }
 
     public void selectOTAType(View view) {
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG
-                || MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW003_B) {
-            return;
-        }
-        ArrayList<String> otas = new ArrayList<>();
-        for (int i = 0; i < mOTAs.length; i++) {
-            otas.add(mOTAs[i]);
-        }
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(otas, mOTASelected);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mOTASelected = value;
-                tvOta.setText(mOTAs[mOTASelected]);
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
+//        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW001_BG
+//                || MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW003_B) {
+//            return;
+//        }
+//        ArrayList<String> otas = new ArrayList<>();
+//        for (int i = 0; i < mOTAs.length; i++) {
+//            otas.add(mOTAs[i]);
+//        }
+//        BottomDialog bottomDialog = new BottomDialog();
+//        bottomDialog.setDatas(otas, mOTASelected);
+//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
+//            @Override
+//            public void onValueSelected(int value) {
+//                mOTASelected = value;
+//                tvOta.setText(mOTAs[mOTASelected]);
+//            }
+//        });
+//        bottomDialog.show(getSupportFragmentManager());
     }
 }

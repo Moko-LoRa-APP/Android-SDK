@@ -36,6 +36,7 @@ import com.moko.support.task.ReadScanUploadIntervalTask;
 import com.moko.support.task.ReadTempDataTask;
 import com.moko.support.task.ReadUploadIntervalTask;
 import com.moko.support.task.ReadUploadModeTask;
+import com.moko.support.task.WriteRTCTimeTask;
 
 import java.util.ArrayList;
 
@@ -50,6 +51,9 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadRegionTask(callback));
         orderTasks.add(new ReadClassTypeTask(callback));
         orderTasks.add(new ReadModelNameTask(callback));
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW002_TH) {
+            orderTasks.add(new WriteRTCTimeTask(callback));
+        }
 //        orderTasks.add(new ReadDeviceTypeTask(callback));
         orderTasks.add(new ReadUploadModeTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
@@ -60,9 +64,6 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadCompanyNameTask(callback));
         orderTasks.add(new ReadModelNameTask(callback));
         orderTasks.add(new ReadBleFirmwareTask(callback));
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW002_TH) {
-            orderTasks.add(new ReadMCUFirmwareTask(callback));
-        }
         orderTasks.add(new ReadLoraFirmwareTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }

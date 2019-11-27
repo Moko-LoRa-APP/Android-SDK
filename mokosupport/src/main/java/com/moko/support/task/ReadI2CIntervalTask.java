@@ -38,7 +38,7 @@ public class ReadI2CIntervalTask extends OrderTask {
         if (0x04 != (value[2] & 0xFF))
             return;
         byte[] i2cntervalBytes = Arrays.copyOfRange(value, 3, value.length);
-        MokoSupport.getInstance().i2cInterval = MokoUtils.byteToLong(i2cntervalBytes) / 10;
+        MokoSupport.getInstance().i2cInterval = MokoUtils.byteToLong(i2cntervalBytes);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

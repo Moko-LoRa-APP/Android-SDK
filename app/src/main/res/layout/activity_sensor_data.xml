@@ -170,7 +170,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:text="x10S"
+                    android:layout_marginRight="30dp"
+                    android:text="S"
                     android:textSize="15sp" />
             </RelativeLayout>
 
