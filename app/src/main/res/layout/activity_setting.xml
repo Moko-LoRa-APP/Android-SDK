@@ -370,14 +370,64 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_msg_type"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Message Type"
+                    android:textSize="15sp" />
+
+                <RadioGroup
+                    android:id="@+id/rg_msg_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1" />
+
+                    <RadioButton
+                        android:id="@+id/rb_type_unconfirmed"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/selector_rb_btn"
+                        android:drawablePadding="5dp"
+                        android:text="Unconfirmed" />
+
+                    <RadioButton
+                        android:id="@+id/rb_type_confirmed"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:button="@null"
+                        android:checked="true"
+                        android:drawableLeft="@drawable/selector_rb_btn"
+                        android:drawablePadding="5dp"
+                        android:text="Confirmed" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/ll_report_invterval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="12dp"
                 android:paddingTop="6dp"
-                android:visibility="visible"
                 android:paddingRight="12dp"
-                android:paddingBottom="6dp">
+                android:paddingBottom="6dp"
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -409,6 +459,7 @@
             </LinearLayout>
 
             <View style="@style/divider_line" />
+
 
             <RelativeLayout
                 android:layout_width="match_parent"

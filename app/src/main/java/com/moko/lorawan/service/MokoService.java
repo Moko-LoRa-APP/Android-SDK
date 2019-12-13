@@ -33,6 +33,7 @@ import com.moko.support.task.WriteFilterNameTask;
 import com.moko.support.task.WriteFilterRSSITask;
 import com.moko.support.task.WriteHumiDataTask;
 import com.moko.support.task.WriteI2CIntervalTask;
+import com.moko.support.task.WriteMsgTypeTask;
 import com.moko.support.task.WriteNwkSKeyTask;
 import com.moko.support.task.WritePowerTask;
 import com.moko.support.task.WriteRegionTask;
@@ -250,6 +251,12 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public OrderTask getClassTypeOrderTask(int classType) {
         WriteClassTypeTask orderTask = new WriteClassTypeTask(this);
         orderTask.setOrderData(classType);
+        return orderTask;
+    }
+
+    public OrderTask getMsgTypeOrderTask(int msgType) {
+        WriteMsgTypeTask orderTask = new WriteMsgTypeTask(this);
+        orderTask.setOrderData(msgType);
         return orderTask;
     }
 

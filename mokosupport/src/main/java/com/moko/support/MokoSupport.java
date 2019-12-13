@@ -779,6 +779,7 @@ public class MokoSupport implements MokoResponseCallback {
     public int dr_2;
     public int power;
     public int adr;
+    public int msgType;
     public long bleOpeningTime;
     ///////////////////////////////////////////////////////////////////////////
     // TH

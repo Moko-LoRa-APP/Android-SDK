@@ -92,6 +92,14 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     TextView tvRegion;
     @Bind(R.id.ll_report_invterval)
     LinearLayout llReportInvterval;
+    @Bind(R.id.rb_type_unconfirmed)
+    RadioButton rbTypeUnconfirmed;
+    @Bind(R.id.rb_type_confirmed)
+    RadioButton rbTypeConfirmed;
+    @Bind(R.id.rg_msg_type)
+    RadioGroup rgMsgType;
+    @Bind(R.id.ll_msg_type)
+    LinearLayout llMsgType;
 
 
     private MokoService mMokoService;
@@ -154,6 +162,12 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             llReportInvterval.setVisibility(View.VISIBLE);
             long uploadInterval = MokoSupport.getInstance().uploadInterval;
             etReportInterval.setText(uploadInterval + "");
+        }
+        int msgType = MokoSupport.getInstance().msgType;
+        if (msgType == 1) {
+            rbTypeConfirmed.setChecked(true);
+        } else {
+            rbTypeUnconfirmed.setChecked(true);
         }
         int adr = MokoSupport.getInstance().adr;
         if (adr == 0) {
@@ -237,6 +251,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                         case WRITE_APP_EUI:
                         case WRITE_APP_KEY:
                         case WRITE_CLASS_TYPE:
+                        case WRITE_MSG_TYPE:
                         case WRITE_UPLOAD_MODE:
                         case WRITE_UPLOAD_INTERVAL:
                         case WRITE_CH:
@@ -484,6 +499,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             }
             orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         }
+        orderTasks.add(mMokoService.getMsgTypeOrderTask(rbTypeUnconfirmed.isChecked() ? 0 : 1));
         mIsFailed = false;
         // 保存
         orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
@@ -552,6 +568,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             int intervalInt = Integer.parseInt(reportInterval);
             orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         }
+        orderTasks.add(mMokoService.getMsgTypeOrderTask(rbTypeUnconfirmed.isChecked() ? 0 : 1));
         mIsFailed = false;
         LogModule.clearInfoForFile();
         // 保存并连接

@@ -49,6 +49,7 @@ public enum OrderEnum implements Serializable {
     READ_FILTER_NAME("读取蓝牙过滤名称", 0x2B),
     READ_FILTER_RSSI("读取蓝牙过滤RSSI", 0x2C),
     READ_SCAN_UPLOAD_INTERVAL("读取蓝牙扫描上传间隔", 0x2A),
+    READ_MSG_TYPE("读取确认帧状态", 0x32),
 
     WRITE_UPLINK_DATA_TEST("设置上行测试数据", 0xBB),
     WRITE_DEV_ADDR("设置DevAddr", 0x37),
@@ -81,6 +82,7 @@ public enum OrderEnum implements Serializable {
     WRITE_FILTER_NAME("设置蓝牙过滤名称", 0x6A),
     WRITE_FILTER_RSSI("设置蓝牙过滤RSSI", 0x6B),
     WRITE_RTC_TIME("设置RTC时间", 0x6C),
+    WRITE_MSG_TYPE("设置确认帧状态", 0x6F),
 
     UPGRADE_MCU("升级包概况", 0x41),
     UPGRADE_MCU_DETAIL("升级包详情", 0x42),

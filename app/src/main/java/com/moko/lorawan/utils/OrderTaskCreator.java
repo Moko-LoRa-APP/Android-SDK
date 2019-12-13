@@ -27,8 +27,8 @@ import com.moko.support.task.ReadGPSTask;
 import com.moko.support.task.ReadHumiDataTask;
 import com.moko.support.task.ReadI2CIntervalTask;
 import com.moko.support.task.ReadLoraFirmwareTask;
-import com.moko.support.task.ReadMCUFirmwareTask;
 import com.moko.support.task.ReadModelNameTask;
+import com.moko.support.task.ReadMsgTypeTask;
 import com.moko.support.task.ReadNwkSKeyTask;
 import com.moko.support.task.ReadRegionTask;
 import com.moko.support.task.ReadScanSwitchTask;
@@ -91,6 +91,7 @@ public class OrderTaskCreator {
         if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW002_TH) {
             orderTasks.add(new ReadUploadIntervalTask(callback));
         }
+        orderTasks.add(new ReadMsgTypeTask(callback));
         orderTasks.add(new ReadADRTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
