@@ -801,5 +801,12 @@ public class MokoSupport implements MokoResponseCallback {
     public String filterName;
     public int scanUploadInterval;
     public int filterRssi;
+    ///////////////////////////////////////////////////////////////////////////
+    // Multicast
+    ///////////////////////////////////////////////////////////////////////////
+    public int multicastSwitch;
+    public String multicastAddr;
+    public String multicastNwkSKey;
+    public String multicastAppSKey;
 }
 

@@ -29,6 +29,10 @@ import com.moko.support.task.ReadI2CIntervalTask;
 import com.moko.support.task.ReadLoraFirmwareTask;
 import com.moko.support.task.ReadModelNameTask;
 import com.moko.support.task.ReadMsgTypeTask;
+import com.moko.support.task.ReadMulticastAddrTask;
+import com.moko.support.task.ReadMulticastAppSKeyTask;
+import com.moko.support.task.ReadMulticastNwkSKeyTask;
+import com.moko.support.task.ReadMulticastSwitchTask;
 import com.moko.support.task.ReadNwkSKeyTask;
 import com.moko.support.task.ReadRegionTask;
 import com.moko.support.task.ReadScanSwitchTask;
@@ -51,7 +55,7 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadRegionTask(callback));
         orderTasks.add(new ReadClassTypeTask(callback));
         orderTasks.add(new ReadModelNameTask(callback));
-        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW002_TH) {
+        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW001_BG) {
             orderTasks.add(new WriteRTCTimeTask(callback));
         }
 //        orderTasks.add(new ReadDeviceTypeTask(callback));
@@ -123,6 +127,15 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadFilterRSSITask(callback));
         orderTasks.add(new ReadScanUploadIntervalTask(callback));
         orderTasks.add(new ReadScanSwitchTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
+    public static OrderTask[] getMulticastSetting(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadMulticastSwitchTask(callback));
+        orderTasks.add(new ReadMulticastAddrTask(callback));
+        orderTasks.add(new ReadMulticastNwkSKeyTask(callback));
+        orderTasks.add(new ReadMulticastAppSKeyTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 }

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_f2f2f2"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:background="@color/green_6caf10"
+            android:gravity="center"
+            android:text="Multicast Setting"
+            android:textColor="@color/white_ffffff"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="back"
+            android:padding="16dp"
+            android:src="@drawable/ic_back" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Multicast Switch"
+            android:textSize="15sp" />
+
+        <CheckBox
+            android:id="@+id/cb_multicast_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:button="@drawable/selector_cb_btn" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_multicast_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Multicast Address"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_multicast_addr"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_edit_bg"
+                android:digits="0123456789abcdefABCDEF"
+                android:maxLength="8"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:text=""
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Multicast NwkSKey"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_multicast_nwkskey"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_edit_bg"
+                android:digits="0123456789abcdefABCDEF"
+                android:maxLength="32"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:text=""
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Multicast AppSKey"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/et_multicast_appskey"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_edit_bg"
+                android:digits="0123456789abcdefABCDEF"
+                android:maxLength="32"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:text=""
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="10dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:background="@drawable/shape_radius_btn_bg"
+            android:gravity="center"
+            android:onClick="onSave"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="Save"
+            android:textColor="@color/white_ffffff"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+</LinearLayout>

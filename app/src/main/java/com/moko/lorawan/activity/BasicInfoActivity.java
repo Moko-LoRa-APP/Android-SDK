@@ -48,6 +48,8 @@ public class BasicInfoActivity extends BaseActivity {
     RelativeLayout rlSensorData;
     @Bind(R.id.rl_scan_setting)
     RelativeLayout rlScanSetting;
+    @Bind(R.id.rl_multicast_setting)
+    RelativeLayout rlMulticastSetting;
 
     private String[] connectStatusStrs;
     private String[] regions;
@@ -75,6 +77,7 @@ public class BasicInfoActivity extends BaseActivity {
         rlBleSetting.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         rlSensorData.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         rlScanSetting.setVisibility(deviceType == 2 ? View.VISIBLE : View.GONE);
+        rlMulticastSetting.setVisibility(deviceType != 0 ? View.VISIBLE : View.GONE);
         String modelName = MokoSupport.getInstance().getModelName();
         connectStatusStrs = getResources().getStringArray(R.array.connect_status);
         regions = getResources().getStringArray(R.array.region);
@@ -180,6 +183,10 @@ public class BasicInfoActivity extends BaseActivity {
                         case READ_SCAN_SWITCH:
                             // 跳转扫描设置页面
                             startActivityForResult(new Intent(BasicInfoActivity.this, ScanSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
+                        case READ_MULTICAST_APPSKEY:
+                            // 跳转扫描设置页面
+                            startActivityForResult(new Intent(BasicInfoActivity.this, MulticastSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                     }
                 }
@@ -296,5 +303,10 @@ public class BasicInfoActivity extends BaseActivity {
     public void scanSetting(View view) {
         showLoadingProgressDialog();
         mMokoService.getScanSetting();
+    }
+
+    public void multicastSetting(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getMulticastSetting();
     }
 }

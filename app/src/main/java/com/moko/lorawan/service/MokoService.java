@@ -34,6 +34,10 @@ import com.moko.support.task.WriteFilterRSSITask;
 import com.moko.support.task.WriteHumiDataTask;
 import com.moko.support.task.WriteI2CIntervalTask;
 import com.moko.support.task.WriteMsgTypeTask;
+import com.moko.support.task.WriteMulticastAddrTask;
+import com.moko.support.task.WriteMulticastAppSKeyTask;
+import com.moko.support.task.WriteMulticastNwkSKeyTask;
+import com.moko.support.task.WriteMulticastSwitchTask;
 import com.moko.support.task.WriteNwkSKeyTask;
 import com.moko.support.task.WritePowerTask;
 import com.moko.support.task.WriteRegionTask;
@@ -191,6 +195,10 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
 
     public void getScanSetting() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getScanSetting(this));
+    }
+
+    public void getMulticastSetting() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getMulticastSetting(this));
     }
 
     public void getCHDR() {
@@ -363,6 +371,30 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
 
     public OrderTask getUpgradeMCUDetailOrderTask(byte[] packageIndex, byte[] fileBytes) {
         UpgradeMCUDetailTask orderTask = new UpgradeMCUDetailTask(this, packageIndex, fileBytes);
+        return orderTask;
+    }
+
+    public OrderTask getMulticastSwitchOrderTask(int multicastSwitch) {
+        WriteMulticastSwitchTask orderTask = new WriteMulticastSwitchTask(this);
+        orderTask.setOrderData(multicastSwitch);
+        return orderTask;
+    }
+
+    public OrderTask getMulticastAddrOrderTask(String multicastAddr) {
+        WriteMulticastAddrTask orderTask = new WriteMulticastAddrTask(this);
+        orderTask.setOrderData(multicastAddr);
+        return orderTask;
+    }
+
+    public OrderTask getMulticastNwkSKeyOrderTask(String multicastNwkSkey) {
+        WriteMulticastNwkSKeyTask orderTask = new WriteMulticastNwkSKeyTask(this);
+        orderTask.setOrderData(multicastNwkSkey);
+        return orderTask;
+    }
+
+    public OrderTask getMulticastAppSKeyOrderTask(String multicastAppSkey) {
+        WriteMulticastAppSKeyTask orderTask = new WriteMulticastAppSKeyTask(this);
+        orderTask.setOrderData(multicastAppSkey);
         return orderTask;
     }
 }
