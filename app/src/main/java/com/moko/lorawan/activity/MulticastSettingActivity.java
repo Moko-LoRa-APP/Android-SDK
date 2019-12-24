@@ -123,7 +123,7 @@ public class MulticastSettingActivity extends BaseActivity {
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                     dismissLoadingProgressDialog();
                     if (!mIsFailed) {
-                        ToastUtils.showToast(MulticastSettingActivity.this, "Execute after bluetooth disconnect");
+                        ToastUtils.showToast(MulticastSettingActivity.this, "Success");
                     } else {
                         ToastUtils.showToast(MulticastSettingActivity.this, "Error");
                     }
