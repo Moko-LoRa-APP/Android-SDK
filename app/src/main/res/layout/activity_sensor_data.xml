@@ -67,7 +67,7 @@
 
                 <TextView
                     android:id="@+id/tv_temp_current"
-                    android:layout_width="60dp"
+                    android:layout_width="70dp"
                     android:layout_height="40dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="50dp"
@@ -105,7 +105,7 @@
 
                 <TextView
                     android:id="@+id/tv_humi_current"
-                    android:layout_width="60dp"
+                    android:layout_width="70dp"
                     android:layout_height="40dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="50dp"
@@ -152,13 +152,13 @@
 
                 <EditText
                     android:id="@+id/et_i2c_interval"
-                    android:layout_width="60dp"
+                    android:layout_width="70dp"
                     android:layout_height="40dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="50dp"
                     android:background="@drawable/shape_radius_edit_bg"
                     android:inputType="number"
-                    android:maxLength="10"
+                    android:maxLength="6"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:singleLine="true"
@@ -245,7 +245,7 @@
 
                     <EditText
                         android:id="@+id/et_temp_low"
-                        android:layout_width="60dp"
+                        android:layout_width="70dp"
                         android:layout_height="40dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="50dp"
@@ -285,7 +285,7 @@
 
                     <EditText
                         android:id="@+id/et_temp_high"
-                        android:layout_width="60dp"
+                        android:layout_width="70dp"
                         android:layout_height="40dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="50dp"
@@ -380,7 +380,7 @@
 
                     <EditText
                         android:id="@+id/et_humi_low"
-                        android:layout_width="60dp"
+                        android:layout_width="70dp"
                         android:layout_height="40dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="50dp"
@@ -420,7 +420,7 @@
 
                     <EditText
                         android:id="@+id/et_humi_high"
-                        android:layout_width="60dp"
+                        android:layout_width="70dp"
                         android:layout_height="40dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="50dp"

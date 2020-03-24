@@ -560,12 +560,11 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                 ToastUtils.showToast(this, "Reporting Interval is empty");
                 return;
             }
-            long interval = Long.parseLong(reportInterval);
-            if (interval < 1 || interval > 65535) {
-                ToastUtils.showToast(this, "Reporting Interval range 1~65535");
+            int intervalInt = Integer.parseInt(reportInterval);
+            if (intervalInt < 1 || intervalInt > 14400) {
+                ToastUtils.showToast(this, "Reporting Interval range 1~14400");
                 return;
             }
-            int intervalInt = Integer.parseInt(reportInterval);
             orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         }
         orderTasks.add(mMokoService.getMsgTypeOrderTask(rbTypeUnconfirmed.isChecked() ? 0 : 1));

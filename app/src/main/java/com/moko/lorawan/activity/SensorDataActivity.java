@@ -288,6 +288,10 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
                 ToastUtils.showToast(this, "Low Temperature Threshold is empty");
                 return;
             }
+            if (tempLow.length() == 1 && ".".equals(tempLow)) {
+                ToastUtils.showToast(this, "Temperature Threshold error");
+                return;
+            }
             float tempLowInt = Float.parseFloat(tempLow);
             if (tempLowInt < 0 || tempLowInt > 65) {
                 ToastUtils.showToast(this, "Low Temperature Threshold range 0~65");
@@ -296,6 +300,10 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
             String tempHigh = etTempHigh.getText().toString();
             if (TextUtils.isEmpty(tempHigh)) {
                 ToastUtils.showToast(this, "High Temperature Threshold is empty");
+                return;
+            }
+            if (tempHigh.length() == 1 && ".".equals(tempHigh)) {
+                ToastUtils.showToast(this, "Temperature Threshold error");
                 return;
             }
             float tempHighInt = Float.parseFloat(tempHigh);
@@ -307,7 +315,7 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
                 ToastUtils.showToast(this, "Temperature Threshold error");
                 return;
             }
-            orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, (int) (tempLowInt * 100), (int) (tempHighInt * 100)));
+            orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, Math.round(tempLowInt * 100), Math.round(tempHighInt * 100)));
         } else {
             orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, 0, 0));
         }
@@ -315,6 +323,10 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
             String humiLow = etHumiLow.getText().toString();
             if (TextUtils.isEmpty(humiLow)) {
                 ToastUtils.showToast(this, "Low Humidity Threshold is empty");
+                return;
+            }
+            if (humiLow.length() == 1 && ".".equals(humiLow)) {
+                ToastUtils.showToast(this, "Humidity Threshold error");
                 return;
             }
             float humiLowInt = Float.parseFloat(humiLow);
@@ -328,6 +340,10 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
                 ToastUtils.showToast(this, "High Humidity Threshold is empty");
                 return;
             }
+            if (humiHigh.length() == 1 && ".".equals(humiHigh)) {
+                ToastUtils.showToast(this, "Humidity Threshold error");
+                return;
+            }
             float humiHighInt = Float.parseFloat(humiHigh);
             if (humiHighInt < 10 || humiHighInt > 90) {
                 ToastUtils.showToast(this, "High Humidity Threshold range 0~90");
@@ -337,7 +353,7 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
                 ToastUtils.showToast(this, "Humidity Threshold error");
                 return;
             }
-            orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected, (int) (humiLowInt * 100), (int) (humiHighInt * 100)));
+            orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected,  Math.round(humiLowInt * 100), Math.round(humiHighInt * 100)));
         } else {
             orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected, 0, 0));
         }
