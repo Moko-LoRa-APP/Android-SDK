@@ -54,6 +54,11 @@ public enum OrderEnum implements Serializable {
     READ_MULTICAST_ADDRESS("读取组播地址", 0x34),
     READ_MULTICAST_NWKSKEY("读取组播NwkSKey", 0x35),
     READ_MULTICAST_APPSKEY("读取组播AppSKey", 0x36),
+    READ_ALARM_STATUS("读取报警状态", 0xC0),
+    READ_ALARM_UPLOAD_INTERVAL("读取报警数据包间隔", 0xC1),
+    READ_ALARM_TRIGGER_MODE("读取报警触发方式", 0xC2),
+    READ_ALAMR_VIBRATION_SWITCH("读取震动传感器开关状态", 0xC3),
+    READ_ALARM_GPS_SWITCH("读取GPS开关状态", 0xC4),
 
     WRITE_UPLINK_DATA_TEST("设置上行测试数据", 0xBB),
     WRITE_DEV_ADDR("设置DevAddr", 0x37),
@@ -91,6 +96,11 @@ public enum OrderEnum implements Serializable {
     WRITE_MULTICAST_ADDRESS("设置组播地址", 0x71),
     WRITE_MULTICAST_NWKSKEY("设置组播NwkSKey", 0x72),
     WRITE_MULTICAST_APPSKEY("设置组播APPSKey", 0x73),
+    WRITE_ALARM_STATUS("设置关闭报警", 0x74),
+    WRITE_ALARM_UPLOAD_INTERVAL("设置报警数据包间隔", 0x75),
+    WRITE_ALARM_TRIGGER_MODE("设置报警触发方式", 0x76),
+    WRITE_ALARM_VIBRATION_SWITCH("设置振动传感器开关状态", 0x77),
+    WRITE_ALARM_GPS_SWITCH("设置GPS开关状态", 0x78),
 
     UPGRADE_MCU("升级包概况", 0x41),
     UPGRADE_MCU_DETAIL("升级包详情", 0x42),

@@ -808,5 +808,13 @@ public class MokoSupport implements MokoResponseCallback {
     public String multicastAddr;
     public String multicastNwkSKey;
     public String multicastAppSKey;
+    ///////////////////////////////////////////////////////////////////////////
+    // Alarm
+    ///////////////////////////////////////////////////////////////////////////
+    public int alarmStatus;
+    public int alarmUploadInterval;
+    public int alarmTriggerMode;
+    public int alamrVibrationSwitch;
+    public int alarmGpsSwitch;
 }
 

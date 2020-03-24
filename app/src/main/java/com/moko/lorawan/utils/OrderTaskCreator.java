@@ -9,6 +9,9 @@ import com.moko.support.task.Read9AxisAngleTask;
 import com.moko.support.task.Read9AxisGTask;
 import com.moko.support.task.Read9AxisMTask;
 import com.moko.support.task.ReadADRTask;
+import com.moko.support.task.ReadAlarmStatusTask;
+import com.moko.support.task.ReadAlarmTriggerModeTask;
+import com.moko.support.task.ReadAlarmUploadIntervalTask;
 import com.moko.support.task.ReadAppEUITask;
 import com.moko.support.task.ReadAppKeyTask;
 import com.moko.support.task.ReadAppSKeyTask;
@@ -23,6 +26,7 @@ import com.moko.support.task.ReadDevAddrTask;
 import com.moko.support.task.ReadDevEUITask;
 import com.moko.support.task.ReadFilterNameTask;
 import com.moko.support.task.ReadFilterRSSITask;
+import com.moko.support.task.ReadAlarmGPSSwitchModeTask;
 import com.moko.support.task.ReadGPSTask;
 import com.moko.support.task.ReadHumiDataTask;
 import com.moko.support.task.ReadI2CIntervalTask;
@@ -40,6 +44,7 @@ import com.moko.support.task.ReadScanUploadIntervalTask;
 import com.moko.support.task.ReadTempDataTask;
 import com.moko.support.task.ReadUploadIntervalTask;
 import com.moko.support.task.ReadUploadModeTask;
+import com.moko.support.task.ReadAlarmVibrationSwitchModeTask;
 import com.moko.support.task.WriteRTCTimeTask;
 
 import java.util.ArrayList;
@@ -136,6 +141,18 @@ public class OrderTaskCreator {
         orderTasks.add(new ReadMulticastAddrTask(callback));
         orderTasks.add(new ReadMulticastNwkSKeyTask(callback));
         orderTasks.add(new ReadMulticastAppSKeyTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
+    public static OrderTask[] getAlarmSetting(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadFilterNameTask(callback));
+        orderTasks.add(new ReadFilterRSSITask(callback));
+        orderTasks.add(new ReadAlarmStatusTask(callback));
+        orderTasks.add(new ReadAlarmTriggerModeTask(callback));
+        orderTasks.add(new ReadAlarmUploadIntervalTask(callback));
+        orderTasks.add(new ReadAlarmGPSSwitchModeTask(callback));
+        orderTasks.add(new ReadAlarmVibrationSwitchModeTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 }

@@ -50,6 +50,8 @@ public class BasicInfoActivity extends BaseActivity {
     RelativeLayout rlScanSetting;
     @Bind(R.id.rl_multicast_setting)
     RelativeLayout rlMulticastSetting;
+    @Bind(R.id.rl_alarm_setting)
+    RelativeLayout rlAlarmSetting;
 
     private String[] connectStatusStrs;
     private String[] regions;
@@ -78,6 +80,7 @@ public class BasicInfoActivity extends BaseActivity {
         rlSensorData.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         rlScanSetting.setVisibility(deviceType == 2 ? View.VISIBLE : View.GONE);
         rlMulticastSetting.setVisibility(deviceType != 0 ? View.VISIBLE : View.GONE);
+        rlAlarmSetting.setVisibility(deviceType == 3 ? View.VISIBLE : View.GONE);
         String modelName = MokoSupport.getInstance().getModelName();
         connectStatusStrs = getResources().getStringArray(R.array.connect_status);
         regions = getResources().getStringArray(R.array.region);
@@ -185,7 +188,11 @@ public class BasicInfoActivity extends BaseActivity {
                             startActivityForResult(new Intent(BasicInfoActivity.this, ScanSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                         case READ_MULTICAST_APPSKEY:
-                            // 跳转扫描设置页面
+                            // 跳转组播设置页面
+                            startActivityForResult(new Intent(BasicInfoActivity.this, MulticastSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
+                        case READ_ALAMR_VIBRATION_SWITCH:
+                            // 跳转报警设置页面
                             startActivityForResult(new Intent(BasicInfoActivity.this, MulticastSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                     }
@@ -308,5 +315,10 @@ public class BasicInfoActivity extends BaseActivity {
     public void multicastSetting(View view) {
         showLoadingProgressDialog();
         mMokoService.getMulticastSetting();
+    }
+
+    public void alarmSetting(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getAlarmSetting();
     }
 }

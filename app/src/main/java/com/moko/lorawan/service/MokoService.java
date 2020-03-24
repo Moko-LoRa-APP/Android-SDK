@@ -19,6 +19,11 @@ import com.moko.support.task.OrderTaskResponse;
 import com.moko.support.task.UpgradeMCUDetailTask;
 import com.moko.support.task.UpgradeMCUTask;
 import com.moko.support.task.WriteADRTask;
+import com.moko.support.task.WriteAlarmGPSSwitchTask;
+import com.moko.support.task.WriteAlarmStatusTask;
+import com.moko.support.task.WriteAlarmTriggerModeTask;
+import com.moko.support.task.WriteAlarmUploadIntervalTask;
+import com.moko.support.task.WriteAlarmVibrationSwitchTask;
 import com.moko.support.task.WriteAppEUITask;
 import com.moko.support.task.WriteAppKeyTask;
 import com.moko.support.task.WriteAppSKeyTask;
@@ -199,6 +204,10 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
 
     public void getMulticastSetting() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getMulticastSetting(this));
+    }
+
+    public void getAlarmSetting() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getAlarmSetting(this));
     }
 
     public void getCHDR() {
@@ -395,6 +404,36 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public OrderTask getMulticastAppSKeyOrderTask(String multicastAppSkey) {
         WriteMulticastAppSKeyTask orderTask = new WriteMulticastAppSKeyTask(this);
         orderTask.setOrderData(multicastAppSkey);
+        return orderTask;
+    }
+
+    public OrderTask getAlarmStatusOrderTask(int alarmStatus) {
+        WriteAlarmStatusTask orderTask = new WriteAlarmStatusTask(this);
+        orderTask.setOrderData(alarmStatus);
+        return orderTask;
+    }
+
+    public OrderTask getAlarmGPSSwitchOrderTask(int gpsSwitch) {
+        WriteAlarmGPSSwitchTask orderTask = new WriteAlarmGPSSwitchTask(this);
+        orderTask.setOrderData(gpsSwitch);
+        return orderTask;
+    }
+
+    public OrderTask getAlarmVibrationSwitchOrderTask(int vibrationSwitch) {
+        WriteAlarmVibrationSwitchTask orderTask = new WriteAlarmVibrationSwitchTask(this);
+        orderTask.setOrderData(vibrationSwitch);
+        return orderTask;
+    }
+
+    public OrderTask getAlarmTriggerModeOrderTask(int triggerMode) {
+        WriteAlarmTriggerModeTask orderTask = new WriteAlarmTriggerModeTask(this);
+        orderTask.setOrderData(triggerMode);
+        return orderTask;
+    }
+
+    public OrderTask getAlarmUploadIntervalOrderTask(int uploadInterval) {
+        WriteAlarmUploadIntervalTask orderTask = new WriteAlarmUploadIntervalTask(this);
+        orderTask.setOrderData(uploadInterval);
         return orderTask;
     }
 }

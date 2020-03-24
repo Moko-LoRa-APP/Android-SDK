@@ -6,6 +6,7 @@ public enum DeviceTypeEnum implements Serializable {
     LW001_BG(0),
     LW002_TH(1),
     LW003_B(2),
+    LW004_BP(3),
     ;
 
 

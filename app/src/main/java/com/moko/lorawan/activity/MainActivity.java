@@ -232,6 +232,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW002_TH;
                 } else if (deviceType == 2) {
                     deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW003_B;
+                } else if (deviceType == 3) {
+                    deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW004_BP;
                 } else {
                     deviceInfo.deviceTypeEnum = DeviceTypeEnum.LW001_BG;
                 }

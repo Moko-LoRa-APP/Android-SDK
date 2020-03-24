@@ -45,7 +45,7 @@
         <item>AS923</item>
         <item>KR920</item>
         <item>IN865</item>
-        <item>CN470PREQEL</item>
+        <item>CN470PREQUEL</item>
         <item>STE920</item>
     </string-array>
     <string-array name="class_type">
@@ -65,6 +65,10 @@
         <item>MCU</item>
         <item>BLE</item>
     </string-array>
-
+    <string-array name="trigger_mode">
+        <item>Single click</item>
+        <item>Double click</item>
+        <item>Long press</item>
+    </string-array>
 
 </resources>
