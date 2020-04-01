@@ -44,7 +44,7 @@ public class ReadTempDataTask extends OrderTask {
         byte[] tempHigh = Arrays.copyOfRange(value, 6, 8);
         MokoSupport.getInstance().tempHigh = MokoUtils.getDecimalFormat("0.00").format(MokoUtils.toInt(tempHigh) * 0.01f);
         byte[] tempCurrent = Arrays.copyOfRange(value, 8, 10);
-        MokoSupport.getInstance().tempCurrent = MokoUtils.getDecimalFormat("0.00").format(MokoUtils.toInt(tempCurrent) * 0.01f);
+        MokoSupport.getInstance().tempCurrent = MokoUtils.getDecimalFormat("0.00").format((MokoUtils.toInt(tempCurrent) - 4500) * 0.01f);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
