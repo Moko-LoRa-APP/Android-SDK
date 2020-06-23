@@ -399,6 +399,7 @@ public class MokoSupport implements MokoResponseCallback {
                             LogModule.i("开启特征通知");
                             switch (deviceTypeEnum) {
                                 case LW001_BG:
+                                case LW003_B:
                                     sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
                                     sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
                                     break;
@@ -408,9 +409,8 @@ public class MokoSupport implements MokoResponseCallback {
                                     sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_MCU, OrderEnum.OPEN_NOTIFY, null));
                                     sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_PERIPHERAL, OrderEnum.OPEN_NOTIFY, null));
                                     break;
-                                case LW003_B:
+                                case LW004_BP:
                                     sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
-                                    sendOrder(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
                                     break;
                             }
                         }

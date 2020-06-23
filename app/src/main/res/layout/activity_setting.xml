@@ -80,8 +80,9 @@
                         android:layout_weight="1.0"
                         android:button="@null"
                         android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="10dp"
-                        android:text="ABP" />
+                        android:drawablePadding="5dp"
+                        android:text="ABP"
+                        android:textSize="13sp" />
 
                     <RadioButton
                         android:id="@+id/rb_modem_otaa"
@@ -91,8 +92,9 @@
                         android:button="@null"
                         android:checked="true"
                         android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="10dp"
-                        android:text="OTAA" />
+                        android:drawablePadding="5dp"
+                        android:text="OTAA"
+                        android:textSize="13sp" />
                 </RadioGroup>
             </LinearLayout>
 
@@ -322,6 +324,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/ll_device_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -353,8 +356,9 @@
                         android:layout_weight="1.0"
                         android:button="@null"
                         android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="10dp"
-                        android:text="ClassA" />
+                        android:drawablePadding="5dp"
+                        android:text="ClassA"
+                        android:textSize="13sp" />
 
                     <RadioButton
                         android:id="@+id/rb_type_classc"
@@ -364,8 +368,9 @@
                         android:button="@null"
                         android:checked="true"
                         android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="10dp"
-                        android:text="ClassC" />
+                        android:drawablePadding="5dp"
+                        android:text="ClassC"
+                        android:textSize="13sp" />
                 </RadioGroup>
             </LinearLayout>
 
@@ -404,7 +409,8 @@
                         android:button="@null"
                         android:drawableLeft="@drawable/selector_rb_btn"
                         android:drawablePadding="5dp"
-                        android:text="Unconfirmed" />
+                        android:text="Unconfirmed"
+                        android:textSize="13sp" />
 
                     <RadioButton
                         android:id="@+id/rb_type_confirmed"
@@ -415,7 +421,8 @@
                         android:checked="true"
                         android:drawableLeft="@drawable/selector_rb_btn"
                         android:drawablePadding="5dp"
-                        android:text="Confirmed" />
+                        android:text="Confirmed"
+                        android:textSize="13sp" />
                 </RadioGroup>
             </LinearLayout>
 

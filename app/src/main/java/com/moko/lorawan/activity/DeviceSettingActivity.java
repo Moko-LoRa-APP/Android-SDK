@@ -22,6 +22,8 @@ import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.AlertMessageDialog;
 import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
+import com.moko.lorawan.dialog.RegionBottomDialog;
+import com.moko.lorawan.entity.Region;
 import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
@@ -100,6 +102,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     RadioGroup rgMsgType;
     @Bind(R.id.ll_msg_type)
     LinearLayout llMsgType;
+    @Bind(R.id.ll_device_type)
+    LinearLayout llDeviceType;
 
 
     private MokoService mMokoService;
@@ -142,11 +146,15 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         mRegions = getResources().getStringArray(R.array.region);
         mSelectedRegion = MokoSupport.getInstance().getRegion();
         tvRegion.setText(mRegions[mSelectedRegion]);
-        int classType = MokoSupport.getInstance().getClassType();
-        if (classType == 1) {
-            rbTypeClassa.setChecked(true);
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
+            llDeviceType.setVisibility(View.GONE);
         } else {
-            rbTypeClassc.setChecked(true);
+            int classType = MokoSupport.getInstance().getClassType();
+            if (classType == 1) {
+                rbTypeClassa.setChecked(true);
+            } else {
+                rbTypeClassc.setChecked(true);
+            }
         }
         mSelectedCh1 = MokoSupport.getInstance().ch_1;
         tvCh1.setText(mSelectedCh1 + "");
@@ -232,6 +240,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                     dismissLoadingProgressDialog();
                     if (!mIsFailed) {
                         ToastUtils.showToast(DeviceSettingActivity.this, "Success");
+                    } else {
+                        ToastUtils.showToast(DeviceSettingActivity.this, "Error");
                     }
                     if (mIsResetSuccess) {
                         DeviceSettingActivity.this.setResult(RESULT_OK);
@@ -327,13 +337,21 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     }
 
     public void selectRegion(View view) {
-        ArrayList<String> regions = new ArrayList<>();
+        ArrayList<Region> regions = new ArrayList<>();
         for (int i = 0; i < mRegions.length; i++) {
-            regions.add(mRegions[i]);
+            String name = mRegions[i];
+            if ("US915HYBRID".equals(name) || "AU915OLD".equals(name)
+                    || "CN470PREQUEL".equals(name) || "STE920".equals(name)) {
+                continue;
+            }
+            Region region = new Region();
+            region.value = i;
+            region.name = name;
+            regions.add(region);
         }
-        BottomDialog bottomDialog = new BottomDialog();
+        RegionBottomDialog bottomDialog = new RegionBottomDialog();
         bottomDialog.setDatas(regions, mSelectedRegion);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
+        bottomDialog.setListener(new RegionBottomDialog.OnBottomListener() {
             @Override
             public void onValueSelected(int value) {
                 mReadCHDR = true;
@@ -503,7 +521,9 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         mIsFailed = false;
         // 保存
         orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
-        orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
+        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
+            orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
+        }
         orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
         orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
         orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
@@ -572,7 +592,9 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         LogModule.clearInfoForFile();
         // 保存并连接
         orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
-        orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
+        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
+            orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
+        }
         orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
         orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
         orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));

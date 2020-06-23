@@ -79,7 +79,7 @@ public class BasicInfoActivity extends BaseActivity {
         rlBleSetting.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         rlSensorData.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         rlScanSetting.setVisibility(deviceType == 2 ? View.VISIBLE : View.GONE);
-        rlMulticastSetting.setVisibility(deviceType != 0 ? View.VISIBLE : View.GONE);
+        rlMulticastSetting.setVisibility(deviceType != 0 && deviceType != 3 ? View.VISIBLE : View.GONE);
         rlAlarmSetting.setVisibility(deviceType == 3 ? View.VISIBLE : View.GONE);
         String modelName = MokoSupport.getInstance().getModelName();
         connectStatusStrs = getResources().getStringArray(R.array.connect_status);
@@ -193,7 +193,7 @@ public class BasicInfoActivity extends BaseActivity {
                             break;
                         case READ_ALAMR_VIBRATION_SWITCH:
                             // 跳转报警设置页面
-                            startActivityForResult(new Intent(BasicInfoActivity.this, MulticastSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            startActivityForResult(new Intent(BasicInfoActivity.this, AlarmSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                     }
                 }

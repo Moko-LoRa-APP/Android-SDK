@@ -4,6 +4,7 @@ package com.moko.support.task;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoOrderTaskCallback;
+import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
@@ -33,8 +34,12 @@ public class ReadLoraFirmwareTask extends OrderTask {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
         byte[] loraFirmware = Arrays.copyOfRange(value, 3, value.length);
-        MokoSupport.getInstance().setLoraFirmware(new String(loraFirmware));
-
+        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
+            MokoSupport.getInstance().setLoraFirmware(new String(loraFirmware));
+        } else {
+            String loraFirmwareStr = String.format("%d.%d.%d", loraFirmware[0] & 0xFF, loraFirmware[1] & 0xFF, loraFirmware[2] & 0xFF);
+            MokoSupport.getInstance().setLoraFirmware(loraFirmwareStr);
+        }
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
 

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
+import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
 
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
@@ -29,6 +30,8 @@ public class MokoLeScanHandler extends ScanCallback {
             BluetoothDevice device = result.getDevice();
             byte[] scanRecord = result.getScanRecord().getBytes();
             int rssi = result.getRssi();
+            if (device.getAddress().contains("DD:F2"))
+                LogModule.i(result.getScanRecord().getDeviceName()+"-->"+device.getAddress());
             if (TextUtils.isEmpty(device.getName()) || scanRecord.length == 0 || rssi == 127) {
                 return;
             }

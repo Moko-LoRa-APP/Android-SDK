@@ -10,7 +10,7 @@ import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
 
 public class WriteAlarmUploadIntervalTask extends OrderTask {
-    private static final int ORDERDATA_LENGTH = 4;
+    private static final int ORDERDATA_LENGTH = 5;
 
     public byte[] orderData;
 
@@ -22,12 +22,10 @@ public class WriteAlarmUploadIntervalTask extends OrderTask {
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
-        orderData[2] = (byte) 0x04;
-        byte[] uploadIntervalBytes = MokoUtils.toByteArray(uploadInterval, 4);
-        orderData[3] = uploadIntervalBytes[3];
-        orderData[4] = uploadIntervalBytes[2];
-        orderData[5] = uploadIntervalBytes[1];
-        orderData[6] = uploadIntervalBytes[0];
+        orderData[2] = (byte) 0x02;
+        byte[] uploadIntervalBytes = MokoUtils.toByteArray(uploadInterval, 2);
+        orderData[3] = uploadIntervalBytes[1];
+        orderData[4] = uploadIntervalBytes[0];
     }
 
     @Override
