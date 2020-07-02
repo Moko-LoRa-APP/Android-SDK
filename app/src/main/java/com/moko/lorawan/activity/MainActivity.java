@@ -195,9 +195,10 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             mMokoService.mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    mMokoService.openNotify();
                     mMokoService.getBasicInfo();
                 }
-            }, 1000);
+            }, 500);
         }
     }
 
@@ -308,11 +309,16 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (mMokoService == null || deviceInfo == null) {
             return;
         }
+        showLoadingProgressDialog();
         MokoSupport.deviceTypeEnum = deviceInfo.deviceTypeEnum;
-        mMokoService.connectBluetoothDevice(deviceInfo.mac);
+        mMokoService.mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMokoService.connectBluetoothDevice(deviceInfo.mac);
+            }
+        }, 500);
         mSelectedDeviceName = deviceInfo.name;
         mSelectedDeviceMac = deviceInfo.mac;
-        showLoadingProgressDialog();
     }
 
     @Override

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        minSdkVersion 18
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -23,4 +23,5 @@ dependencies {
     implementation 'com.elvishew:xlog:1.6.1'
     api 'no.nordicsemi.android:dfu:0.6.2'
     api 'org.greenrobot:eventbus:3.1.1'
+    implementation 'no.nordicsemi.android:ble:2.0.5'
 }

@@ -3,6 +3,9 @@ package com.moko.lorawan.utils;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.DeviceTypeEnum;
+import com.moko.support.entity.OrderEnum;
+import com.moko.support.entity.OrderType;
+import com.moko.support.task.OpenNotifyTask;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.Read9AxisATask;
 import com.moko.support.task.Read9AxisAngleTask;
@@ -51,9 +54,28 @@ import java.util.ArrayList;
 
 public class OrderTaskCreator {
 
-    /**
-     * 获取基本内心戏
-     */
+
+    public static OrderTask[] openNotify(){
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        switch (MokoSupport.deviceTypeEnum) {
+            case LW001_BG:
+            case LW003_B:
+                orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
+                orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
+                break;
+            case LW002_TH:
+                orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
+                orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG, OrderEnum.OPEN_NOTIFY, null));
+                orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_MCU, OrderEnum.OPEN_NOTIFY, null));
+                orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_PERIPHERAL, OrderEnum.OPEN_NOTIFY, null));
+                break;
+            case LW004_BP:
+                orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC, OrderEnum.OPEN_NOTIFY, null));
+                break;
+        }
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
     public static OrderTask[] getBasicInfo(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadConnectStatusTask(callback));

@@ -314,6 +314,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_marginRight="13dp"
                     android:background="@drawable/shape_radius_btn_bg"
                     android:onClick="selectRegion"
                     android:padding="12dp"

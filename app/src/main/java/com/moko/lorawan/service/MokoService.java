@@ -9,9 +9,7 @@ import android.os.Message;
 import com.moko.lorawan.utils.OrderTaskCreator;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoConnStateCallback;
 import com.moko.support.callback.MokoOrderTaskCallback;
-import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.handler.BaseMessageHandler;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
@@ -54,8 +52,6 @@ import com.moko.support.task.WriteUplinkDataTestTask;
 import com.moko.support.task.WriteUploadIntervalTask;
 import com.moko.support.task.WriteUploadModeTask;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.Calendar;
 
 
@@ -65,21 +61,7 @@ import java.util.Calendar;
  * @Description
  * @ClassPath com.moko.lorawan.service.MokoService
  */
-public class MokoService extends Service implements MokoConnStateCallback, MokoOrderTaskCallback {
-
-    @Override
-    public void onConnectSuccess() {
-        ConnectStatusEvent connectStatusEvent = new ConnectStatusEvent();
-        connectStatusEvent.setAction(MokoConstants.ACTION_DISCOVER_SUCCESS);
-        EventBus.getDefault().post(connectStatusEvent);
-    }
-
-    @Override
-    public void onDisConnected() {
-        ConnectStatusEvent connectStatusEvent = new ConnectStatusEvent();
-        connectStatusEvent.setAction(MokoConstants.ACTION_CONN_STATUS_DISCONNECTED);
-        EventBus.getDefault().post(connectStatusEvent);
-    }
+public class MokoService extends Service implements MokoOrderTaskCallback {
 
     @Override
     public void onOrderResult(OrderTaskResponse response) {
@@ -108,7 +90,7 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     }
 
     public void connectBluetoothDevice(String address) {
-        MokoSupport.getInstance().connDevice(this, address, this);
+        MokoSupport.getInstance().connDevice(this, address);
     }
 
     /**
@@ -175,6 +157,10 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
         @Override
         protected void handleMessage(MokoService service, Message msg) {
         }
+    }
+
+    public void openNotify() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.openNotify());
     }
 
     public void getBasicInfo() {
