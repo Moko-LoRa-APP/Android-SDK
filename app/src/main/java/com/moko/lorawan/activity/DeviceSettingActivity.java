@@ -76,20 +76,20 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     RadioGroup rgDeviceType;
     @Bind(R.id.et_report_interval)
     EditText etReportInterval;
-    @Bind(R.id.tv_ch_1)
-    TextView tvCh1;
-    @Bind(R.id.tv_ch_2)
-    TextView tvCh2;
-    @Bind(R.id.tv_dr_1)
-    TextView tvDr1;
-    @Bind(R.id.tv_dr_2)
-    TextView tvDr2;
-    @Bind(R.id.tv_save)
-    TextView tvSave;
-    @Bind(R.id.tv_connect)
-    TextView tvConnect;
-    @Bind(R.id.cb_adr)
-    CheckBox cbAdr;
+//    @Bind(R.id.tv_ch_1)
+//    TextView tvCh1;
+//    @Bind(R.id.tv_ch_2)
+//    TextView tvCh2;
+//    @Bind(R.id.tv_dr_1)
+//    TextView tvDr1;
+//    @Bind(R.id.tv_dr_2)
+//    TextView tvDr2;
+//    @Bind(R.id.tv_save)
+//    TextView tvSave;
+//    @Bind(R.id.tv_connect)
+//    TextView tvConnect;
+//    @Bind(R.id.cb_adr)
+//    CheckBox cbAdr;
     @Bind(R.id.tv_region)
     TextView tvRegion;
     @Bind(R.id.ll_report_invterval)
@@ -110,13 +110,13 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     private boolean mReceiverTag = false;
     private String[] mRegions;
     private int mSelectedRegion;
-    private int mSelectedCh1;
-    private int mSelectedCh2;
-    private int mSelectedDr1;
-    private int mSelectedDr2;
+//    private int mSelectedCh1;
+//    private int mSelectedCh2;
+//    private int mSelectedDr1;
+//    private int mSelectedDr2;
     private boolean mIsFailed;
-    private boolean mIsResetSuccess;
-    private boolean mReadCHDR;
+//    private boolean mIsResetSuccess;
+//    private boolean mReadCHDR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,14 +156,14 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                 rbTypeClassc.setChecked(true);
             }
         }
-        mSelectedCh1 = MokoSupport.getInstance().ch_1;
-        tvCh1.setText(mSelectedCh1 + "");
-        mSelectedCh2 = MokoSupport.getInstance().ch_2;
-        tvCh2.setText(mSelectedCh2 + "");
-        mSelectedDr1 = MokoSupport.getInstance().dr_1;
-        tvDr1.setText("DR" + mSelectedDr1);
-        mSelectedDr2 = MokoSupport.getInstance().dr_2;
-        tvDr2.setText("DR" + mSelectedDr2);
+//        mSelectedCh1 = MokoSupport.getInstance().ch_1;
+//        tvCh1.setText(mSelectedCh1 + "");
+//        mSelectedCh2 = MokoSupport.getInstance().ch_2;
+//        tvCh2.setText(mSelectedCh2 + "");
+//        mSelectedDr1 = MokoSupport.getInstance().dr_1;
+//        tvDr1.setText("DR" + mSelectedDr1);
+//        mSelectedDr2 = MokoSupport.getInstance().dr_2;
+//        tvDr2.setText("DR" + mSelectedDr2);
         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW002_TH) {
             llReportInvterval.setVisibility(View.GONE);
         } else {
@@ -177,12 +177,12 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         } else {
             rbTypeUnconfirmed.setChecked(true);
         }
-        int adr = MokoSupport.getInstance().adr;
-        if (adr == 0) {
-            cbAdr.setChecked(false);
-        } else {
-            cbAdr.setChecked(true);
-        }
+//        int adr = MokoSupport.getInstance().adr;
+//        if (adr == 0) {
+//            cbAdr.setChecked(false);
+//        } else {
+//            cbAdr.setChecked(true);
+//        }
         EventBus.getDefault().register(this);
     }
 
@@ -234,19 +234,19 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
 
                 }
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                    if (mReadCHDR) {
-                        return;
-                    }
+//                    if (mReadCHDR) {
+//                        return;
+//                    }
                     dismissLoadingProgressDialog();
                     if (!mIsFailed) {
                         ToastUtils.showToast(DeviceSettingActivity.this, "Success");
                     } else {
                         ToastUtils.showToast(DeviceSettingActivity.this, "Error");
                     }
-                    if (mIsResetSuccess) {
-                        DeviceSettingActivity.this.setResult(RESULT_OK);
-                        DeviceSettingActivity.this.finish();
-                    }
+//                    if (mIsResetSuccess) {
+//                        DeviceSettingActivity.this.setResult(RESULT_OK);
+//                        DeviceSettingActivity.this.finish();
+//                    }
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                     abortBroadcast();
@@ -269,38 +269,30 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                         case WRITE_POWER:
                         case WRITE_ADR:
                         case WRITE_CONNECT:
-                            if ((value[3] & 0xff) != 0xAA) {
-                                mIsFailed = true;
-                            }
-                            break;
                         case WRITE_REGION:
                             if ((value[3] & 0xff) != 0xAA) {
                                 mIsFailed = true;
-                            } else {
-                                if (mReadCHDR) {
-                                    mMokoService.getCHDR();
-                                }
                             }
                             break;
-                        case WRITE_RESET:
-                            if ((value[3] & 0xff) != 0xAA) {
-                                mIsFailed = true;
-                            } else {
-                                mIsResetSuccess = true;
-                            }
-                            break;
-                        case READ_CH:
-                        case READ_DR:
-                            mReadCHDR = false;
-                            mSelectedCh1 = MokoSupport.getInstance().ch_1;
-                            tvCh1.setText(mSelectedCh1 + "");
-                            mSelectedCh2 = MokoSupport.getInstance().ch_2;
-                            tvCh2.setText(mSelectedCh2 + "");
-                            mSelectedDr1 = MokoSupport.getInstance().dr_1;
-                            tvDr1.setText("DR" + mSelectedDr1);
-                            mSelectedDr2 = MokoSupport.getInstance().dr_2;
-                            tvDr2.setText("DR" + mSelectedDr2);
-                            break;
+//                        case WRITE_RESET:
+//                            if ((value[3] & 0xff) != 0xAA) {
+//                                mIsFailed = true;
+//                            } else {
+//                                mIsResetSuccess = true;
+//                            }
+//                            break;
+//                        case READ_CH:
+//                        case READ_DR:
+//                            mReadCHDR = false;
+//                            mSelectedCh1 = MokoSupport.getInstance().ch_1;
+//                            tvCh1.setText(mSelectedCh1 + "");
+//                            mSelectedCh2 = MokoSupport.getInstance().ch_2;
+//                            tvCh2.setText(mSelectedCh2 + "");
+//                            mSelectedDr1 = MokoSupport.getInstance().dr_1;
+//                            tvDr1.setText("DR" + mSelectedDr1);
+//                            mSelectedDr2 = MokoSupport.getInstance().dr_2;
+//                            tvDr2.setText("DR" + mSelectedDr2);
+//                            break;
                     }
                 }
             }
@@ -354,11 +346,11 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         bottomDialog.setListener(new RegionBottomDialog.OnBottomListener() {
             @Override
             public void onValueSelected(int value) {
-                mReadCHDR = true;
+//                mReadCHDR = true;
                 mSelectedRegion = value;
                 tvRegion.setText(mRegions[mSelectedRegion]);
-                showLoadingProgressDialog();
-                MokoSupport.getInstance().sendOrder(mMokoService.getRegionOrderTask(mSelectedRegion));
+//                showLoadingProgressDialog();
+//                MokoSupport.getInstance().sendOrder(mMokoService.getRegionOrderTask(mSelectedRegion));
             }
         });
         bottomDialog.show(getSupportFragmentManager());
@@ -378,88 +370,88 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         dialog.show(getSupportFragmentManager());
     }
 
-    private static ArrayList<String> mCHList;
-    private static ArrayList<String> mDRList;
+//    private static ArrayList<String> mCHList;
+//    private static ArrayList<String> mDRList;
 
-    static {
-        mCHList = new ArrayList<>();
-        for (int i = 0; i <= 95; i++) {
-            mCHList.add(i + "");
-        }
-        mDRList = new ArrayList<>();
-        for (int i = 0; i <= 15; i++) {
-            mDRList.add("DR" + i);
-        }
-    }
+//    static {
+//        mCHList = new ArrayList<>();
+//        for (int i = 0; i <= 95; i++) {
+//            mCHList.add(i + "");
+//        }
+//        mDRList = new ArrayList<>();
+//        for (int i = 0; i <= 15; i++) {
+//            mDRList.add("DR" + i);
+//        }
+//    }
 
 
-    public void selectCh1(View view) {
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(mCHList, mSelectedCh1);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mSelectedCh1 = value;
-                tvCh1.setText(mCHList.get(value));
-                if (mSelectedCh1 > mSelectedCh2) {
-                    mSelectedCh2 = mSelectedCh1;
-                    tvCh2.setText(mCHList.get(value));
-                }
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
-    }
-
-    public void selectCh2(View view) {
-        final ArrayList<String> ch2List = new ArrayList<>();
-        for (int i = mSelectedCh1; i <= 95; i++) {
-            ch2List.add(i + "");
-        }
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(ch2List, mSelectedCh2 - mSelectedCh1);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mSelectedCh2 = value + mSelectedCh1;
-                tvCh2.setText(ch2List.get(value));
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
-    }
-
-    public void selectDr1(View view) {
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(mDRList, mSelectedDr1);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mSelectedDr1 = value;
-                tvDr1.setText(mDRList.get(value));
-                if (mSelectedDr1 > mSelectedDr2) {
-                    mSelectedDr2 = mSelectedDr1;
-                    tvDr2.setText(mDRList.get(value));
-                }
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
-    }
-
-    public void selectDr2(View view) {
-        final ArrayList<String> dr2List = new ArrayList<>();
-        for (int i = mSelectedDr1; i <= 15; i++) {
-            dr2List.add("DR" + i);
-        }
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(dr2List, mSelectedDr2 - mSelectedDr1);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mSelectedDr2 = value + mSelectedDr1;
-                tvDr2.setText(dr2List.get(value));
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
-    }
+//    public void selectCh1(View view) {
+//        BottomDialog bottomDialog = new BottomDialog();
+//        bottomDialog.setDatas(mCHList, mSelectedCh1);
+//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
+//            @Override
+//            public void onValueSelected(int value) {
+//                mSelectedCh1 = value;
+//                tvCh1.setText(mCHList.get(value));
+//                if (mSelectedCh1 > mSelectedCh2) {
+//                    mSelectedCh2 = mSelectedCh1;
+//                    tvCh2.setText(mCHList.get(value));
+//                }
+//            }
+//        });
+//        bottomDialog.show(getSupportFragmentManager());
+//    }
+//
+//    public void selectCh2(View view) {
+//        final ArrayList<String> ch2List = new ArrayList<>();
+//        for (int i = mSelectedCh1; i <= 95; i++) {
+//            ch2List.add(i + "");
+//        }
+//        BottomDialog bottomDialog = new BottomDialog();
+//        bottomDialog.setDatas(ch2List, mSelectedCh2 - mSelectedCh1);
+//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
+//            @Override
+//            public void onValueSelected(int value) {
+//                mSelectedCh2 = value + mSelectedCh1;
+//                tvCh2.setText(ch2List.get(value));
+//            }
+//        });
+//        bottomDialog.show(getSupportFragmentManager());
+//    }
+//
+//    public void selectDr1(View view) {
+//        BottomDialog bottomDialog = new BottomDialog();
+//        bottomDialog.setDatas(mDRList, mSelectedDr1);
+//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
+//            @Override
+//            public void onValueSelected(int value) {
+//                mSelectedDr1 = value;
+//                tvDr1.setText(mDRList.get(value));
+//                if (mSelectedDr1 > mSelectedDr2) {
+//                    mSelectedDr2 = mSelectedDr1;
+//                    tvDr2.setText(mDRList.get(value));
+//                }
+//            }
+//        });
+//        bottomDialog.show(getSupportFragmentManager());
+//    }
+//
+//    public void selectDr2(View view) {
+//        final ArrayList<String> dr2List = new ArrayList<>();
+//        for (int i = mSelectedDr1; i <= 15; i++) {
+//            dr2List.add("DR" + i);
+//        }
+//        BottomDialog bottomDialog = new BottomDialog();
+//        bottomDialog.setDatas(dr2List, mSelectedDr2 - mSelectedDr1);
+//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
+//            @Override
+//            public void onValueSelected(int value) {
+//                mSelectedDr2 = value + mSelectedDr1;
+//                tvDr2.setText(dr2List.get(value));
+//            }
+//        });
+//        bottomDialog.show(getSupportFragmentManager());
+//    }
 
     public void onSave(View view) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
@@ -524,9 +516,9 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
             orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
         }
-        orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
-        orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
-        orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
+//        orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
+//        orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
+//        orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
     }
@@ -595,9 +587,9 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
             orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
         }
-        orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
-        orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
-        orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
+//        orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
+//        orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
+//        orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
         orderTasks.add(mMokoService.getConnectOrderTask());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
