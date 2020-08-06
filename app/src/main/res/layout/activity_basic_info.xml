@@ -60,34 +60,28 @@
 
     </RelativeLayout>
 
-
     <RelativeLayout
+        android:id="@+id/rl_alarm_status"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/white_ffffff"
-        android:onClick="deviceSetting">
+        android:background="@color/white_ffffff">
 
         <TextView
-            android:id="@+id/device_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
-            android:text="Device Setting"
+            android:text="Alarm status"
             android:textSize="18sp" />
 
 
         <TextView
-            android:id="@+id/tv_device_setting"
+            android:id="@+id/tv_alarm_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:layout_toRightOf="@id/device_setting"
-            android:drawableRight="@drawable/ic_arrows"
-            android:drawablePadding="10dp"
             android:gravity="right"
             android:text=""
             android:textColor="@color/grey_808080"
@@ -96,134 +90,26 @@
         <View
             style="@style/divider_line"
             android:layout_alignParentBottom="true" />
+
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_multicast_setting"
+        android:id="@+id/rl_setting"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/white_ffffff"
-        android:onClick="multicastSetting">
+        android:onClick="setting">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
-            android:text="Multicast Setting"
+            android:text="Setting"
             android:textSize="18sp" />
 
 
         <TextView
-            android:id="@+id/tv_multicast_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
-            android:drawableRight="@drawable/ic_arrows"
-            android:drawablePadding="10dp"
-            android:gravity="right"
-            android:text=""
-            android:textColor="@color/grey_808080"
-            android:textSize="15sp" />
-
-
-        <View
-            style="@style/divider_line"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_alarm_setting"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white_ffffff"
-        android:onClick="alarmSetting">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
-            android:text="Alarm Setting"
-            android:textSize="18sp" />
-
-
-        <TextView
-            android:id="@+id/tv_alarm_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
-            android:drawableRight="@drawable/ic_arrows"
-            android:drawablePadding="10dp"
-            android:gravity="right"
-            android:text=""
-            android:textColor="@color/grey_808080"
-            android:textSize="15sp" />
-
-
-        <View
-            style="@style/divider_line"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_ble_setting"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white_ffffff"
-        android:onClick="bleSetting">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
-            android:text="BLE Setting"
-            android:textSize="18sp" />
-
-
-        <TextView
-            android:id="@+id/tv_ble_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
-            android:drawableRight="@drawable/ic_arrows"
-            android:drawablePadding="10dp"
-            android:gravity="right"
-            android:text=""
-            android:textColor="@color/grey_808080"
-            android:textSize="15sp" />
-
-
-        <View
-            style="@style/divider_line"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_scan_setting"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white_ffffff"
-        android:onClick="scanSetting">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
-            android:text="Scan Setting"
-            android:textSize="18sp" />
-
-
-        <TextView
-            android:id="@+id/tv_scan_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -260,7 +146,6 @@
 
 
         <TextView
-            android:id="@+id/tv_th_sensor_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -292,7 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
-            android:text="GPS and 9-Axis"
+            android:text="Sensor Data"
             android:textSize="18sp" />
 
 

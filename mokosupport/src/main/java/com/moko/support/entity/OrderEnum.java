@@ -59,6 +59,7 @@ public enum OrderEnum implements Serializable {
     READ_ALARM_TRIGGER_MODE("读取报警触发方式", 0xC2),
     READ_ALAMR_VIBRATION_SWITCH("读取震动传感器开关状态", 0xC3),
     READ_ALARM_GPS_SWITCH("读取GPS开关状态", 0xC4),
+    READ_ALARM_SATELLITE_SEARCH_TIME("读取待机心跳GPS定位时间", 0xC5),
 
     WRITE_UPLINK_DATA_TEST("设置上行测试数据", 0xBB),
     WRITE_DEV_ADDR("设置DevAddr", 0x37),
@@ -101,6 +102,7 @@ public enum OrderEnum implements Serializable {
     WRITE_ALARM_TRIGGER_MODE("设置报警触发方式", 0x76),
     WRITE_ALARM_VIBRATION_SWITCH("设置振动传感器开关状态", 0x77),
     WRITE_ALARM_GPS_SWITCH("设置GPS开关状态", 0x78),
+    WRITE_ALARM_SATELLITE_SEARCH_TIME("设置待机心跳GPS定位时间", 0x79),
 
     UPGRADE_MCU("升级包概况", 0x41),
     UPGRADE_MCU_DETAIL("升级包详情", 0x42),

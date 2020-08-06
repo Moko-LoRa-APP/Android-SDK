@@ -11,11 +11,12 @@
 
 
         <TextView
+            android:id="@+id/tv_device_name"
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:background="@color/green_6caf10"
             android:gravity="center"
-            android:text="Device Setting"
+            android:text="LW001-BG"
             android:textColor="@color/white_ffffff"
             android:textSize="18sp" />
 
@@ -27,602 +28,220 @@
             android:src="@drawable/ic_back" />
     </RelativeLayout>
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.0"
-        android:overScrollMode="never">
+        android:layout_height="50dp"
+        android:background="@color/white_ffffff"
+        android:onClick="deviceSetting">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/device_setting"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:padding="12dp"
-                android:text="Basic Setting(Essential)"
-                android:textColor="@color/green_6caf10"
-                android:textSize="18sp" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="LoRaWAN Mode"
-                    android:textSize="15sp" />
-
-                <RadioGroup
-                    android:id="@+id/rg_modem"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5" />
-
-                    <RadioButton
-                        android:id="@+id/rb_modem_abp"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:button="@null"
-                        android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="5dp"
-                        android:text="ABP"
-                        android:textSize="13sp" />
-
-                    <RadioButton
-                        android:id="@+id/rb_modem_otaa"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:button="@null"
-                        android:checked="true"
-                        android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="5dp"
-                        android:text="OTAA"
-                        android:textSize="13sp" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:id="@+id/ll_modem_otaa"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingRight="12dp"
-                        android:paddingBottom="6dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="DevEUI"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/et_dev_eui"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="1.0"
-                            android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefABCDEF"
-                            android:maxLength="16"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:singleLine="true"
-                            android:textSize="15sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingRight="12dp"
-                        android:paddingBottom="6dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="AppEUI"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/et_app_eui"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="1.0"
-                            android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefABCDEF"
-                            android:maxLength="16"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textSize="15sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingRight="12dp"
-                        android:paddingBottom="6dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="AppKey"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/et_app_key"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="1.0"
-                            android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefABCDEF"
-                            android:maxLength="32"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textSize="15sp" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_modem_abp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingRight="12dp"
-                        android:paddingBottom="6dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="DevAddr"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/et_dev_addr"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="1.0"
-                            android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefABCDEF"
-                            android:maxLength="8"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:singleLine="true"
-                            android:textSize="15sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingRight="12dp"
-                        android:paddingBottom="6dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="NwkSKey"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/et_nwk_skey"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="1.0"
-                            android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefABCDEF"
-                            android:maxLength="32"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textSize="15sp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingRight="12dp"
-                        android:paddingBottom="6dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="AppSKey"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/et_app_skey"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="1.0"
-                            android:background="@drawable/shape_radius_edit_bg"
-                            android:digits="0123456789abcdefABCDEF"
-                            android:maxLength="32"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textSize="15sp" />
-
-                    </LinearLayout>
-                </LinearLayout>
-            </FrameLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingTop="6dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="6dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="Region/Subnet"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_region"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="13dp"
-                    android:background="@drawable/shape_radius_btn_bg"
-                    android:onClick="selectRegion"
-                    android:padding="12dp"
-                    android:text="EU868"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp" />
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_device_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Device Type"
-                    android:textSize="15sp" />
-
-                <RadioGroup
-                    android:id="@+id/rg_device_type"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.9" />
-
-                    <RadioButton
-                        android:id="@+id/rb_type_classa"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:button="@null"
-                        android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="5dp"
-                        android:text="ClassA"
-                        android:textSize="13sp" />
-
-                    <RadioButton
-                        android:id="@+id/rb_type_classc"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:button="@null"
-                        android:checked="true"
-                        android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="5dp"
-                        android:text="ClassC"
-                        android:textSize="13sp" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_msg_type"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:gravity="center_vertical"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Message Type"
-                    android:textSize="15sp" />
-
-                <RadioGroup
-                    android:id="@+id/rg_msg_type"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.1" />
-
-                    <RadioButton
-                        android:id="@+id/rb_type_unconfirmed"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:button="@null"
-                        android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="5dp"
-                        android:text="Unconfirmed"
-                        android:textSize="13sp" />
-
-                    <RadioButton
-                        android:id="@+id/rb_type_confirmed"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:button="@null"
-                        android:checked="true"
-                        android:drawableLeft="@drawable/selector_rb_btn"
-                        android:drawablePadding="5dp"
-                        android:text="Confirmed"
-                        android:textSize="13sp" />
-                </RadioGroup>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_report_invterval"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingTop="6dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="6dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reporting interval"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/et_report_interval"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1.0"
-                    android:background="@drawable/shape_radius_edit_bg"
-                    android:inputType="number"
-                    android:maxLength="5"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:singleLine="true"
-                    android:text=""
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:text="Min"
-                    android:textSize="15sp" />
-            </LinearLayout>
-
-            <View
-                style="@style/divider_line"
-                android:visibility="gone" />
-
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingTop="6dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="6dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="Advanced Setting(Optional)"
-                    android:textColor="@color/green_6caf10"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/shape_radius_btn_bg"
-                    android:onClick="resetData"
-                    android:padding="12dp"
-                    android:text="Reset"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginBottom="6dp"
-                android:background="@drawable/shape_radius_edit_bg"
-                android:padding="6dp"
-                android:text="Note: Please do not modify advanced settings unless necessary"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingTop="6dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="6dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CH"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_ch_1"
-                    android:layout_width="90dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="40dp"
-                    android:background="@drawable/shape_radius_edit_bg"
-                    android:gravity="center"
-                    android:onClick="selectCh1"
-                    android:text="" />
-
-                <TextView
-                    android:id="@+id/tv_ch_2"
-                    android:layout_width="90dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/shape_radius_edit_bg"
-                    android:gravity="center"
-                    android:onClick="selectCh2"
-                    android:text="" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingTop="6dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="6dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="DR"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_dr_1"
-                    android:layout_width="90dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="40dp"
-                    android:background="@drawable/shape_radius_edit_bg"
-                    android:gravity="center"
-                    android:onClick="selectDr1"
-                    android:text="" />
-
-                <TextView
-                    android:id="@+id/tv_dr_2"
-                    android:layout_width="90dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/shape_radius_edit_bg"
-                    android:gravity="center"
-                    android:onClick="selectDr2"
-                    android:text="" />
-            </LinearLayout>
-
-            <CheckBox
-                android:id="@+id/cb_adr"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:button="@null"
-                android:drawableRight="@drawable/selector_cb_btn"
-                android:drawablePadding="30dp"
-                android:paddingLeft="12dp"
-                android:paddingTop="6dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="6dp"
-                android:text="ADR"
-                android:textSize="15sp"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingTop="50dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="50dp">
-
-                <TextView
-                    android:id="@+id/tv_connect"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.0"
-                    android:background="@drawable/shape_radius_btn_bg"
-                    android:gravity="center"
-                    android:onClick="onConnect"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:text="Connect"
-                    android:textColor="@color/white_ffffff"
-                    android:textSize="15sp" />
-
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="Device Setting"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_device_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_toRightOf="@id/device_setting"
+            android:drawableRight="@drawable/ic_arrows"
+            android:drawablePadding="10dp"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_multicast_setting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white_ffffff"
+        android:onClick="multicastSetting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="Multicast Setting"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_multicast_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:drawableRight="@drawable/ic_arrows"
+            android:drawablePadding="10dp"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_alarm_setting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white_ffffff"
+        android:onClick="alarmSetting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="Alarm Setting"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_alarm_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:drawableRight="@drawable/ic_arrows"
+            android:drawablePadding="10dp"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_ble_setting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white_ffffff"
+        android:onClick="bleSetting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="BLE Setting"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_ble_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:drawableRight="@drawable/ic_arrows"
+            android:drawablePadding="10dp"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_gps_setting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white_ffffff"
+        android:onClick="gpsSetting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="GPS Setting"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_gps_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:drawableRight="@drawable/ic_arrows"
+            android:drawablePadding="10dp"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_scan_setting"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white_ffffff"
+        android:onClick="scanSetting">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="Scan Setting"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_scan_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:drawableRight="@drawable/ic_arrows"
+            android:drawablePadding="10dp"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
 </LinearLayout>

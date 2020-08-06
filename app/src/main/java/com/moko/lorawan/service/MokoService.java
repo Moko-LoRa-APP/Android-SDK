@@ -18,6 +18,7 @@ import com.moko.support.task.UpgradeMCUDetailTask;
 import com.moko.support.task.UpgradeMCUTask;
 import com.moko.support.task.WriteADRTask;
 import com.moko.support.task.WriteAlarmGPSSwitchTask;
+import com.moko.support.task.WriteAlarmSatelliteSearchTimeTask;
 import com.moko.support.task.WriteAlarmStatusTask;
 import com.moko.support.task.WriteAlarmTriggerModeTask;
 import com.moko.support.task.WriteAlarmUploadIntervalTask;
@@ -176,6 +177,10 @@ public class MokoService extends Service implements MokoOrderTaskCallback {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getGPSAndSensor(this));
     }
 
+    public void getDeviceSettingType() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getDeviceSettingType(this));
+    }
+
     public void getDeviceSetting() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getDeviceSetting(this));
     }
@@ -194,6 +199,10 @@ public class MokoService extends Service implements MokoOrderTaskCallback {
 
     public void getAlarmSetting() {
         MokoSupport.getInstance().sendOrder(OrderTaskCreator.getAlarmSetting(this));
+    }
+
+    public void getGPSSetting() {
+        MokoSupport.getInstance().sendOrder(OrderTaskCreator.getGPSSetting(this));
     }
 
     public void getCHDR() {
@@ -420,6 +429,12 @@ public class MokoService extends Service implements MokoOrderTaskCallback {
     public OrderTask getAlarmUploadIntervalOrderTask(int uploadInterval) {
         WriteAlarmUploadIntervalTask orderTask = new WriteAlarmUploadIntervalTask(this);
         orderTask.setOrderData(uploadInterval);
+        return orderTask;
+    }
+
+    public OrderTask getAlarmSatelliteSearchTimeOrderTask(int searchTime) {
+        WriteAlarmSatelliteSearchTimeTask orderTask = new WriteAlarmSatelliteSearchTimeTask(this);
+        orderTask.setOrderData(searchTime);
         return orderTask;
     }
 }

@@ -32,44 +32,50 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class BasicInfoActivity extends BaseActivity {
+public class SettingActivity extends BaseActivity {
 
-    @Bind(R.id.tv_connect_status)
-    TextView tvConnectStatus;
+
+    @Bind(R.id.tv_device_setting)
+    TextView tvDeviceSetting;
     @Bind(R.id.tv_device_name)
     TextView tvDeviceName;
-    @Bind(R.id.rl_gps_axis)
-    RelativeLayout rlGpsAxis;
-    @Bind(R.id.rl_sensor_data)
-    RelativeLayout rlSensorData;
-    @Bind(R.id.rl_alarm_status)
-    RelativeLayout rlAlarmStatus;
-    @Bind(R.id.tv_alarm_status)
-    TextView tvAlarmStatus;
+    @Bind(R.id.rl_multicast_setting)
+    RelativeLayout rlMulticastSetting;
+    @Bind(R.id.rl_alarm_setting)
+    RelativeLayout rlAlarmSetting;
+    @Bind(R.id.rl_ble_setting)
+    RelativeLayout rlBleSetting;
+    @Bind(R.id.rl_scan_setting)
+    RelativeLayout rlScanSetting;
+    @Bind(R.id.rl_gps_setting)
+    RelativeLayout rlGpsSetting;
 
-    private String[] connectStatusStrs;
+    private String[] regions;
+    private String[] classTypes;
+    private String[] uploadModes;
     private MokoService mMokoService;
     private boolean mReceiverTag = false;
-    private String mDeviceName;
-    private String mDeviceMac;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic_info);
+        setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
-        mDeviceName = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_NAME);
-        mDeviceMac = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_MAC);
-        int connectStatus = MokoSupport.getInstance().getConnectStatus();
+        int region = MokoSupport.getInstance().getRegion();
+        int classType = MokoSupport.getInstance().getClassType();
+        int uploadMode = MokoSupport.getInstance().getUploadMode();
         int deviceType = MokoSupport.deviceTypeEnum.getDeviceType();
-        rlGpsAxis.setVisibility(deviceType == 0 ? View.VISIBLE : View.GONE);
-        rlSensorData.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
-        rlAlarmStatus.setVisibility(deviceType == 3 ? View.VISIBLE : View.GONE);
-        tvAlarmStatus.setText(MokoSupport.getInstance().alarmStatus == 0 ? "Off" : "On");
+        rlBleSetting.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
+        rlScanSetting.setVisibility(deviceType == 2 || deviceType == 3 ? View.VISIBLE : View.GONE);
+        rlMulticastSetting.setVisibility(deviceType != 0 && deviceType != 3 ? View.VISIBLE : View.GONE);
+        rlAlarmSetting.setVisibility(deviceType == 3 ? View.VISIBLE : View.GONE);
+        rlGpsSetting.setVisibility(deviceType == 3 ? View.VISIBLE : View.GONE);
         String modelName = MokoSupport.getInstance().getModelName();
-        connectStatusStrs = getResources().getStringArray(R.array.connect_status);
-        tvConnectStatus.setText(connectStatusStrs[connectStatus]);
+        regions = getResources().getStringArray(R.array.region);
+        classTypes = getResources().getStringArray(R.array.class_type);
+        uploadModes = getResources().getStringArray(R.array.upload_mode);
+        tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
         tvDeviceName.setText(modelName);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
@@ -86,7 +92,7 @@ public class BasicInfoActivity extends BaseActivity {
             filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
             filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(200);
+            filter.setPriority(300);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
         }
@@ -116,7 +122,7 @@ public class BasicInfoActivity extends BaseActivity {
                     int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_OFF:
-                            backToHome();
+                            finish();
                             break;
                     }
                 }
@@ -125,7 +131,7 @@ public class BasicInfoActivity extends BaseActivity {
                     OrderEnum orderEnum = response.order;
                     switch (orderEnum) {
                         case READ_BLE:
-                            ToastUtils.showToast(BasicInfoActivity.this, "Error");
+                            ToastUtils.showToast(SettingActivity.this, "Error");
                             break;
                     }
                 }
@@ -137,22 +143,35 @@ public class BasicInfoActivity extends BaseActivity {
                     OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
                     OrderEnum orderEnum = response.order;
                     switch (orderEnum) {
-                        case READ_LORA_FIRMWARE:
-                            // 跳转设备信息页面
-                            startActivityForResult(new Intent(BasicInfoActivity.this, DeviceInfoActivity.class), AppConstants.REQUEST_CODE_REFRESH);
-                            break;
-                        case READ_9_AXIS_ANGLE:
-                            // 跳转9轴和传感器页面
-                            startActivityForResult(new Intent(BasicInfoActivity.this, GPSAndSensorDataActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                        case READ_ADR:
+                            // 跳转设置页面
+                            startActivityForResult(new Intent(SettingActivity.this, DeviceSettingActivity.class), AppConstants.REQUEST_CODE_DEVICE_SETTING);
                             break;
                         case READ_UPLOAD_MODE:
-                            // 跳转设置页面
-                            startActivityForResult(new Intent(BasicInfoActivity.this, SettingActivity.class), AppConstants.REQUEST_CODE_SETTING);
+                            int region = MokoSupport.getInstance().getRegion();
+                            int classType = MokoSupport.getInstance().getClassType();
+                            int uploadMode = MokoSupport.getInstance().getUploadMode();
+                            tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
                             break;
-                        case READ_CONNECT_STATUS:
-                            int connectStatus = MokoSupport.getInstance().getConnectStatus();
-                            tvConnectStatus.setText(connectStatusStrs[connectStatus]);
-                            tvAlarmStatus.setText(MokoSupport.getInstance().alarmStatus == 0 ? "Off" : "On");
+                        case READ_BLE:
+                            // 跳转蓝牙设置页面
+                            startActivityForResult(new Intent(SettingActivity.this, BleSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
+                        case READ_SCAN_SWITCH:
+                            // 跳转扫描设置页面
+                            startActivityForResult(new Intent(SettingActivity.this, ScanSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
+                        case READ_MULTICAST_APPSKEY:
+                            // 跳转组播设置页面
+                            startActivityForResult(new Intent(SettingActivity.this, MulticastSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
+                        case READ_ALAMR_VIBRATION_SWITCH:
+                            // 跳转报警设置页面
+                            startActivityForResult(new Intent(SettingActivity.this, AlarmSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                            break;
+                        case READ_ALARM_GPS_SWITCH:
+                            // 跳转GPS设置页面
+                            startActivityForResult(new Intent(SettingActivity.this, GPSSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                     }
                 }
@@ -187,77 +206,66 @@ public class BasicInfoActivity extends BaseActivity {
 
 
     public void back(View view) {
-        backToHome();
-    }
-
-    private void backToHome() {
-        MokoSupport.getInstance().disConnectBle();
         finish();
     }
 
-    @Override
-    public void onBackPressed() {
-        backToHome();
-    }
-
-    public void thSensorData(View view) {
+    public void deviceSetting(View view) {
         showLoadingProgressDialog();
-        mMokoService.getSensorData();
+        mMokoService.getDeviceSetting();
     }
 
-    public void gpsAndSensorData(View view) {
+
+    public void bleSetting(View view) {
         showLoadingProgressDialog();
-        mMokoService.getGPSAndSensorData();
+        mMokoService.getBleInfo();
     }
 
-    public void uplinkTest(View view) {
-        startActivityForResult(new Intent(this, UplinkDataTestActivity.class), AppConstants.REQUEST_CODE_REFRESH);
-    }
-
-    public void deviceInfo(View view) {
+    public void scanSetting(View view) {
         showLoadingProgressDialog();
-        mMokoService.getDeviceInfo();
+        mMokoService.getScanSetting();
     }
 
-    public void ota(View view) {
-        Intent intent = new Intent(this, OTAActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mDeviceName);
-        intent.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mDeviceMac);
-        startActivityForResult(intent, AppConstants.REQUEST_CODE_REFRESH);
+    public void multicastSetting(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getMulticastSetting();
     }
 
-    public void log(View view) {
-        startActivityForResult(new Intent(this, LogActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+    public void alarmSetting(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getAlarmSetting();
+    }
+
+    public void gpsSetting(View view) {
+        showLoadingProgressDialog();
+        mMokoService.getGPSSetting();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AppConstants.REQUEST_CODE_SETTING) {
+        if (requestCode == AppConstants.REQUEST_CODE_DEVICE_SETTING) {
             if (resultCode == RESULT_OK) {
-                backToHome();
+                setResult(RESULT_OK);
+                finish();
             } else {
                 showLoadingProgressDialog();
-                tvConnectStatus.postDelayed(new Runnable() {
+                tvDeviceName.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mMokoService.getBasicInfo();
+                        mMokoService.getDeviceSettingType();
                     }
                 }, 500);
             }
         } else if (requestCode == AppConstants.REQUEST_CODE_REFRESH) {
             showLoadingProgressDialog();
-            tvConnectStatus.postDelayed(new Runnable() {
+            tvDeviceName.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mMokoService.getBasicInfo();
+                    mMokoService.getDeviceSettingType();
                 }
             }, 500);
         }
     }
 
-    public void setting(View view) {
-        showLoadingProgressDialog();
-        mMokoService.getDeviceSettingType();
-    }
+
 }

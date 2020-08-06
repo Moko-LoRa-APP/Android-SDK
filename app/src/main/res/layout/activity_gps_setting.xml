@@ -36,11 +36,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Vibration Switch"
+            android:text="GPS Switch"
             android:textSize="15sp" />
 
         <CheckBox
-            android:id="@+id/cb_vibration_switch"
+            android:id="@+id/cb_gps_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -57,58 +57,21 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:gravity="center_vertical"
-            android:text="Trigger Mode"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_trigger_mode"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:background="@drawable/shape_radius_edit_bg"
-            android:gravity="center"
-            android:onClick="selectTriggerMode"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:singleLine="true"
-            android:text=""
-            android:textSize="15sp"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.65" />
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:padding="12dp">
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Alarm Report Interval"
+            android:text="Satellite Search Time"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/et_report_interval"
+            android:id="@+id/et_search_time"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:background="@drawable/shape_radius_edit_bg"
             android:gravity="center"
             android:inputType="number"
-            android:maxLength="3"
+            android:maxLength="2"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:singleLine="true"
@@ -120,16 +83,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.2" />
 
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="S"
+            android:text="min"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/et_report_interval"
+            app:layout_constraintLeft_toRightOf="@id/et_search_time"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
     </android.support.constraint.ConstraintLayout>
 
     <View

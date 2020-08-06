@@ -12,6 +12,7 @@ import com.moko.support.task.Read9AxisAngleTask;
 import com.moko.support.task.Read9AxisGTask;
 import com.moko.support.task.Read9AxisMTask;
 import com.moko.support.task.ReadADRTask;
+import com.moko.support.task.ReadAlarmSatelliteSearchTimeTask;
 import com.moko.support.task.ReadAlarmStatusTask;
 import com.moko.support.task.ReadAlarmTriggerModeTask;
 import com.moko.support.task.ReadAlarmUploadIntervalTask;
@@ -55,7 +56,7 @@ import java.util.ArrayList;
 public class OrderTaskCreator {
 
 
-    public static OrderTask[] openNotify(){
+    public static OrderTask[] openNotify() {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         switch (MokoSupport.deviceTypeEnum) {
             case LW001_BG:
@@ -78,17 +79,25 @@ public class OrderTaskCreator {
 
     public static OrderTask[] getBasicInfo(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(new ReadConnectStatusTask(callback));
-        orderTasks.add(new ReadRegionTask(callback));
-        orderTasks.add(new ReadClassTypeTask(callback));
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
+            orderTasks.add(new ReadAlarmStatusTask(callback));
         orderTasks.add(new ReadModelNameTask(callback));
+
         if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW001_BG) {
             orderTasks.add(new WriteRTCTimeTask(callback));
         }
-//        orderTasks.add(new ReadDeviceTypeTask(callback));
+        orderTasks.add(new ReadConnectStatusTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
+    public static OrderTask[] getDeviceSettingType(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadRegionTask(callback));
+        orderTasks.add(new ReadClassTypeTask(callback));
         orderTasks.add(new ReadUploadModeTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
+
 
     public static OrderTask[] getDeviceInfo(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
@@ -123,6 +132,9 @@ public class OrderTaskCreator {
             orderTasks.add(new ReadUploadIntervalTask(callback));
         }
         orderTasks.add(new ReadMsgTypeTask(callback));
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
+            orderTasks.add(new ReadAlarmSatelliteSearchTimeTask(callback));
+        }
         orderTasks.add(new ReadADRTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
@@ -168,13 +180,16 @@ public class OrderTaskCreator {
 
     public static OrderTask[] getAlarmSetting(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(new ReadFilterNameTask(callback));
-        orderTasks.add(new ReadFilterRSSITask(callback));
-        orderTasks.add(new ReadAlarmStatusTask(callback));
-        orderTasks.add(new ReadAlarmTriggerModeTask(callback));
         orderTasks.add(new ReadAlarmUploadIntervalTask(callback));
-        orderTasks.add(new ReadAlarmGPSSwitchModeTask(callback));
         orderTasks.add(new ReadAlarmVibrationSwitchModeTask(callback));
+        orderTasks.add(new ReadAlarmTriggerModeTask(callback));
+        return orderTasks.toArray(new OrderTask[]{});
+    }
+
+    public static OrderTask[] getGPSSetting(MokoOrderTaskCallback callback) {
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadAlarmSatelliteSearchTimeTask(callback));
+        orderTasks.add(new ReadAlarmGPSSwitchModeTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 }

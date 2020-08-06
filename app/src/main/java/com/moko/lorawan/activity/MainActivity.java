@@ -168,7 +168,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
                     OrderEnum orderEnum = response.order;
                     switch (orderEnum) {
-                        case READ_UPLOAD_MODE:
+                        case READ_CONNECT_STATUS:
                             LogModule.clearInfoForFile();
                             // 跳转基础信息页面
                             Intent i = new Intent(MainActivity.this, BasicInfoActivity.class);

@@ -102,7 +102,7 @@ public class ScanSettingActivity extends BaseActivity {
             filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
             filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(300);
+            filter.setPriority(400);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
         }

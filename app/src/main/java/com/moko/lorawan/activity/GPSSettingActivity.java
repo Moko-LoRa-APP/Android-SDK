@@ -9,17 +9,13 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.InputFilter;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
-import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
@@ -39,38 +35,27 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class AlarmSettingActivity extends BaseActivity {
+public class GPSSettingActivity extends BaseActivity {
 
-    @Bind(R.id.cb_vibration_switch)
-    CheckBox cbVibrationSwitch;
-    @Bind(R.id.tv_trigger_mode)
-    TextView tvTriggerMode;
-    @Bind(R.id.et_report_interval)
-    EditText etReportInterval;
+
     @Bind(R.id.tv_save)
     TextView tvSave;
+    @Bind(R.id.cb_gps_switch)
+    CheckBox cbGpsSwitch;
+    @Bind(R.id.et_search_time)
+    EditText etSearchTime;
 
     private MokoService mMokoService;
     private boolean mReceiverTag = false;
     private boolean mIsFailed;
-    private String[] mTriggerMode;
-    private int mModeSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_setting);
+        setContentView(R.layout.activity_gps_setting);
         ButterKnife.bind(this);
-        final int triggerMode = MokoSupport.getInstance().alarmTriggerMode;
-        if (triggerMode < 1 || triggerMode > 3) {
-            finish();
-            return;
-        }
-        mModeSelected = triggerMode - 1;
-        cbVibrationSwitch.setChecked(MokoSupport.getInstance().alamrVibrationSwitch != 0);
-        mTriggerMode = getResources().getStringArray(R.array.trigger_mode);
-        tvTriggerMode.setText(mTriggerMode[mModeSelected]);
-        etReportInterval.setText(MokoSupport.getInstance().alarmUploadInterval + "");
+        cbGpsSwitch.setChecked(MokoSupport.getInstance().alarmGpsSwitch != 0);
+        etSearchTime.setText(MokoSupport.getInstance().alarmSatelliteSearchTime + "");
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
     }
@@ -125,9 +110,9 @@ public class AlarmSettingActivity extends BaseActivity {
                 if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                     dismissLoadingProgressDialog();
                     if (!mIsFailed) {
-                        ToastUtils.showToast(AlarmSettingActivity.this, "Execute after bluetooth disconnect");
+                        ToastUtils.showToast(GPSSettingActivity.this, "Execute after bluetooth disconnect");
                     } else {
-                        ToastUtils.showToast(AlarmSettingActivity.this, "Error");
+                        ToastUtils.showToast(GPSSettingActivity.this, "Error");
                     }
                 }
                 if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
@@ -137,9 +122,7 @@ public class AlarmSettingActivity extends BaseActivity {
                     byte[] value = response.responseValue;
                     switch (orderEnum) {
                         case WRITE_ALARM_GPS_SWITCH:
-                        case WRITE_ALARM_VIBRATION_SWITCH:
-                        case WRITE_ALARM_TRIGGER_MODE:
-                        case WRITE_ALARM_UPLOAD_INTERVAL:
+                        case WRITE_ALARM_SATELLITE_SEARCH_TIME:
                             if ((value[3] & 0xff) != 0xAA) {
                                 mIsFailed = true;
                             }
@@ -181,37 +164,21 @@ public class AlarmSettingActivity extends BaseActivity {
 
     public void onSave(View view) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        String reportInterval = etReportInterval.getText().toString();
-        if (TextUtils.isEmpty(reportInterval)) {
-            ToastUtils.showToast(this, "Report Interval is empty");
+        String searchTime = etSearchTime.getText().toString();
+        if (TextUtils.isEmpty(searchTime)) {
+            ToastUtils.showToast(this, "Satellite Search Time is empty");
             return;
         }
-        int intervalInt = Integer.parseInt(reportInterval);
-        if (intervalInt < 10 || intervalInt > 600) {
-            ToastUtils.showToast(this, "Report Interval range 10~600");
+        int timeInt = Integer.parseInt(searchTime);
+        if (timeInt < 1 || timeInt > 10) {
+            ToastUtils.showToast(this, "Satellite Search Time range 1~10");
             return;
         }
-        orderTasks.add(mMokoService.getAlarmTriggerModeOrderTask(mModeSelected + 1));
-        orderTasks.add(mMokoService.getAlarmUploadIntervalOrderTask(intervalInt));
-        orderTasks.add(mMokoService.getAlarmVibrationSwitchOrderTask(cbVibrationSwitch.isChecked() ? 1 : 0));
+
+
+        orderTasks.add(mMokoService.getAlarmGPSSwitchOrderTask(cbGpsSwitch.isChecked() ? 1 : 0));
+        orderTasks.add(mMokoService.getAlarmSatelliteSearchTimeOrderTask(timeInt));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
-    }
-
-    public void selectTriggerMode(View view) {
-        ArrayList<String> modes = new ArrayList<>();
-        for (int i = 0; i < mTriggerMode.length; i++) {
-            modes.add(mTriggerMode[i]);
-        }
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(modes, mModeSelected);
-        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-                mModeSelected = value;
-                tvTriggerMode.setText(mTriggerMode[mModeSelected]);
-            }
-        });
-        bottomDialog.show(getSupportFragmentManager());
     }
 }

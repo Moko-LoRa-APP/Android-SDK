@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.AlertMessageDialog;
-import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.dialog.RegionBottomDialog;
 import com.moko.lorawan.entity.Region;
@@ -104,6 +102,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     LinearLayout llMsgType;
     @Bind(R.id.ll_device_type)
     LinearLayout llDeviceType;
+    @Bind(R.id.tv_report_interval_tips)
+    TextView tvReportIntervalTips;
 
 
     private MokoService mMokoService;
@@ -121,7 +121,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_device_setting);
         ButterKnife.bind(this);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         rgModem.setOnCheckedChangeListener(this);
@@ -148,6 +148,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         tvRegion.setText(mRegions[mSelectedRegion]);
         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
             llDeviceType.setVisibility(View.GONE);
+            tvReportIntervalTips.setVisibility(View.VISIBLE);
         } else {
             int classType = MokoSupport.getInstance().getClassType();
             if (classType == 1) {
@@ -168,8 +169,14 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             llReportInvterval.setVisibility(View.GONE);
         } else {
             llReportInvterval.setVisibility(View.VISIBLE);
-            long uploadInterval = MokoSupport.getInstance().uploadInterval;
-            etReportInterval.setText(uploadInterval + "");
+            if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
+                long uploadInterval = MokoSupport.getInstance().uploadInterval;
+                int searchTime = MokoSupport.getInstance().alarmSatelliteSearchTime;
+                etReportInterval.setText(String.valueOf(uploadInterval + searchTime));
+            } else {
+                long uploadInterval = MokoSupport.getInstance().uploadInterval;
+                etReportInterval.setText(uploadInterval + "");
+            }
         }
         int msgType = MokoSupport.getInstance().msgType;
         if (msgType == 1) {
@@ -197,7 +204,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
             filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(300);
+            filter.setPriority(400);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
         }
@@ -453,75 +460,75 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
 //        bottomDialog.show(getSupportFragmentManager());
 //    }
 
-    public void onSave(View view) {
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        if (rbModemAbp.isChecked()) {
-            String devAddr = etDevAddr.getText().toString();
-            String nwkSkey = etNwkSkey.getText().toString();
-            String appSkey = etAppSkey.getText().toString();
-            if (devAddr.length() != 8) {
-                ToastUtils.showToast(this, "data length error");
-                return;
-            }
-            if (nwkSkey.length() != 32) {
-                ToastUtils.showToast(this, "data length error");
-                return;
-            }
-            if (appSkey.length() != 32) {
-                ToastUtils.showToast(this, "data length error");
-                return;
-            }
-            orderTasks.add(mMokoService.getDevAddrOrderTask(devAddr));
-            orderTasks.add(mMokoService.getNwkSKeyOrderTask(nwkSkey));
-            orderTasks.add(mMokoService.getAppSKeyOrderTask(appSkey));
-            orderTasks.add(mMokoService.getUploadModeOrderTask(1));
-        } else {
-            String devEui = etDevEui.getText().toString();
-            String appEui = etAppEui.getText().toString();
-            String appKey = etAppKey.getText().toString();
-            if (devEui.length() != 16) {
-                ToastUtils.showToast(this, "data length error");
-                return;
-            }
-            if (appEui.length() != 16) {
-                ToastUtils.showToast(this, "data length error");
-                return;
-            }
-            if (appKey.length() != 32) {
-                ToastUtils.showToast(this, "data length error");
-                return;
-            }
-            orderTasks.add(mMokoService.getDevEUIOrderTask(devEui));
-            orderTasks.add(mMokoService.getAppEUIOrderTask(appEui));
-            orderTasks.add(mMokoService.getAppKeyOrderTask(appKey));
-            orderTasks.add(mMokoService.getUploadModeOrderTask(2));
-        }
-        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW002_TH) {
-            String reportInterval = etReportInterval.getText().toString();
-            if (TextUtils.isEmpty(reportInterval)) {
-                ToastUtils.showToast(this, "Reporting Interval is empty");
-                return;
-            }
-            int intervalInt = Integer.parseInt(reportInterval);
-            if (intervalInt < 1 || intervalInt > 14400) {
-                ToastUtils.showToast(this, "Reporting Interval range 1~14400");
-                return;
-            }
-            orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
-        }
-        orderTasks.add(mMokoService.getMsgTypeOrderTask(rbTypeUnconfirmed.isChecked() ? 0 : 1));
-        mIsFailed = false;
-        // 保存
-        orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
-        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
-            orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
-        }
-//        orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
-//        orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
-//        orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-        showLoadingProgressDialog();
-    }
+//    public void onSave(View view) {
+//        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+//        if (rbModemAbp.isChecked()) {
+//            String devAddr = etDevAddr.getText().toString();
+//            String nwkSkey = etNwkSkey.getText().toString();
+//            String appSkey = etAppSkey.getText().toString();
+//            if (devAddr.length() != 8) {
+//                ToastUtils.showToast(this, "data length error");
+//                return;
+//            }
+//            if (nwkSkey.length() != 32) {
+//                ToastUtils.showToast(this, "data length error");
+//                return;
+//            }
+//            if (appSkey.length() != 32) {
+//                ToastUtils.showToast(this, "data length error");
+//                return;
+//            }
+//            orderTasks.add(mMokoService.getDevAddrOrderTask(devAddr));
+//            orderTasks.add(mMokoService.getNwkSKeyOrderTask(nwkSkey));
+//            orderTasks.add(mMokoService.getAppSKeyOrderTask(appSkey));
+//            orderTasks.add(mMokoService.getUploadModeOrderTask(1));
+//        } else {
+//            String devEui = etDevEui.getText().toString();
+//            String appEui = etAppEui.getText().toString();
+//            String appKey = etAppKey.getText().toString();
+//            if (devEui.length() != 16) {
+//                ToastUtils.showToast(this, "data length error");
+//                return;
+//            }
+//            if (appEui.length() != 16) {
+//                ToastUtils.showToast(this, "data length error");
+//                return;
+//            }
+//            if (appKey.length() != 32) {
+//                ToastUtils.showToast(this, "data length error");
+//                return;
+//            }
+//            orderTasks.add(mMokoService.getDevEUIOrderTask(devEui));
+//            orderTasks.add(mMokoService.getAppEUIOrderTask(appEui));
+//            orderTasks.add(mMokoService.getAppKeyOrderTask(appKey));
+//            orderTasks.add(mMokoService.getUploadModeOrderTask(2));
+//        }
+//        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW002_TH) {
+//            String reportInterval = etReportInterval.getText().toString();
+//            if (TextUtils.isEmpty(reportInterval)) {
+//                ToastUtils.showToast(this, "Reporting Interval is empty");
+//                return;
+//            }
+//            int intervalInt = Integer.parseInt(reportInterval);
+//            if (intervalInt < 1 || intervalInt > 14400) {
+//                ToastUtils.showToast(this, "Reporting Interval range 1~14400");
+//                return;
+//            }
+//            orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
+//        }
+//        orderTasks.add(mMokoService.getMsgTypeOrderTask(rbTypeUnconfirmed.isChecked() ? 0 : 1));
+//        mIsFailed = false;
+//        // 保存
+//        orderTasks.add(mMokoService.getRegionOrderTask(mSelectedRegion));
+//        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
+//            orderTasks.add(mMokoService.getClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
+//        }
+////        orderTasks.add(mMokoService.getCHOrderTask(mSelectedCh1, mSelectedCh2));
+////        orderTasks.add(mMokoService.getDROrderTask(mSelectedDr1, mSelectedDr2));
+////        orderTasks.add(mMokoService.getADROrderTask(cbAdr.isChecked() ? 1 : 0));
+//        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+//        showLoadingProgressDialog();
+//    }
 
     public void onConnect(View view) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
@@ -572,12 +579,25 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                 ToastUtils.showToast(this, "Reporting Interval is empty");
                 return;
             }
-            int intervalInt = Integer.parseInt(reportInterval);
-            if (intervalInt < 1 || intervalInt > 14400) {
-                ToastUtils.showToast(this, "Reporting Interval range 1~14400");
-                return;
+            if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
+                int intervalInt = Integer.parseInt(reportInterval);
+                int searchTime = MokoSupport.getInstance().alarmSatelliteSearchTime;
+                int min = 1 + searchTime;
+                int max = 14400 + searchTime;
+                String toast = String.format("Reporting Interval range %d~%d", min, max);
+                if (intervalInt < min || intervalInt > max) {
+                    ToastUtils.showToast(this, toast);
+                    return;
+                }
+                orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt - searchTime));
+            } else {
+                int intervalInt = Integer.parseInt(reportInterval);
+                if (intervalInt < 1 || intervalInt > 14400) {
+                    ToastUtils.showToast(this, "Reporting Interval range 1~14400");
+                    return;
+                }
+                orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
             }
-            orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt));
         }
         orderTasks.add(mMokoService.getMsgTypeOrderTask(rbTypeUnconfirmed.isChecked() ? 0 : 1));
         mIsFailed = false;

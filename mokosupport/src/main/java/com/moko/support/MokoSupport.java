@@ -772,5 +772,6 @@ public class MokoSupport implements MokoResponseCallback {
     public int alarmTriggerMode;
     public int alamrVibrationSwitch;
     public int alarmGpsSwitch;
+    public int alarmSatelliteSearchTime;
 }
 

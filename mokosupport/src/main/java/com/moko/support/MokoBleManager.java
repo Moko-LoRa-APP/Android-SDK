@@ -5,8 +5,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.moko.support.callback.MokoResponseCallback;
@@ -24,8 +22,6 @@ public class MokoBleManager extends BleManager<BleManagerCallbacks> {
     private static MokoBleManager managerInstance = null;
     private final static UUID SERVICE_UUID = UUID.fromString("0000FF00-0000-1000-8000-00805F9B34FB");
 
-    private Handler handler;
-
     public static synchronized MokoBleManager getMokoBleManager(final Context context) {
         if (managerInstance == null) {
             managerInstance = new MokoBleManager(context);
@@ -40,18 +36,6 @@ public class MokoBleManager extends BleManager<BleManagerCallbacks> {
 
     public MokoBleManager(@NonNull Context context) {
         super(context);
-    }
-
-    public void setHandler(Handler handler) {
-        this.handler = handler;
-    }
-
-    private void runOnUiThread(@NonNull final Runnable runnable) {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            handler.post(runnable);
-        } else {
-            runnable.run();
-        }
     }
 
     public void setBeaconResponseCallback(MokoResponseCallback mMokoResponseCallback) {
