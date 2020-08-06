@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,12 +23,17 @@ import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
+import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -82,11 +88,7 @@ public class BasicInfoActivity extends BaseActivity {
             mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(MokoConstants.ACTION_ORDER_RESULT);
-            filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
-            filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(200);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
         }
@@ -106,6 +108,42 @@ public class BasicInfoActivity extends BaseActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        EventBus.getDefault().cancelEventDelivery(event);
+        final String action = event.getAction();
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+            }
+            if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+                dismissLoadingProgressDialog();
+            }
+            if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderEnum orderEnum = response.order;
+                switch (orderEnum) {
+                    case READ_LORA_FIRMWARE:
+                        // 跳转设备信息页面
+                        startActivityForResult(new Intent(BasicInfoActivity.this, DeviceInfoActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                        break;
+                    case READ_9_AXIS_ANGLE:
+                        // 跳转9轴和传感器页面
+                        startActivityForResult(new Intent(BasicInfoActivity.this, GPSAndSensorDataActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                        break;
+                    case READ_UPLOAD_MODE:
+                        // 跳转设置页面
+                        startActivityForResult(new Intent(BasicInfoActivity.this, SettingActivity.class), AppConstants.REQUEST_CODE_SETTING);
+                        break;
+                    case READ_CONNECT_STATUS:
+                        int connectStatus = MokoSupport.getInstance().getConnectStatus();
+                        tvConnectStatus.setText(connectStatusStrs[connectStatus]);
+                        tvAlarmStatus.setText(MokoSupport.getInstance().alarmStatus == 0 ? "Off" : "On");
+                        break;
+                }
+            }
+        });
+    }
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -117,42 +155,6 @@ public class BasicInfoActivity extends BaseActivity {
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             backToHome();
-                            break;
-                    }
-                }
-                if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    switch (orderEnum) {
-                        case READ_BLE:
-                            ToastUtils.showToast(BasicInfoActivity.this, "Error");
-                            break;
-                    }
-                }
-                if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                    dismissLoadingProgressDialog();
-                }
-                if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
-                    abortBroadcast();
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    switch (orderEnum) {
-                        case READ_LORA_FIRMWARE:
-                            // 跳转设备信息页面
-                            startActivityForResult(new Intent(BasicInfoActivity.this, DeviceInfoActivity.class), AppConstants.REQUEST_CODE_REFRESH);
-                            break;
-                        case READ_9_AXIS_ANGLE:
-                            // 跳转9轴和传感器页面
-                            startActivityForResult(new Intent(BasicInfoActivity.this, GPSAndSensorDataActivity.class), AppConstants.REQUEST_CODE_REFRESH);
-                            break;
-                        case READ_UPLOAD_MODE:
-                            // 跳转设置页面
-                            startActivityForResult(new Intent(BasicInfoActivity.this, SettingActivity.class), AppConstants.REQUEST_CODE_SETTING);
-                            break;
-                        case READ_CONNECT_STATUS:
-                            int connectStatus = MokoSupport.getInstance().getConnectStatus();
-                            tvConnectStatus.setText(connectStatusStrs[connectStatus]);
-                            tvAlarmStatus.setText(MokoSupport.getInstance().alarmStatus == 0 ? "Off" : "On");
                             break;
                     }
                 }

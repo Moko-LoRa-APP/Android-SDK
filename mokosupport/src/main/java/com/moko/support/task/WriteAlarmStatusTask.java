@@ -6,7 +6,10 @@ import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class WriteAlarmStatusTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 4;
@@ -45,7 +48,10 @@ public class WriteAlarmStatusTask extends OrderTask {
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
 
         MokoSupport.getInstance().pollTask();
-        callback.onOrderResult(response);
-        MokoSupport.getInstance().executeTask(callback);
+        MokoSupport.getInstance().executeTask();
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
     }
 }

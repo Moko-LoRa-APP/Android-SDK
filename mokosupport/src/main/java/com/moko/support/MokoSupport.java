@@ -21,6 +21,7 @@ import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.MokoCharacteristic;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.handler.MokoCharacteristicHandler;
 import com.moko.support.handler.MokoLeScanHandler;
 import com.moko.support.log.LogModule;
@@ -229,7 +230,7 @@ public class MokoSupport implements MokoResponseCallback {
                 mQueue.offer(ordertask);
                 LogModule.w("添加" + ordertask.order.getOrderName());
             }
-            executeTask(null);
+            executeTask();
         } else {
             for (OrderTask ordertask : orderTasks) {
                 if (ordertask == null) {
@@ -241,14 +242,16 @@ public class MokoSupport implements MokoResponseCallback {
     }
 
     /**
-     * @param callback
-     * @Date 2017/5/11
+     * @Date 2020/8/6
      * @Author wenzheng.liu
-     * @Description 执行命令
+     * @Description 
+     * @ClassPath com.moko.support.MokoSupport
      */
-    public synchronized void executeTask(MokoOrderTaskCallback callback) {
-        if (callback != null && !isSyncData()) {
-            callback.onOrderFinish();
+    public synchronized void executeTask() {
+        if (!isSyncData()) {
+            OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+            event.setAction(MokoConstants.ACTION_ORDER_FINISH);
+            EventBus.getDefault().post(event);
             return;
         }
         if (mQueue.isEmpty()) {
@@ -377,7 +380,7 @@ public class MokoSupport implements MokoResponseCallback {
         LogModule.i(orderTask.order.getOrderName());
         orderTask.orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         mQueue.poll();
-        executeTask(orderTask.callback);
+        executeTask();
     }
 
     @Override

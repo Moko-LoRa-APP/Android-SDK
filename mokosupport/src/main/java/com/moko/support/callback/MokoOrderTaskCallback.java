@@ -8,11 +8,12 @@ import com.moko.support.task.OrderTaskResponse;
  * @Description 返回数据回调类
  * @ClassPath com.moko.support.callback.OrderCallback
  */
+@Deprecated
 public interface MokoOrderTaskCallback {
-
+    @Deprecated
     void onOrderResult(OrderTaskResponse response);
-
+    @Deprecated
     void onOrderTimeout(OrderTaskResponse response);
-
+    @Deprecated
     void onOrderFinish();
 }

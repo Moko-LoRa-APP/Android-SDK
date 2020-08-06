@@ -162,10 +162,12 @@ public class OrderTaskCreator {
 
     public static OrderTask[] getScanSetting(MokoOrderTaskCallback callback) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW003_B) {
+            orderTasks.add(new ReadScanUploadIntervalTask(callback));
+            orderTasks.add(new ReadScanSwitchTask(callback));
+        }
         orderTasks.add(new ReadFilterNameTask(callback));
         orderTasks.add(new ReadFilterRSSITask(callback));
-        orderTasks.add(new ReadScanUploadIntervalTask(callback));
-        orderTasks.add(new ReadScanSwitchTask(callback));
         return orderTasks.toArray(new OrderTask[]{});
     }
 

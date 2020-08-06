@@ -65,23 +65,13 @@ import java.util.Calendar;
 public class MokoService extends Service implements MokoOrderTaskCallback {
 
     @Override
-    public void onOrderResult(OrderTaskResponse response) {
-        Intent intent = new Intent(new Intent(MokoConstants.ACTION_ORDER_RESULT));
-        intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK, response);
-        sendOrderedBroadcast(intent, null);
-    }
+    public void onOrderResult(OrderTaskResponse response) {}
 
     @Override
-    public void onOrderTimeout(OrderTaskResponse response) {
-        Intent intent = new Intent(new Intent(MokoConstants.ACTION_ORDER_TIMEOUT));
-        intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK, response);
-        sendOrderedBroadcast(intent, null);
-    }
+    public void onOrderTimeout(OrderTaskResponse response) {}
 
     @Override
-    public void onOrderFinish() {
-        sendOrderedBroadcast(new Intent(MokoConstants.ACTION_ORDER_FINISH), null);
-    }
+    public void onOrderFinish() {}
 
     @Override
     public void onCreate() {

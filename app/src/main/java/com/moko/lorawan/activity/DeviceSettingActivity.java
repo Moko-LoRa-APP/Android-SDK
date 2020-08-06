@@ -29,6 +29,7 @@ import com.moko.support.MokoSupport;
 import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
@@ -200,11 +201,7 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(MokoConstants.ACTION_ORDER_RESULT);
-            filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
-            filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(400);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
         }
@@ -223,64 +220,54 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
         }
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        EventBus.getDefault().cancelEventDelivery(event);
+        final String action = event.getAction();
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null) {
-                String action = intent.getAction();
-                if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-                    int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
-                    switch (blueState) {
-                        case BluetoothAdapter.STATE_TURNING_OFF:
-                            finish();
-                            break;
-                    }
-                }
-                if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
-
-                }
-                if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+            }
+            if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
 //                    if (mReadCHDR) {
 //                        return;
 //                    }
-                    dismissLoadingProgressDialog();
-                    if (!mIsFailed) {
-                        ToastUtils.showToast(DeviceSettingActivity.this, "Success");
-                    } else {
-                        ToastUtils.showToast(DeviceSettingActivity.this, "Error");
-                    }
+                dismissLoadingProgressDialog();
+                if (!mIsFailed) {
+                    ToastUtils.showToast(DeviceSettingActivity.this, "Success");
+                } else {
+                    ToastUtils.showToast(DeviceSettingActivity.this, "Error");
+                }
 //                    if (mIsResetSuccess) {
 //                        DeviceSettingActivity.this.setResult(RESULT_OK);
 //                        DeviceSettingActivity.this.finish();
 //                    }
-                }
-                if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
-                    abortBroadcast();
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    byte[] value = response.responseValue;
-                    switch (orderEnum) {
-                        case WRITE_DEV_ADDR:
-                        case WRITE_NWK_SKEY:
-                        case WRITE_APP_SKEY:
-                        case WRITE_DEV_EUI:
-                        case WRITE_APP_EUI:
-                        case WRITE_APP_KEY:
-                        case WRITE_CLASS_TYPE:
-                        case WRITE_MSG_TYPE:
-                        case WRITE_UPLOAD_MODE:
-                        case WRITE_UPLOAD_INTERVAL:
-                        case WRITE_CH:
-                        case WRITE_DR:
-                        case WRITE_POWER:
-                        case WRITE_ADR:
-                        case WRITE_CONNECT:
-                        case WRITE_REGION:
-                            if ((value[3] & 0xff) != 0xAA) {
-                                mIsFailed = true;
-                            }
-                            break;
+            }
+            if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderEnum orderEnum = response.order;
+                byte[] value = response.responseValue;
+                switch (orderEnum) {
+                    case WRITE_DEV_ADDR:
+                    case WRITE_NWK_SKEY:
+                    case WRITE_APP_SKEY:
+                    case WRITE_DEV_EUI:
+                    case WRITE_APP_EUI:
+                    case WRITE_APP_KEY:
+                    case WRITE_CLASS_TYPE:
+                    case WRITE_MSG_TYPE:
+                    case WRITE_UPLOAD_MODE:
+                    case WRITE_UPLOAD_INTERVAL:
+                    case WRITE_CH:
+                    case WRITE_DR:
+                    case WRITE_POWER:
+                    case WRITE_ADR:
+                    case WRITE_CONNECT:
+                    case WRITE_REGION:
+                        if ((value[3] & 0xff) != 0xAA) {
+                            mIsFailed = true;
+                        }
+                        break;
 //                        case WRITE_RESET:
 //                            if ((value[3] & 0xff) != 0xAA) {
 //                                mIsFailed = true;
@@ -300,6 +287,23 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
 //                            mSelectedDr2 = MokoSupport.getInstance().dr_2;
 //                            tvDr2.setText("DR" + mSelectedDr2);
 //                            break;
+                }
+            }
+        });
+    }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String action = intent.getAction();
+                if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+                    int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
+                    switch (blueState) {
+                        case BluetoothAdapter.STATE_TURNING_OFF:
+                            finish();
+                            break;
                     }
                 }
             }

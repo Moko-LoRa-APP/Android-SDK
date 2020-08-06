@@ -33,8 +33,11 @@ import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
+import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
 import com.moko.support.utils.MokoUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -107,11 +110,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(MokoConstants.ACTION_ORDER_RESULT);
-            filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
-            filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(100);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
             if (!MokoSupport.getInstance().isBluetoothOpen()) {
@@ -158,26 +157,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                             break;
                     }
                 }
-                if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
-
-                }
-                if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                    dismissLoadingProgressDialog();
-                }
-                if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    switch (orderEnum) {
-                        case READ_CONNECT_STATUS:
-                            LogModule.clearInfoForFile();
-                            // 跳转基础信息页面
-                            Intent i = new Intent(MainActivity.this, BasicInfoActivity.class);
-                            i.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mSelectedDeviceName);
-                            i.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mSelectedDeviceMac);
-                            startActivity(i);
-                            break;
-                    }
-                }
             }
         }
     };
@@ -199,6 +178,31 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     mMokoService.getBasicInfo();
                 }
             }, 500);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        final String action = event.getAction();
+        if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+
+        }
+        if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+            dismissLoadingProgressDialog();
+        }
+        if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+            OrderTaskResponse response = event.getResponse();
+            OrderEnum orderEnum = response.order;
+            switch (orderEnum) {
+                case READ_CONNECT_STATUS:
+                    LogModule.clearInfoForFile();
+                    // 跳转基础信息页面
+                    Intent i = new Intent(MainActivity.this, BasicInfoActivity.class);
+                    i.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mSelectedDeviceName);
+                    i.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mSelectedDeviceMac);
+                    startActivity(i);
+                    break;
+            }
         }
     }
 

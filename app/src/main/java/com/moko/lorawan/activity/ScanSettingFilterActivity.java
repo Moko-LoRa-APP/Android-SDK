@@ -13,10 +13,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
@@ -40,20 +37,14 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ScanSettingActivity extends BaseActivity {
+public class ScanSettingFilterActivity extends BaseActivity {
 
 
     private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";
-    @Bind(R.id.cb_scan_switch)
-    CheckBox cbScanSwitch;
     @Bind(R.id.et_filter_name)
     EditText etFilterName;
     @Bind(R.id.et_filter_rssi)
     EditText etFilterRssi;
-    @Bind(R.id.et_report_interval)
-    EditText etReportInterval;
-    @Bind(R.id.ll_scan_filter)
-    LinearLayout llScanFilter;
     @Bind(R.id.tv_save)
     TextView tvSave;
     private MokoService mMokoService;
@@ -63,22 +54,13 @@ public class ScanSettingActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_setting);
+        setContentView(R.layout.activity_scan_setting_filter);
         ButterKnife.bind(this);
-        llScanFilter.setVisibility(MokoSupport.getInstance().scanSwitch == 0 ? View.GONE : View.VISIBLE);
-        cbScanSwitch.setChecked(MokoSupport.getInstance().scanSwitch != 0);
         etFilterName.setText(MokoSupport.getInstance().filterName);
         int filterRssi = MokoSupport.getInstance().filterRssi;
         etFilterRssi.setText(filterRssi == 0 ? "0" : String.format("-%d", MokoSupport.getInstance().filterRssi));
-        etReportInterval.setText(MokoSupport.getInstance().scanUploadInterval + "");
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
-        cbScanSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                llScanFilter.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            }
-        });
         InputFilter inputFilter = new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -130,9 +112,9 @@ public class ScanSettingActivity extends BaseActivity {
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                 dismissLoadingProgressDialog();
                 if (!mIsFailed) {
-                    ToastUtils.showToast(ScanSettingActivity.this, "Execute after bluetooth disconnect");
+                    ToastUtils.showToast(ScanSettingFilterActivity.this, "Execute after bluetooth disconnect");
                 } else {
-                    ToastUtils.showToast(ScanSettingActivity.this, "Error");
+                    ToastUtils.showToast(ScanSettingFilterActivity.this, "Error");
                 }
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
@@ -142,8 +124,6 @@ public class ScanSettingActivity extends BaseActivity {
                 switch (orderEnum) {
                     case WRITE_FILTER_NAME:
                     case WRITE_FILTER_RSSI:
-                    case WRITE_SCAN_UPLOAD_INTERVAL:
-                    case WRITE_SCAN_SWITCH:
                         if ((value[3] & 0xff) != 0xAA) {
                             mIsFailed = true;
                         }
@@ -202,39 +182,23 @@ public class ScanSettingActivity extends BaseActivity {
 
     public void onSave(View view) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        if (cbScanSwitch.isChecked()) {
-            String reportInterval = etReportInterval.getText().toString();
-            if (TextUtils.isEmpty(reportInterval)) {
-                ToastUtils.showToast(this, "Report Interval is empty");
-                return;
-            }
-            int intervalInt = Integer.parseInt(reportInterval);
-            if (intervalInt < 10 || intervalInt > 65535) {
-                ToastUtils.showToast(this, "Report Interval range 10~65535");
-                return;
-            }
-            String filterName = etFilterName.getText().toString();
+        String filterName = etFilterName.getText().toString();
 
-            String filterRssi = etFilterRssi.getText().toString();
-            if (TextUtils.isEmpty(filterRssi)) {
-                ToastUtils.showToast(this, "Filter RSSI is empty");
-                return;
-            }
-            int filterRssiInt = Integer.parseInt(filterRssi);
-            if (filterRssiInt < -100 || filterRssiInt > 0) {
-                ToastUtils.showToast(this, "Filter RSSI range -100~0");
-                return;
-            }
-
-            orderTasks.add(mMokoService.getScanUploadIntervalOrderTask(intervalInt));
-            orderTasks.add(mMokoService.getFilterNameOrderTask(filterName));
-            orderTasks.add(mMokoService.getFilterRssiOrderTask(filterRssiInt));
-            orderTasks.add(mMokoService.getScanSwitchOrderTask(1));
-            MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-        } else {
-            orderTasks.add(mMokoService.getScanSwitchOrderTask(0));
-            MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+        String filterRssi = etFilterRssi.getText().toString();
+        if (TextUtils.isEmpty(filterRssi)) {
+            ToastUtils.showToast(this, "Filter RSSI is empty");
+            return;
         }
+        int filterRssiInt = Integer.parseInt(filterRssi);
+        if (filterRssiInt < -100 || filterRssiInt > 0) {
+            ToastUtils.showToast(this, "Filter RSSI range -100~0");
+            return;
+        }
+
+        orderTasks.add(mMokoService.getFilterNameOrderTask(filterName));
+        orderTasks.add(mMokoService.getFilterRssiOrderTask(filterRssiInt));
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+
         showLoadingProgressDialog();
     }
 }

@@ -6,7 +6,10 @@ import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class UpgradeMCUDetailTask extends OrderTask {
     // 固件升级
@@ -55,15 +58,20 @@ public class UpgradeMCUDetailTask extends OrderTask {
         response.responseValue = value;
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         MokoSupport.getInstance().pollTask();
-        callback.onOrderResult(response);
-//        MokoSupport.getInstance().executeTask(callback);
-//        LogModule.w("执行下一个任务");
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_RESULT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
     }
 
     @Override
     public boolean timeoutPreTask() {
         MokoSupport.getInstance().pollTask();
-        callback.onOrderTimeout(response);
+        MokoSupport.getInstance().executeTask();
+        OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+        event.setAction(MokoConstants.ACTION_ORDER_TIMEOUT);
+        event.setResponse(response);
+        EventBus.getDefault().post(event);
         return false;
     }
 }

@@ -19,8 +19,10 @@ import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.lorawan.utils.Utils;
 import com.moko.support.MokoConstants;
+import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.task.OrderTaskResponse;
 import com.moko.support.utils.MokoUtils;
 
@@ -57,11 +59,7 @@ public class UplinkDataTestActivity extends BaseActivity {
             mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(MokoConstants.ACTION_ORDER_RESULT);
-            filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
-            filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(300);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
         }
@@ -85,34 +83,7 @@ public class UplinkDataTestActivity extends BaseActivity {
                             break;
                     }
                 }
-                if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    switch (orderEnum) {
-                        case WRITE_UPLINK_DATA_TEST:
-                            ToastUtils.showToast(UplinkDataTestActivity.this, "Fail");
-                            break;
-                    }
 
-                }
-                if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                    dismissLoadingProgressDialog();
-                }
-                if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
-                    abortBroadcast();
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    switch (orderEnum) {
-                        case WRITE_UPLINK_DATA_TEST:
-                            byte[] value = response.responseValue;
-                            if ((value[3] & 0xff) == 0xAA) {
-                                ToastUtils.showToast(UplinkDataTestActivity.this, "Success");
-                            } else {
-                                ToastUtils.showToast(UplinkDataTestActivity.this, "Device Disconnected");
-                            }
-                            break;
-                    }
-                }
             }
         }
     };
@@ -124,6 +95,41 @@ public class UplinkDataTestActivity extends BaseActivity {
             // 设备断开
             finish();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        EventBus.getDefault().cancelEventDelivery(event);
+        final String action = event.getAction();
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderEnum orderEnum = response.order;
+                switch (orderEnum) {
+                    case WRITE_UPLINK_DATA_TEST:
+                        ToastUtils.showToast(UplinkDataTestActivity.this, "Fail");
+                        break;
+                }
+
+            }
+            if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+                dismissLoadingProgressDialog();
+            }
+            if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderEnum orderEnum = response.order;
+                switch (orderEnum) {
+                    case WRITE_UPLINK_DATA_TEST:
+                        byte[] value = response.responseValue;
+                        if ((value[3] & 0xff) == 0xAA) {
+                            ToastUtils.showToast(UplinkDataTestActivity.this, "Success");
+                        } else {
+                            ToastUtils.showToast(UplinkDataTestActivity.this, "Device Disconnected");
+                        }
+                        break;
+                }
+            }
+        });
     }
 
     @Override

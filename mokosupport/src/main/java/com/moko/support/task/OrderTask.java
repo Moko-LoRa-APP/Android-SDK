@@ -1,10 +1,14 @@
 package com.moko.support.task;
 
+import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * @Date 2017/12/14 0014
@@ -20,37 +24,19 @@ public abstract class OrderTask {
     public static final int ORDER_STATUS_SUCCESS = 1;
     public OrderType orderType;
     public OrderEnum order;
-    public MokoOrderTaskCallback callback;
     public OrderTaskResponse response;
     public long delayTime = DEFAULT_DELAY_TIME;
     public int orderStatus;
-
-    public OrderTaskResponse getResponse() {
-        return response;
-    }
-
-    public void setResponse(OrderTaskResponse response) {
-        this.response = response;
-    }
 
     public OrderTask(OrderType orderType, OrderEnum order, MokoOrderTaskCallback callback, int responseType) {
         response = new OrderTaskResponse();
         this.orderType = orderType;
         this.order = order;
-        this.callback = callback;
         this.response.order = order;
         this.response.responseType = responseType;
     }
 
     public abstract byte[] assemble();
-
-    public MokoOrderTaskCallback getCallback() {
-        return callback;
-    }
-
-    public void setCallback(MokoOrderTaskCallback callback) {
-        this.callback = callback;
-    }
 
 
     public OrderEnum getOrder() {
@@ -71,8 +57,11 @@ public abstract class OrderTask {
             if (orderStatus != OrderTask.ORDER_STATUS_SUCCESS) {
                 if (timeoutPreTask()) {
                     MokoSupport.getInstance().pollTask();
-                    callback.onOrderTimeout(response);
-                    MokoSupport.getInstance().executeTask(callback);
+                    MokoSupport.getInstance().executeTask();
+                    OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+                    event.setAction(MokoConstants.ACTION_ORDER_TIMEOUT);
+                    event.setResponse(response);
+                    EventBus.getDefault().post(event);
                 }
             }
         }

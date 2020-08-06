@@ -28,6 +28,7 @@ import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
 
@@ -160,11 +161,7 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
             mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(MokoConstants.ACTION_ORDER_RESULT);
-            filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
-            filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(300);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
         }
@@ -183,6 +180,39 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        EventBus.getDefault().cancelEventDelivery(event);
+        final String action = event.getAction();
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+
+            }
+            if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+                dismissLoadingProgressDialog();
+                if (!mIsFailed) {
+                    ToastUtils.showToast(SensorDataActivity.this, "Success");
+                } else {
+                    ToastUtils.showToast(SensorDataActivity.this, "Error");
+                }
+            }
+            if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderEnum orderEnum = response.order;
+                byte[] value = response.responseValue;
+                switch (orderEnum) {
+                    case WRITE_I2C:
+                    case WRITE_TEMP:
+                    case WRITE_HUMI:
+                        if ((value[3] & 0xff) != 0xAA) {
+                            mIsFailed = true;
+                        }
+                        break;
+                }
+            }
+        });
+    }
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -194,32 +224,6 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             finish();
-                            break;
-                    }
-                }
-                if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
-
-                }
-                if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                    dismissLoadingProgressDialog();
-                    if (!mIsFailed) {
-                        ToastUtils.showToast(SensorDataActivity.this, "Success");
-                    } else {
-                        ToastUtils.showToast(SensorDataActivity.this, "Error");
-                    }
-                }
-                if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
-                    abortBroadcast();
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    byte[] value = response.responseValue;
-                    switch (orderEnum) {
-                        case WRITE_I2C:
-                        case WRITE_TEMP:
-                        case WRITE_HUMI:
-                            if ((value[3] & 0xff) != 0xAA) {
-                                mIsFailed = true;
-                            }
                             break;
                     }
                 }

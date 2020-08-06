@@ -21,8 +21,10 @@ import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
+import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.task.OrderTaskResponse;
 
 import org.greenrobot.eventbus.EventBus;
@@ -88,11 +90,7 @@ public class SettingActivity extends BaseActivity {
             mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(MokoConstants.ACTION_ORDER_RESULT);
-            filter.addAction(MokoConstants.ACTION_ORDER_TIMEOUT);
-            filter.addAction(MokoConstants.ACTION_ORDER_FINISH);
             filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(300);
             registerReceiver(mReceiver, filter);
             mReceiverTag = true;
         }
@@ -112,6 +110,68 @@ public class SettingActivity extends BaseActivity {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        EventBus.getDefault().cancelEventDelivery(event);
+        final String action = event.getAction();
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderEnum orderEnum = response.order;
+                switch (orderEnum) {
+                    case READ_BLE:
+                        ToastUtils.showToast(SettingActivity.this, "Error");
+                        break;
+                }
+            }
+            if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+                dismissLoadingProgressDialog();
+
+            }
+            if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderEnum orderEnum = response.order;
+                switch (orderEnum) {
+                    case READ_ADR:
+                        // 跳转设置页面
+                        startActivityForResult(new Intent(SettingActivity.this, DeviceSettingActivity.class), AppConstants.REQUEST_CODE_DEVICE_SETTING);
+                        break;
+                    case READ_UPLOAD_MODE:
+                        int region = MokoSupport.getInstance().getRegion();
+                        int classType = MokoSupport.getInstance().getClassType();
+                        int uploadMode = MokoSupport.getInstance().getUploadMode();
+                        tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
+                        break;
+                    case READ_BLE:
+                        // 跳转蓝牙设置页面
+                        startActivity(new Intent(SettingActivity.this, BleSettingActivity.class));
+                        break;
+                    case READ_FILTER_RSSI:
+                        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
+                            // 跳转扫描设置页面
+                            startActivity(new Intent(SettingActivity.this, ScanSettingFilterActivity.class));
+                        } else {
+                            // 跳转扫描设置页面
+                            startActivity(new Intent(SettingActivity.this, ScanSettingActivity.class));
+                        }
+                        break;
+                    case READ_MULTICAST_APPSKEY:
+                        // 跳转组播设置页面
+                        startActivity(new Intent(SettingActivity.this, MulticastSettingActivity.class));
+                        break;
+                    case READ_ALARM_TRIGGER_MODE:
+                        // 跳转报警设置页面
+                        startActivity(new Intent(SettingActivity.this, AlarmSettingActivity.class));
+                        break;
+                    case READ_ALARM_GPS_SWITCH:
+                        // 跳转GPS设置页面
+                        startActivity(new Intent(SettingActivity.this, GPSSettingActivity.class));
+                        break;
+                }
+            }
+        });
+    }
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -123,55 +183,6 @@ public class SettingActivity extends BaseActivity {
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             finish();
-                            break;
-                    }
-                }
-                if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    switch (orderEnum) {
-                        case READ_BLE:
-                            ToastUtils.showToast(SettingActivity.this, "Error");
-                            break;
-                    }
-                }
-                if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                    dismissLoadingProgressDialog();
-                }
-                if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
-                    abortBroadcast();
-                    OrderTaskResponse response = (OrderTaskResponse) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TASK);
-                    OrderEnum orderEnum = response.order;
-                    switch (orderEnum) {
-                        case READ_ADR:
-                            // 跳转设置页面
-                            startActivityForResult(new Intent(SettingActivity.this, DeviceSettingActivity.class), AppConstants.REQUEST_CODE_DEVICE_SETTING);
-                            break;
-                        case READ_UPLOAD_MODE:
-                            int region = MokoSupport.getInstance().getRegion();
-                            int classType = MokoSupport.getInstance().getClassType();
-                            int uploadMode = MokoSupport.getInstance().getUploadMode();
-                            tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
-                            break;
-                        case READ_BLE:
-                            // 跳转蓝牙设置页面
-                            startActivityForResult(new Intent(SettingActivity.this, BleSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
-                            break;
-                        case READ_SCAN_SWITCH:
-                            // 跳转扫描设置页面
-                            startActivityForResult(new Intent(SettingActivity.this, ScanSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
-                            break;
-                        case READ_MULTICAST_APPSKEY:
-                            // 跳转组播设置页面
-                            startActivityForResult(new Intent(SettingActivity.this, MulticastSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
-                            break;
-                        case READ_ALAMR_VIBRATION_SWITCH:
-                            // 跳转报警设置页面
-                            startActivityForResult(new Intent(SettingActivity.this, AlarmSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
-                            break;
-                        case READ_ALARM_GPS_SWITCH:
-                            // 跳转GPS设置页面
-                            startActivityForResult(new Intent(SettingActivity.this, GPSSettingActivity.class), AppConstants.REQUEST_CODE_REFRESH);
                             break;
                     }
                 }
@@ -256,14 +267,6 @@ public class SettingActivity extends BaseActivity {
                     }
                 }, 500);
             }
-        } else if (requestCode == AppConstants.REQUEST_CODE_REFRESH) {
-            showLoadingProgressDialog();
-            tvDeviceName.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mMokoService.getDeviceSettingType();
-                }
-            }, 500);
         }
     }
 
