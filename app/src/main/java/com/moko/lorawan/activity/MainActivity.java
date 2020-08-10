@@ -99,6 +99,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
 
         srlMain.setRefreshHeader(new ClassicsHeader(this));
 
+        // 启动服务
+        startService(new Intent(this, MokoService.class));
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
     }
@@ -215,6 +217,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             unregisterReceiver(mReceiver);
         }
         unbindService(mServiceConnection);
+        stopService(new Intent(this, MokoService.class));
         EventBus.getDefault().unregister(this);
     }
 

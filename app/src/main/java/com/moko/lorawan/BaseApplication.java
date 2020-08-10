@@ -24,8 +24,6 @@ public class BaseApplication extends Application {
         MokoSupport.getInstance().init(getApplicationContext());
         // 启动蓝牙服务
         Thread.setDefaultUncaughtExceptionHandler(new BTUncaughtExceptionHandler());
-        // 启动服务
-        startService(new Intent(this, MokoService.class));
     }
 
     public class BTUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {

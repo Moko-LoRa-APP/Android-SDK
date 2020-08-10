@@ -588,9 +588,8 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
                 int searchTime = MokoSupport.getInstance().alarmSatelliteSearchTime;
                 int min = 1 + searchTime;
                 int max = 14400 + searchTime;
-                String toast = String.format("Reporting Interval range %d~%d", min, max);
                 if (intervalInt < min || intervalInt > max) {
-                    ToastUtils.showToast(this, toast);
+                    ToastUtils.showToast(this, "Error!No-alarm reporting interval must greater than the GPS satellite search time.");
                     return;
                 }
                 orderTasks.add(mMokoService.getUploadIntervalOrderTask(intervalInt - searchTime));

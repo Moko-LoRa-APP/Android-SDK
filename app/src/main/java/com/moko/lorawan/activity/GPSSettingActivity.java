@@ -9,9 +9,11 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -45,6 +47,8 @@ public class GPSSettingActivity extends BaseActivity {
     CheckBox cbGpsSwitch;
     @Bind(R.id.et_search_time)
     EditText etSearchTime;
+    @Bind(R.id.cl_search_time)
+    ConstraintLayout clSearchTime;
 
     private MokoService mMokoService;
     private boolean mReceiverTag = false;
@@ -56,6 +60,13 @@ public class GPSSettingActivity extends BaseActivity {
         setContentView(R.layout.activity_gps_setting);
         ButterKnife.bind(this);
         cbGpsSwitch.setChecked(MokoSupport.getInstance().alarmGpsSwitch != 0);
+        cbGpsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                clSearchTime.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+            }
+        });
+        clSearchTime.setVisibility(MokoSupport.getInstance().alarmGpsSwitch != 0 ? View.VISIBLE : View.GONE);
         etSearchTime.setText(MokoSupport.getInstance().alarmSatelliteSearchTime + "");
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
@@ -168,20 +179,20 @@ public class GPSSettingActivity extends BaseActivity {
 
     public void onSave(View view) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        String searchTime = etSearchTime.getText().toString();
-        if (TextUtils.isEmpty(searchTime)) {
-            ToastUtils.showToast(this, "Satellite Search Time is empty");
-            return;
+        if (cbGpsSwitch.isChecked()) {
+            String searchTime = etSearchTime.getText().toString();
+            if (TextUtils.isEmpty(searchTime)) {
+                ToastUtils.showToast(this, "Satellite Search Time is empty");
+                return;
+            }
+            int timeInt = Integer.parseInt(searchTime);
+            if (timeInt < 1 || timeInt > 10) {
+                ToastUtils.showToast(this, "Satellite Search Time range 1~10");
+                return;
+            }
+            orderTasks.add(mMokoService.getAlarmSatelliteSearchTimeOrderTask(timeInt));
         }
-        int timeInt = Integer.parseInt(searchTime);
-        if (timeInt < 1 || timeInt > 10) {
-            ToastUtils.showToast(this, "Satellite Search Time range 1~10");
-            return;
-        }
-
-
         orderTasks.add(mMokoService.getAlarmGPSSwitchOrderTask(cbGpsSwitch.isChecked() ? 1 : 0));
-        orderTasks.add(mMokoService.getAlarmSatelliteSearchTimeOrderTask(timeInt));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
     }

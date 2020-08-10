@@ -39,8 +39,6 @@ public class SettingActivity extends BaseActivity {
 
     @Bind(R.id.tv_device_setting)
     TextView tvDeviceSetting;
-    @Bind(R.id.tv_device_name)
-    TextView tvDeviceName;
     @Bind(R.id.rl_multicast_setting)
     RelativeLayout rlMulticastSetting;
     @Bind(R.id.rl_alarm_setting)
@@ -73,12 +71,10 @@ public class SettingActivity extends BaseActivity {
         rlMulticastSetting.setVisibility(deviceType != 0 && deviceType != 3 ? View.VISIBLE : View.GONE);
         rlAlarmSetting.setVisibility(deviceType == 3 ? View.VISIBLE : View.GONE);
         rlGpsSetting.setVisibility(deviceType == 3 ? View.VISIBLE : View.GONE);
-        String modelName = MokoSupport.getInstance().getModelName();
         regions = getResources().getStringArray(R.array.region);
         classTypes = getResources().getStringArray(R.array.class_type);
         uploadModes = getResources().getStringArray(R.array.upload_mode);
         tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
-        tvDeviceName.setText(modelName);
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
     }
@@ -260,7 +256,7 @@ public class SettingActivity extends BaseActivity {
                 finish();
             } else {
                 showLoadingProgressDialog();
-                tvDeviceName.postDelayed(new Runnable() {
+                tvDeviceSetting.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mMokoService.getDeviceSettingType();

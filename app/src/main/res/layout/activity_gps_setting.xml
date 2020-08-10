@@ -16,7 +16,7 @@
             android:layout_height="54dp"
             android:background="@color/green_6caf10"
             android:gravity="center"
-            android:text="Alarm Setting"
+            android:text="GPS Setting"
             android:textColor="@color/white_ffffff"
             android:textSize="18sp" />
 
@@ -49,6 +49,7 @@
     </RelativeLayout>
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_search_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"

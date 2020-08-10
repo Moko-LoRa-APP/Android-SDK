@@ -189,7 +189,13 @@ public class ScanSettingFilterActivity extends BaseActivity {
             ToastUtils.showToast(this, "Filter RSSI is empty");
             return;
         }
-        int filterRssiInt = Integer.parseInt(filterRssi);
+        int filterRssiInt = 0;
+        try {
+            filterRssiInt = Integer.parseInt(filterRssi);
+        } catch (Exception e) {
+            ToastUtils.showToast(this, "Filter RSSI range -100~0");
+            return;
+        }
         if (filterRssiInt < -100 || filterRssiInt > 0) {
             ToastUtils.showToast(this, "Filter RSSI range -100~0");
             return;

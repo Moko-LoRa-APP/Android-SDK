@@ -106,7 +106,7 @@
                 android:background="@drawable/shape_radius_edit_bg"
                 android:digits="-0123456789"
                 android:gravity="center"
-                android:maxLength="5"
+                android:maxLength="4"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:singleLine="true"
