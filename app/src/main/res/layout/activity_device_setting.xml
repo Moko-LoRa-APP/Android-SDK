@@ -464,7 +464,7 @@
                 android:text="*No-alarm reporting interval must greater than the GPS satellite search time."
                 android:textColor="@color/errorColor"
                 android:textSize="15sp"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <View
                 style="@style/divider_line"

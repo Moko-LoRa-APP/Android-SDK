@@ -567,14 +567,14 @@ public class DeviceSettingActivity extends BaseActivity implements RadioGroup.On
             }
             if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
                 int intervalInt = Integer.parseInt(reportInterval);
-                if (intervalInt < 2 || intervalInt > 14400) {
-                    ToastUtils.showToast(this, "Reporting Interval range 2~14400");
-                    return;
-                }
                 int searchTime = MokoSupport.getInstance().alarmSatelliteSearchTime;
                 int min = 1 + searchTime;
                 if (intervalInt < min) {
                     ToastUtils.showToast(this, "Error!No-alarm reporting interval must greater than the GPS satellite search time.");
+                    return;
+                }
+                if (intervalInt < 2 || intervalInt > 14400) {
+                    ToastUtils.showToast(this, "Reporting Interval range 2~14400");
                     return;
                 }
                 orderTasks.add(OrderTaskAssembler.setUploadIntervalOrderTask(intervalInt - searchTime));
