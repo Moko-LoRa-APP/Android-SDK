@@ -3,12 +3,10 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -17,8 +15,8 @@ public class WriteRegionTask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteRegionTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_REGION, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteRegionTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_REGION, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setOrderData(int region) {

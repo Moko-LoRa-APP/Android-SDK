@@ -2,20 +2,16 @@ package com.moko.lorawan.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.ParcelUuid;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 
@@ -25,7 +21,6 @@ import com.moko.lorawan.R;
 import com.moko.lorawan.adapter.LoRaDeviceAdapter;
 import com.moko.lorawan.dialog.AlertMessageDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
-import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -36,10 +31,15 @@ import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.event.OrderTaskResponseEvent;
+import com.moko.support.handler.BaseMessageHandler;
 import com.moko.support.log.LogModule;
+import com.moko.support.task.OpenNotifyTask;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
-import com.moko.support.utils.MokoUtils;
+import com.moko.support.task.ReadAlarmStatusTask;
+import com.moko.support.task.ReadConnectStatusTask;
+import com.moko.support.task.ReadModelNameTask;
+import com.moko.support.task.WriteRTCTimeTask;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.header.ClassicsHeader;
@@ -50,13 +50,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -71,7 +68,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     RecyclerView rvMain;
     @Bind(R.id.srl_main)
     SmartRefreshLayout srlMain;
-    private MokoService mMokoService;
     private boolean mReceiverTag = false;
     private LoRaDeviceAdapter mAdapter;
     private List<DeviceInfo> mDeviceInfos;
@@ -84,6 +80,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mHandler = new CustomMessageHandler(this);
         mAdapter = new LoRaDeviceAdapter();
         mDeviceInfos = new ArrayList<>();
         mDeviceInfoHashMap = new HashMap<>();
@@ -98,41 +95,24 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         srlMain.setOnRefreshListener(this);
 
         srlMain.setRefreshHeader(new ClassicsHeader(this));
-
-        // 启动服务
-        startService(new Intent(this, MokoService.class));
-        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
+        // 注册广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+        mReceiverTag = true;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            // 蓝牙未打开，开启蓝牙
+            MokoSupport.getInstance().enableBluetooth();
+        } else {
+            srlMain.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    srlMain.autoRefresh();
+                }
+            }, 500);
+        }
     }
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMokoService = ((MokoService.LocalBinder) service).getService();
-            // 注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mReceiver, filter);
-            mReceiverTag = true;
-            if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                // 蓝牙未打开，开启蓝牙
-                MokoSupport.getInstance().enableBluetooth();
-            } else {
-                srlMain.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        srlMain.autoRefresh();
-                    }
-                }, 500);
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
-
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -173,11 +153,33 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
             // 设备连接成功
-            mMokoService.mHandler.postDelayed(new Runnable() {
+            mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mMokoService.openNotify();
-                    mMokoService.getBasicInfo();
+                    ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                    switch (MokoSupport.deviceTypeEnum) {
+                        case LW001_BG:
+                        case LW003_B:
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG));
+                            break;
+                        case LW002_TH:
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG));
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_MCU));
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_PERIPHERAL));
+                            break;
+                        case LW004_BP:
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
+                            break;
+                    }
+                    if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
+                        orderTasks.add(new ReadAlarmStatusTask());
+                    orderTasks.add(new ReadModelNameTask());
+                    if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW001_BG)
+                        orderTasks.add(new WriteRTCTimeTask());
+                    orderTasks.add(new ReadConnectStatusTask());
+                    MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
                 }
             }, 500);
         }
@@ -216,8 +218,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             // 注销广播
             unregisterReceiver(mReceiver);
         }
-        unbindService(mServiceConnection);
-        stopService(new Intent(this, MokoService.class));
         EventBus.getDefault().unregister(this);
     }
 
@@ -313,15 +313,15 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
         // 跳转
         final DeviceInfo deviceInfo = (DeviceInfo) adapter.getItem(position);
-        if (mMokoService == null || deviceInfo == null) {
+        if (deviceInfo == null) {
             return;
         }
         showLoadingProgressDialog();
         MokoSupport.deviceTypeEnum = deviceInfo.deviceTypeEnum;
-        mMokoService.mHandler.postDelayed(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMokoService.connectBluetoothDevice(deviceInfo.mac);
+                MokoSupport.getInstance().connDevice(MainActivity.this, deviceInfo.mac);
             }
         }, 500);
         mSelectedDeviceName = deviceInfo.name;
@@ -343,5 +343,18 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     public void about(View view) {
         // 关于
         startActivity(new Intent(this, AboutActivity.class));
+    }
+
+    public CustomMessageHandler mHandler;
+
+    public class CustomMessageHandler extends BaseMessageHandler<MainActivity> {
+
+        public CustomMessageHandler(MainActivity activity) {
+            super(activity);
+        }
+
+        @Override
+        protected void handleMessage(MainActivity activity, Message msg) {
+        }
     }
 }

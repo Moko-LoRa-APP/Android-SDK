@@ -2,13 +2,10 @@ package com.moko.lorawan.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,7 +16,7 @@ import android.widget.TextView;
 
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.LoadingDialog;
-import com.moko.lorawan.service.MokoService;
+import com.moko.lorawan.utils.OrderTaskAssembler;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -50,7 +47,6 @@ public class GPSSettingActivity extends BaseActivity {
     @Bind(R.id.cl_search_time)
     ConstraintLayout clSearchTime;
 
-    private MokoService mMokoService;
     private boolean mReceiverTag = false;
     private boolean mIsFailed;
 
@@ -68,26 +64,13 @@ public class GPSSettingActivity extends BaseActivity {
         });
         clSearchTime.setVisibility(MokoSupport.getInstance().alarmGpsSwitch != 0 ? View.VISIBLE : View.GONE);
         etSearchTime.setText(MokoSupport.getInstance().alarmSatelliteSearchTime + "");
-        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
+        // 注册广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+        mReceiverTag = true;
     }
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMokoService = ((MokoService.LocalBinder) service).getService();
-            // 注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mReceiver, filter);
-            mReceiverTag = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
@@ -156,7 +139,6 @@ public class GPSSettingActivity extends BaseActivity {
             // 注销广播
             unregisterReceiver(mReceiver);
         }
-        unbindService(mServiceConnection);
         EventBus.getDefault().unregister(this);
     }
 
@@ -190,9 +172,9 @@ public class GPSSettingActivity extends BaseActivity {
                 ToastUtils.showToast(this, "Satellite Search Time range 1~10");
                 return;
             }
-            orderTasks.add(mMokoService.getAlarmSatelliteSearchTimeOrderTask(timeInt));
+            orderTasks.add(OrderTaskAssembler.setAlarmSatelliteSearchTimeOrderTask(timeInt));
         }
-        orderTasks.add(mMokoService.getAlarmGPSSwitchOrderTask(cbGpsSwitch.isChecked() ? 1 : 0));
+        orderTasks.add(OrderTaskAssembler.setAlarmGPSSwitchOrderTask(cbGpsSwitch.isChecked() ? 1 : 0));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
     }

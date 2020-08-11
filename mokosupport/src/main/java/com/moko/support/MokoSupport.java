@@ -14,7 +14,6 @@ import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.callback.MokoResponseCallback;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceTypeEnum;

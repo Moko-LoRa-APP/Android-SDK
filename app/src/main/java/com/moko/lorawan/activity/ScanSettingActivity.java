@@ -2,13 +2,10 @@ package com.moko.lorawan.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -21,7 +18,7 @@ import android.widget.TextView;
 
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.LoadingDialog;
-import com.moko.lorawan.service.MokoService;
+import com.moko.lorawan.utils.OrderTaskAssembler;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -56,7 +53,6 @@ public class ScanSettingActivity extends BaseActivity {
     LinearLayout llScanFilter;
     @Bind(R.id.tv_save)
     TextView tvSave;
-    private MokoService mMokoService;
     private boolean mReceiverTag = false;
     private boolean mIsFailed;
 
@@ -71,7 +67,6 @@ public class ScanSettingActivity extends BaseActivity {
         int filterRssi = MokoSupport.getInstance().filterRssi;
         etFilterRssi.setText(filterRssi == 0 ? "0" : String.format("-%d", MokoSupport.getInstance().filterRssi));
         etReportInterval.setText(MokoSupport.getInstance().scanUploadInterval + "");
-        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
         cbScanSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -90,25 +85,12 @@ public class ScanSettingActivity extends BaseActivity {
             }
         };
         etFilterName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11), inputFilter});
+        // 注册广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+        mReceiverTag = true;
     }
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMokoService = ((MokoService.LocalBinder) service).getService();
-            // 注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(400);
-            registerReceiver(mReceiver, filter);
-            mReceiverTag = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
@@ -179,7 +161,6 @@ public class ScanSettingActivity extends BaseActivity {
             // 注销广播
             unregisterReceiver(mReceiver);
         }
-        unbindService(mServiceConnection);
         EventBus.getDefault().unregister(this);
     }
 
@@ -231,13 +212,13 @@ public class ScanSettingActivity extends BaseActivity {
                 ToastUtils.showToast(this, "Filter RSSI range -100~0");
                 return;
             }
-            orderTasks.add(mMokoService.getScanUploadIntervalOrderTask(intervalInt));
-            orderTasks.add(mMokoService.getFilterNameOrderTask(filterName));
-            orderTasks.add(mMokoService.getFilterRssiOrderTask(filterRssiInt));
-            orderTasks.add(mMokoService.getScanSwitchOrderTask(1));
+            orderTasks.add(OrderTaskAssembler.setScanUploadIntervalOrderTask(intervalInt));
+            orderTasks.add(OrderTaskAssembler.setFilterNameOrderTask(filterName));
+            orderTasks.add(OrderTaskAssembler.setFilterRssiOrderTask(filterRssiInt));
+            orderTasks.add(OrderTaskAssembler.setScanSwitchOrderTask(1));
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         } else {
-            orderTasks.add(mMokoService.getScanSwitchOrderTask(0));
+            orderTasks.add(OrderTaskAssembler.setScanSwitchOrderTask(0));
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
         showLoadingProgressDialog();

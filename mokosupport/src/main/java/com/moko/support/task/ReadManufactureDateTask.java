@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -13,15 +12,14 @@ import com.moko.support.utils.MokoUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 public class ReadManufactureDateTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public ReadManufactureDateTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_MANUFACTURE_DATE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadManufactureDateTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_MANUFACTURE_DATE, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();

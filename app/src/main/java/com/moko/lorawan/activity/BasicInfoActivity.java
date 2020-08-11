@@ -2,15 +2,11 @@ package com.moko.lorawan.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,22 +14,38 @@ import android.widget.TextView;
 import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.LoadingDialog;
-import com.moko.lorawan.service.MokoService;
-import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
+import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
-import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.event.OrderTaskResponseEvent;
+import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
-import com.moko.support.utils.MokoUtils;
+import com.moko.support.task.Read9AxisATask;
+import com.moko.support.task.Read9AxisAngleTask;
+import com.moko.support.task.Read9AxisGTask;
+import com.moko.support.task.Read9AxisMTask;
+import com.moko.support.task.ReadAlarmStatusTask;
+import com.moko.support.task.ReadBleFirmwareTask;
+import com.moko.support.task.ReadClassTypeTask;
+import com.moko.support.task.ReadCompanyNameTask;
+import com.moko.support.task.ReadConnectStatusTask;
+import com.moko.support.task.ReadGPSTask;
+import com.moko.support.task.ReadHumiDataTask;
+import com.moko.support.task.ReadI2CIntervalTask;
+import com.moko.support.task.ReadLoraFirmwareTask;
+import com.moko.support.task.ReadModelNameTask;
+import com.moko.support.task.ReadRegionTask;
+import com.moko.support.task.ReadTempDataTask;
+import com.moko.support.task.ReadUploadModeTask;
+import com.moko.support.task.WriteRTCTimeTask;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,7 +66,6 @@ public class BasicInfoActivity extends BaseActivity {
     TextView tvAlarmStatus;
 
     private String[] connectStatusStrs;
-    private MokoService mMokoService;
     private boolean mReceiverTag = false;
     private String mDeviceName;
     private String mDeviceMac;
@@ -77,26 +88,13 @@ public class BasicInfoActivity extends BaseActivity {
         connectStatusStrs = getResources().getStringArray(R.array.connect_status);
         tvConnectStatus.setText(connectStatusStrs[connectStatus]);
         tvDeviceName.setText(modelName);
-        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
+        // 注册广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+        mReceiverTag = true;
     }
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMokoService = ((MokoService.LocalBinder) service).getService();
-            // 注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mReceiver, filter);
-            mReceiverTag = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
@@ -170,7 +168,6 @@ public class BasicInfoActivity extends BaseActivity {
             // 注销广播
             unregisterReceiver(mReceiver);
         }
-        unbindService(mServiceConnection);
         EventBus.getDefault().unregister(this);
     }
 
@@ -204,12 +201,22 @@ public class BasicInfoActivity extends BaseActivity {
 
     public void thSensorData(View view) {
         showLoadingProgressDialog();
-        mMokoService.getSensorData();
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadI2CIntervalTask());
+        orderTasks.add(new ReadTempDataTask());
+        orderTasks.add(new ReadHumiDataTask());
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     public void gpsAndSensorData(View view) {
         showLoadingProgressDialog();
-        mMokoService.getGPSAndSensorData();
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadGPSTask());
+        orderTasks.add(new Read9AxisATask());
+        orderTasks.add(new Read9AxisGTask());
+        orderTasks.add(new Read9AxisMTask());
+        orderTasks.add(new Read9AxisAngleTask());
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     public void uplinkTest(View view) {
@@ -218,7 +225,12 @@ public class BasicInfoActivity extends BaseActivity {
 
     public void deviceInfo(View view) {
         showLoadingProgressDialog();
-        mMokoService.getDeviceInfo();
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadCompanyNameTask());
+        orderTasks.add(new ReadModelNameTask());
+        orderTasks.add(new ReadBleFirmwareTask());
+        orderTasks.add(new ReadLoraFirmwareTask());
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     public void ota(View view) {
@@ -243,7 +255,15 @@ public class BasicInfoActivity extends BaseActivity {
                 tvConnectStatus.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mMokoService.getBasicInfo();
+                        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
+                            orderTasks.add(new ReadAlarmStatusTask());
+                        orderTasks.add(new ReadModelNameTask());
+
+                        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW001_BG)
+                            orderTasks.add(new WriteRTCTimeTask());
+                        orderTasks.add(new ReadConnectStatusTask());
+                        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
                     }
                 }, 500);
             }
@@ -252,7 +272,15 @@ public class BasicInfoActivity extends BaseActivity {
             tvConnectStatus.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mMokoService.getBasicInfo();
+                    ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                    if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
+                        orderTasks.add(new ReadAlarmStatusTask());
+                    orderTasks.add(new ReadModelNameTask());
+
+                    if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW001_BG)
+                        orderTasks.add(new WriteRTCTimeTask());
+                    orderTasks.add(new ReadConnectStatusTask());
+                    MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
                 }
             }, 500);
         }
@@ -260,6 +288,10 @@ public class BasicInfoActivity extends BaseActivity {
 
     public void setting(View view) {
         showLoadingProgressDialog();
-        mMokoService.getDeviceSettingType();
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadRegionTask());
+        orderTasks.add(new ReadClassTypeTask());
+        orderTasks.add(new ReadUploadModeTask());
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 }

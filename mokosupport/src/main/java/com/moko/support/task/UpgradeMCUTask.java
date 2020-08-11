@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -16,8 +15,8 @@ public class UpgradeMCUTask extends OrderTask {
     // 固件升级
     private byte[] orderData;
 
-    public UpgradeMCUTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC_MCU, OrderEnum.UPGRADE_MCU, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public UpgradeMCUTask() {
+        super(OrderType.CHARACTERISTIC_MCU, OrderEnum.UPGRADE_MCU, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
 
     }
 

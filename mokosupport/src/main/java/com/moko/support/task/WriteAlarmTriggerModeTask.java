@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -16,8 +15,8 @@ public class WriteAlarmTriggerModeTask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteAlarmTriggerModeTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_ALARM_TRIGGER_MODE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteAlarmTriggerModeTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_ALARM_TRIGGER_MODE, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setOrderData(int triggerMode) {

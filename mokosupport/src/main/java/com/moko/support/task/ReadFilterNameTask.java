@@ -3,12 +3,10 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,8 +17,8 @@ public class ReadFilterNameTask extends OrderTask {
 
     public byte[] orderData;
 
-    public ReadFilterNameTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_FILTER_NAME, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadFilterNameTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_FILTER_NAME, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();

@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -17,8 +16,8 @@ public class WriteMulticastAddrTask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteMulticastAddrTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_MULTICAST_ADDRESS, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteMulticastAddrTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_MULTICAST_ADDRESS, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setOrderData(String devAddrStr) {

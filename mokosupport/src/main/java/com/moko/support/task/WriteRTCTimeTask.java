@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -19,8 +18,8 @@ public class WriteRTCTimeTask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteRTCTimeTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_RTC_TIME, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteRTCTimeTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_RTC_TIME, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;

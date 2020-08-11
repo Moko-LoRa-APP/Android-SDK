@@ -2,13 +2,10 @@ package com.moko.lorawan.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -22,7 +19,7 @@ import android.widget.TextView;
 import com.moko.lorawan.R;
 import com.moko.lorawan.dialog.AlertMessageDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
-import com.moko.lorawan.service.MokoService;
+import com.moko.lorawan.utils.OrderTaskAssembler;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -76,7 +73,6 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
     RadioButton rbHumiEnable;
     @Bind(R.id.rg_humi)
     RadioGroup rgHumi;
-    private MokoService mMokoService;
     private boolean mReceiverTag = false;
     private String[] mAlarms;
     private int mTempSelected;
@@ -150,26 +146,13 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
         etTempHigh.setFilters(new InputFilter[]{inputFilter});
         etHumiLow.setFilters(new InputFilter[]{inputFilter});
         etHumiHigh.setFilters(new InputFilter[]{inputFilter});
-        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
+        // 注册广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+        mReceiverTag = true;
     }
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMokoService = ((MokoService.LocalBinder) service).getService();
-            // 注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mReceiver, filter);
-            mReceiverTag = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
@@ -239,7 +222,6 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
             // 注销广播
             unregisterReceiver(mReceiver);
         }
-        unbindService(mServiceConnection);
         EventBus.getDefault().unregister(this);
     }
 
@@ -268,7 +250,7 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
             @Override
             public void onClick() {
                 showLoadingProgressDialog();
-                MokoSupport.getInstance().sendOrder(mMokoService.getResetOrderTask());
+                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setResetOrderTask());
             }
         });
         dialog.show(getSupportFragmentManager());
@@ -319,9 +301,9 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
                 ToastUtils.showToast(this, "Temperature Threshold error");
                 return;
             }
-            orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, Math.round(tempLowInt * 100), Math.round(tempHighInt * 100)));
+            orderTasks.add(OrderTaskAssembler.setTempDataOrderTask(mTempSelected, Math.round(tempLowInt * 100), Math.round(tempHighInt * 100)));
         } else {
-            orderTasks.add(mMokoService.getTempDataOrderTask(mTempSelected, 0, 0));
+            orderTasks.add(OrderTaskAssembler.setTempDataOrderTask(mTempSelected, 0, 0));
         }
         if (mHumiSelected == 1) {
             String humiLow = etHumiLow.getText().toString();
@@ -357,13 +339,13 @@ public class SensorDataActivity extends BaseActivity implements RadioGroup.OnChe
                 ToastUtils.showToast(this, "Humidity Threshold error");
                 return;
             }
-            orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected,  Math.round(humiLowInt * 100), Math.round(humiHighInt * 100)));
+            orderTasks.add(OrderTaskAssembler.setHumiDataOrderTask(mHumiSelected,  Math.round(humiLowInt * 100), Math.round(humiHighInt * 100)));
         } else {
-            orderTasks.add(mMokoService.getHumiDataOrderTask(mHumiSelected, 0, 0));
+            orderTasks.add(OrderTaskAssembler.setHumiDataOrderTask(mHumiSelected, 0, 0));
         }
         mIsFailed = false;
         int intervalInt = Integer.parseInt(i2cInterval);
-        orderTasks.add(mMokoService.getI2CIntervalOrderTask(intervalInt));
+        orderTasks.add(OrderTaskAssembler.setI2CIntervalOrderTask(intervalInt));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
     }

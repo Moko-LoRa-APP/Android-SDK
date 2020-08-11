@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -16,8 +15,8 @@ public class WriteFilterRSSITask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteFilterRSSITask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_FILTER_RSSI, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteFilterRSSITask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_FILTER_RSSI, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setOrderData(int filterRrri) {

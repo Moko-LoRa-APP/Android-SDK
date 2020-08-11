@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -17,8 +16,8 @@ public class WriteAppKeyTask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteAppKeyTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_APP_KEY, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteAppKeyTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_APP_KEY, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setOrderData(String appkeyStr) {

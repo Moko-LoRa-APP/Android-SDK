@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
-import com.moko.support.log.LogModule;
 import com.moko.support.utils.MokoUtils;
 
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;

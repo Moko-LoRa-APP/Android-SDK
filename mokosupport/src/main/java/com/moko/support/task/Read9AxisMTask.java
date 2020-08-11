@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -19,8 +18,8 @@ public class Read9AxisMTask extends OrderTask {
 
     public byte[] orderData;
 
-    public Read9AxisMTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_9_AXIS_M, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public Read9AxisMTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_9_AXIS_M, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();

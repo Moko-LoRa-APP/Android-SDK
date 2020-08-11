@@ -3,12 +3,10 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -17,8 +15,8 @@ public class WriteCHTask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteCHTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_CH, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteCHTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_CH, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setOrderData(int ch1, int ch2) {

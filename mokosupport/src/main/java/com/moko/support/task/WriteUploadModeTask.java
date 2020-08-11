@@ -3,7 +3,6 @@ package com.moko.support.task;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -16,8 +15,8 @@ public class WriteUploadModeTask extends OrderTask {
 
     public byte[] orderData;
 
-    public WriteUploadModeTask(MokoOrderTaskCallback callback) {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_UPLOAD_MODE, callback, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteUploadModeTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_UPLOAD_MODE, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setOrderData(int uploadMode) {

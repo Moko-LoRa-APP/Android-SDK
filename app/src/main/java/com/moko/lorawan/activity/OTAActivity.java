@@ -4,14 +4,11 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,15 +18,13 @@ import android.widget.Toast;
 
 import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
-import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.service.DfuService;
-import com.moko.lorawan.service.MokoService;
 import com.moko.lorawan.utils.FileUtils;
+import com.moko.lorawan.utils.OrderTaskAssembler;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -46,7 +41,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -69,7 +63,6 @@ public class OTAActivity extends BaseActivity {
     private boolean mReceiverTag = false;
     private String[] mOTAs;
     private int mOTASelected;
-    private MokoService mMokoService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,29 +72,15 @@ public class OTAActivity extends BaseActivity {
         mDeviceName = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_NAME);
         mDeviceMac = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_MAC);
         mOTAs = getResources().getStringArray(R.array.OTA);
-        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         EventBus.getDefault().register(this);
         mOTASelected = 1;
         tvOta.setText(mOTAs[mOTASelected]);
+        // 注册广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+        mReceiverTag = true;
     }
-
-
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMokoService = ((MokoService.LocalBinder) service).getService();
-            // 注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mReceiver, filter);
-            mReceiverTag = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -165,7 +144,7 @@ public class OTAActivity extends BaseActivity {
     }
 
     public void upgradeBand(byte[] packageIndex, byte[] fileBytes) {
-        OrderTask task = mMokoService.getUpgradeMCUDetailOrderTask(packageIndex, fileBytes);
+        OrderTask task = OrderTaskAssembler.setUpgradeMCUDetailOrderTask(packageIndex, fileBytes);
         MokoSupport.getInstance().sendOrder(task);
     }
 
@@ -173,7 +152,7 @@ public class OTAActivity extends BaseActivity {
         isStop = true;
         dismissDFUProgressDialog();
         ToastUtils.showToast(this, "Error:DFU Failed");
-        mMokoService.disConnectBle();
+        MokoSupport.getInstance().disConnectBle();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -273,7 +252,6 @@ public class OTAActivity extends BaseActivity {
             // 注销广播
             unregisterReceiver(mReceiver);
         }
-        unbindService(mServiceConnection);
         EventBus.getDefault().unregister(this);
     }
 
@@ -325,7 +303,7 @@ public class OTAActivity extends BaseActivity {
                 }
                 byte[] indexCount = MokoUtils.toByteArray(indexLength, 4);
                 byte[] fileCount = MokoUtils.toByteArray(fileLength, 4);
-                MokoSupport.getInstance().sendOrder(mMokoService.getUpgradeMCUOrderTask(indexCount, fileCount));
+                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setUpgradeMCUOrderTask(indexCount, fileCount));
             }
         } else {
             Toast.makeText(this, "file is not exists!", Toast.LENGTH_SHORT).show();
