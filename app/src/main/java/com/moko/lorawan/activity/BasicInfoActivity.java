@@ -132,6 +132,10 @@ public class BasicInfoActivity extends BaseActivity {
                         // 跳转设置页面
                         startActivityForResult(new Intent(BasicInfoActivity.this, SettingActivity.class), AppConstants.REQUEST_CODE_SETTING);
                         break;
+                    case READ_HUMI:
+                        // 跳转温湿度传感器页面
+                        startActivityForResult(new Intent(BasicInfoActivity.this, SensorDataActivity.class), AppConstants.REQUEST_CODE_REFRESH);
+                        break;
                     case READ_CONNECT_STATUS:
                         int connectStatus = MokoSupport.getInstance().getConnectStatus();
                         tvConnectStatus.setText(connectStatusStrs[connectStatus]);
