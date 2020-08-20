@@ -24,7 +24,6 @@
 
     <string name="main_scan_name">Name</string>
     <string name="main_scan_rssi">RSSI</string>
-    <string name="about_moko_url">http://doc.mokotechnology.com/index.php?s=/Home/Item/show/item_id/2</string>
     <string name="version_info">Version:%s</string>
     <string name="th_sensor_data"><![CDATA[T&H Sensor Data]]></string>
 
