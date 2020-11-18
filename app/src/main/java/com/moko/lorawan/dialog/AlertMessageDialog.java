@@ -14,7 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AlertMessageDialog extends BaseDialog {
+public class AlertMessageDialog extends MokoBaseDialog {
     public static final String TAG = AlertMessageDialog.class.getSimpleName();
     @Bind(R.id.tv_alert_title)
     TextView tvAlertTitle;
@@ -26,6 +26,8 @@ public class AlertMessageDialog extends BaseDialog {
     TextView tvAlertCancel;
     @Bind(R.id.tv_alert_confirm)
     TextView tvAlertConfirm;
+    @Bind(R.id.view_divider)
+    View viewDivider;
 
     private String cancel;
 
@@ -42,6 +44,8 @@ public class AlertMessageDialog extends BaseDialog {
     private int titleId = -1;
 
     private int messageId = -1;
+
+    private boolean cancelGone;
 
 
     @Override
@@ -77,6 +81,10 @@ public class AlertMessageDialog extends BaseDialog {
         }
         if (!TextUtils.isEmpty(confirm)) {
             tvAlertConfirm.setText(confirm);
+        }
+        if (cancelGone) {
+            tvAlertCancel.setVisibility(View.GONE);
+            viewDivider.setVisibility(View.GONE);
         }
     }
 
@@ -166,6 +174,10 @@ public class AlertMessageDialog extends BaseDialog {
 
     public void setCancel(@StringRes int cancelId) {
         this.cancelId = cancelId;
+    }
+
+    public void setCancelGone(){
+        cancelGone = true;
     }
 
     @OnClick({R.id.tv_alert_cancel, R.id.tv_alert_confirm})

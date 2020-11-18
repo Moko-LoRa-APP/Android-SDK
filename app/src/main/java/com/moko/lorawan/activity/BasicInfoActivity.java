@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
+import com.moko.lorawan.dialog.AlertMessageDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -69,6 +70,7 @@ public class BasicInfoActivity extends BaseActivity {
     private boolean mReceiverTag = false;
     private String mDeviceName;
     private String mDeviceMac;
+    private int disConnectType;
 
 
     @Override
@@ -101,8 +103,24 @@ public class BasicInfoActivity extends BaseActivity {
         String action = event.getAction();
         if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
             // 设备断开
-            dismissLoadingProgressDialog();
-            finish();
+            AlertMessageDialog dialog = new AlertMessageDialog();
+            if (disConnectType == 3) {
+                dialog.setTitle("Change Password");
+                dialog.setMessage("Password changed successfully!Please reconnect the device.");
+                dialog.setConfirm("OK");
+            } else if (disConnectType == 2) {
+                dialog.setMessage("No data communication for 2 minutes, the device is disconnected.");
+                dialog.setConfirm("OK");
+            } else {
+                dialog.setTitle("Dismiss");
+                dialog.setMessage("The Beacon disconnected!");
+                dialog.setConfirm("Exit");
+            }
+            dialog.setCancelGone();
+            dialog.setOnAlertConfirmListener(() -> {
+                finish();
+            });
+            dialog.show(getSupportFragmentManager());
         }
     }
 
@@ -111,6 +129,27 @@ public class BasicInfoActivity extends BaseActivity {
         EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
         runOnUiThread(() -> {
+            if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderEnum order = response.order;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                switch (order) {
+                    case NOTIFY:
+                        if (value != null && value.length == 2) {
+                            int type = value[1] & 0xFF;
+                            disConnectType = type;
+                            if (type == 1) {
+                                // valid password timeout
+                            } else if (type == 3) {
+                                // change password success
+                            } else if (type == 2) {
+                                // no data exchange timeout
+                            }
+                        }
+                        break;
+                }
+            }
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
             }
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
@@ -130,7 +169,9 @@ public class BasicInfoActivity extends BaseActivity {
                         break;
                     case READ_UPLOAD_MODE:
                         // 跳转设置页面
-                        startActivityForResult(new Intent(BasicInfoActivity.this, SettingActivity.class), AppConstants.REQUEST_CODE_SETTING);
+                        Intent intent = new Intent(this, SettingActivity.class);
+                        intent.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mDeviceMac);
+                        startActivityForResult(intent, AppConstants.REQUEST_CODE_SETTING);
                         break;
                     case READ_HUMI:
                         // 跳转温湿度传感器页面
@@ -195,7 +236,6 @@ public class BasicInfoActivity extends BaseActivity {
 
     private void backToHome() {
         MokoSupport.getInstance().disConnectBle();
-        finish();
     }
 
     @Override
@@ -255,10 +295,12 @@ public class BasicInfoActivity extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 backToHome();
             } else {
-                showLoadingProgressDialog();
                 tvConnectStatus.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if (!MokoSupport.getInstance().isConnDevice(BasicInfoActivity.this, mDeviceMac))
+                            return;
+                        showLoadingProgressDialog();
                         ArrayList<OrderTask> orderTasks = new ArrayList<>();
                         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
                             orderTasks.add(new ReadAlarmStatusTask());
@@ -272,19 +314,23 @@ public class BasicInfoActivity extends BaseActivity {
                 }, 500);
             }
         } else if (requestCode == AppConstants.REQUEST_CODE_REFRESH) {
-            showLoadingProgressDialog();
             tvConnectStatus.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    ArrayList<OrderTask> orderTasks = new ArrayList<>();
-                    if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
-                        orderTasks.add(new ReadAlarmStatusTask());
-                    orderTasks.add(new ReadModelNameTask());
+                    if (disConnectType > 0) {
+                        if (!MokoSupport.getInstance().isConnDevice(BasicInfoActivity.this, mDeviceMac))
+                            return;
+                        showLoadingProgressDialog();
+                        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
+                            orderTasks.add(new ReadAlarmStatusTask());
+                        orderTasks.add(new ReadModelNameTask());
 
-                    if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW001_BG)
-                        orderTasks.add(new WriteRTCTimeTask());
-                    orderTasks.add(new ReadConnectStatusTask());
-                    MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+                        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW001_BG)
+                            orderTasks.add(new WriteRTCTimeTask());
+                        orderTasks.add(new ReadConnectStatusTask());
+                        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+                    }
                 }
             }, 500);
         }

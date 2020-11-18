@@ -14,7 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RegionBottomDialog extends BaseDialog {
+public class RegionBottomDialog extends MokoBaseDialog {
 
 
     @Bind(R.id.wv_bottom)

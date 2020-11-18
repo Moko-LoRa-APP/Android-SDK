@@ -18,6 +18,7 @@ import com.moko.support.callback.MokoResponseCallback;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceTypeEnum;
 import com.moko.support.entity.MokoCharacteristic;
+import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -25,6 +26,7 @@ import com.moko.support.handler.MokoCharacteristicHandler;
 import com.moko.support.handler.MokoLeScanHandler;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
+import com.moko.support.task.OrderTaskResponse;
 import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -228,7 +230,7 @@ public class MokoSupport implements MokoResponseCallback {
                     continue;
                 }
                 mQueue.offer(ordertask);
-                LogModule.w("添加" + ordertask.order.getOrderName());
+//                LogModule.w("添加" + ordertask.order.getOrderName());
             }
             executeTask();
         } else {
@@ -244,7 +246,7 @@ public class MokoSupport implements MokoResponseCallback {
     /**
      * @Date 2020/8/6
      * @Author wenzheng.liu
-     * @Description 
+     * @Description
      * @ClassPath com.moko.support.MokoSupport
      */
     public synchronized void executeTask() {
@@ -343,15 +345,32 @@ public class MokoSupport implements MokoResponseCallback {
     @Override
     public void onCharacteristicChanged(BluetoothGattCharacteristic characteristic, byte[] value) {
         if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC.getUuid())
-                || characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_MCU.getUuid())) {
+                || characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_MCU.getUuid())
+                || characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_NOTIFY.getUuid())){
             if (isSyncData()) {
                 // 非延时应答
                 OrderTask orderTask = mQueue.peek();
                 if (value != null && value.length > 0 && orderTask != null) {
                     orderTask.parseValue(value);
                 }
+            } else {
+                OrderEnum order = null;
+                if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_NOTIFY.getUuid())) {
+                    order = OrderEnum.NOTIFY;
+                }
+                if (order != null) {
+                    LogModule.i(order.getOrderName());
+                    OrderTaskResponse response = new OrderTaskResponse();
+                    response.order = order;
+                    response.responseValue = value;
+                    OrderTaskResponseEvent event = new OrderTaskResponseEvent();
+                    event.setAction(MokoConstants.ACTION_CURRENT_DATA);
+                    event.setResponse(response);
+                    EventBus.getDefault().post(event);
+                }
             }
-        } else if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_LOG.getUuid())) {
+        } else
+        if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_LOG.getUuid())) {
             if (value != null && value.length > 0) {
                 String log = new String(value);
                 LogModule.d(log);

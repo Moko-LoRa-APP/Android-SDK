@@ -80,6 +80,7 @@ public class SettingActivity extends BaseActivity {
     private String[] regions;
     private String[] classTypes;
     private String[] uploadModes;
+    private String mDeviceMac;
     private boolean mReceiverTag = false;
 
 
@@ -101,6 +102,7 @@ public class SettingActivity extends BaseActivity {
         classTypes = getResources().getStringArray(R.array.class_type);
         uploadModes = getResources().getStringArray(R.array.upload_mode);
         tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
+        mDeviceMac = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_MAC);
         EventBus.getDefault().register(this);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
@@ -121,8 +123,10 @@ public class SettingActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
-        EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
+        if (!MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+            EventBus.getDefault().cancelEventDelivery(event);
+        }
         runOnUiThread(() -> {
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
@@ -305,10 +309,12 @@ public class SettingActivity extends BaseActivity {
                 setResult(RESULT_OK);
                 finish();
             } else {
-                showLoadingProgressDialog();
                 tvDeviceSetting.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if (!MokoSupport.getInstance().isConnDevice(SettingActivity.this, mDeviceMac))
+                            return;
+                        showLoadingProgressDialog();
                         ArrayList<OrderTask> orderTasks = new ArrayList<>();
                         orderTasks.add(new ReadRegionTask());
                         orderTasks.add(new ReadClassTypeTask());

@@ -103,7 +103,9 @@ public enum OrderEnum implements Serializable {
     WRITE_ALARM_VIBRATION_SWITCH("设置振动传感器开关状态", 0x77),
     WRITE_ALARM_GPS_SWITCH("设置GPS开关状态", 0x78),
     WRITE_ALARM_SATELLITE_SEARCH_TIME("设置待机心跳GPS定位时间", 0x79),
+    WRITE_PASSWORD("设置蓝牙连接密码", 0x88),
 
+    NOTIFY("通知", 0),
     UPGRADE_MCU("升级包概况", 0x41),
     UPGRADE_MCU_DETAIL("升级包详情", 0x42),
 

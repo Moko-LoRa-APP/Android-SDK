@@ -3,6 +3,7 @@ package com.moko.lorawan.utils;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.UpgradeMCUDetailTask;
 import com.moko.support.task.UpgradeMCUTask;
+import com.moko.support.task.VerifyPasswordTask;
 import com.moko.support.task.WriteADRTask;
 import com.moko.support.task.WriteAlarmGPSSwitchTask;
 import com.moko.support.task.WriteAlarmSatelliteSearchTimeTask;
@@ -259,6 +260,12 @@ public class OrderTaskAssembler {
         WriteAlarmSatelliteSearchTimeTask orderTask = new WriteAlarmSatelliteSearchTimeTask();
         orderTask.setOrderData(searchTime);
         return orderTask;
+    }
+
+    public static OrderTask verifyPassword(String password) {
+        VerifyPasswordTask verifyPasswordTask = new VerifyPasswordTask();
+        verifyPasswordTask.setData(password);
+        return verifyPasswordTask;
     }
 }
 

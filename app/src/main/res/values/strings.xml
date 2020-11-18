@@ -7,6 +7,12 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
 
+    <string name="please_enter_password">Please enter password</string>
+    <string name="password_null">Password cannot be empty!</string>
+    <string name="main_password_length">The password should be 8 characters</string>
+    <string name="change_password_length">The password should be 8 characters.Please try again</string>
+    <string name="change_password_match">Password do not match!Please try again.</string>
+
     <string name="permission_storage_close_title">Storage permission is not available</string>
     <string name="permission_storage_close_content">Please find it in cellphone setting- permission, and allow LoRaWAN use the Storage permission</string>
     <string name="permission_open">OK</string>

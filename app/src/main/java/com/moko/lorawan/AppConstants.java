@@ -11,6 +11,7 @@ public class AppConstants {
     public static final String SP_NAME = "sp_name_lorawan";
 
     public static final String SP_KEY_DEVICE_ADDRESS = "sp_key_device_address";
+    public static final String SP_KEY_SAVED_PASSWORD = "SP_KEY_SAVED_PASSWORD";
     // extra_key
     // 设备列表
     public static final String EXTRA_KEY_RESPONSE_ORDER_TYPE = "EXTRA_KEY_RESPONSE_ORDER_TYPE";

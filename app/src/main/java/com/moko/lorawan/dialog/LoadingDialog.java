@@ -11,7 +11,7 @@ import com.moko.lorawan.view.ProgressDrawable;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class LoadingDialog extends BaseDialog {
+public class LoadingDialog extends MokoBaseDialog {
 
     public static final String TAG = LoadingDialog.class.getSimpleName();
     @Bind(R.id.iv_loading)

@@ -172,8 +172,10 @@ public class OTAActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
-        EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
+        if (!MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
+            EventBus.getDefault().cancelEventDelivery(event);
+        }
         runOnUiThread(() -> {
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();

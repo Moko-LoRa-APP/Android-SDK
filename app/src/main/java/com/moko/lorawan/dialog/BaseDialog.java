@@ -1,110 +1,82 @@
 package com.moko.lorawan.dialog;
 
-
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.StyleRes;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+
 
 import com.moko.lorawan.R;
 
+import butterknife.ButterKnife;
 
-public abstract class BaseDialog extends DialogFragment {
 
-    private static final String TAG = "base_dialog";
+public abstract class BaseDialog<T> extends Dialog {
+    protected T t;
+    private boolean dismissEnable;
+    private Animation animation;
 
-    private static final float DEFAULT_DIM = 0.2f;
-    private static final int DEFAULT_GRAVITY = Gravity.BOTTOM;
-    private static final int DEFAULT_STYLE = R.style.BottomDialog;
+    public BaseDialog(Context context) {
+        super(context, R.style.BaseDialogTheme);
+    }
 
+    public BaseDialog(Context context, int themeResId) {
+        super(context, themeResId);
+    }
+
+    @SuppressLint("InflateParams")
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, getDialogStyle());
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        getDialog().setCanceledOnTouchOutside(getCancelOutside());
-        getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    return getCancellable();
-                }
-                return false;
-            }
-        });
-        View v = inflater.inflate(getLayoutRes(), container, false);
-        bindView(v);
-        return v;
-    }
-
-    @LayoutRes
-    public abstract int getLayoutRes();
-
-    public abstract void bindView(View v);
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        Window window = getDialog().getWindow();
-        WindowManager.LayoutParams params = window.getAttributes();
-
-        params.dimAmount = getDimAmount();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        if (getHeight() > 0) {
-            params.height = getHeight();
-        } else {
-            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        final View convertView = LayoutInflater.from(getContext()).inflate(getLayoutResId(), null);
+        ButterKnife.bind(this, convertView);
+        renderConvertView(convertView, t);
+        if (animation != null) {
+            convertView.setAnimation(animation);
         }
-        params.gravity = getGravity();
-
-        window.setAttributes(params);
+        if (dismissEnable) {
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+        }
+        setContentView(convertView);
     }
 
-    public int getHeight() {
-        return -1;
+    protected abstract int getLayoutResId();
+
+    protected abstract void renderConvertView(final View convertView, final T t);
+
+
+    @Override
+    public void show() {
+        super.show();
+        //set the dialog fullscreen
+        final Window window = getWindow();
+        assert window != null;
+        final WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        //设置窗口高度为包裹内容
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        window.setAttributes(layoutParams);
     }
 
-    public float getDimAmount() {
-        return DEFAULT_DIM;
+    public void setData(T t) {
+        this.t = t;
     }
 
-    public boolean getCancelOutside() {
-        return true;
+    protected void setAnimation(Animation animation) {
+        this.animation = animation;
     }
 
-    public String getFragmentTag() {
-        return TAG;
-    }
-
-    public int getGravity() {
-        return DEFAULT_GRAVITY;
-    }
-
-    public boolean getCancellable() {
-        return false;
-    }
-
-    @StyleRes
-    public int getDialogStyle() {
-        return DEFAULT_STYLE;
-    }
-
-    public void show(FragmentManager fragmentManager) {
-        show(fragmentManager, getFragmentTag());
+    protected void setDismissEnable(boolean dismissEnable) {
+        this.dismissEnable = dismissEnable;
     }
 }

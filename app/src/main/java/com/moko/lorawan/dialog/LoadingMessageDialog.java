@@ -13,7 +13,7 @@ import com.moko.lorawan.view.ProgressDrawable;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class LoadingMessageDialog extends BaseDialog {
+public class LoadingMessageDialog extends MokoBaseDialog {
     private static final int DIALOG_DISMISS_DELAY_TIME = 5000;
     public static final String TAG = LoadingMessageDialog.class.getSimpleName();
     @Bind(R.id.iv_loading)

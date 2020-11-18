@@ -12,7 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BottomDialog extends BaseDialog {
+public class BottomDialog extends MokoBaseDialog {
 
 
     @Bind(R.id.wv_bottom)

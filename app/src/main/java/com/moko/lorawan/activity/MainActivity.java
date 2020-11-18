@@ -21,6 +21,9 @@ import com.moko.lorawan.R;
 import com.moko.lorawan.adapter.LoRaDeviceAdapter;
 import com.moko.lorawan.dialog.AlertMessageDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
+import com.moko.lorawan.dialog.PasswordDialog;
+import com.moko.lorawan.utils.OrderTaskAssembler;
+import com.moko.lorawan.utils.SPUtiles;
 import com.moko.lorawan.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -54,6 +57,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -80,6 +85,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mSavedPassword = SPUtiles.getStringValue(this, AppConstants.SP_KEY_SAVED_PASSWORD, "");
         mHandler = new CustomMessageHandler(this);
         mAdapter = new LoRaDeviceAdapter();
         mDeviceInfos = new ArrayList<>();
@@ -159,26 +165,32 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     ArrayList<OrderTask> orderTasks = new ArrayList<>();
                     switch (MokoSupport.deviceTypeEnum) {
                         case LW001_BG:
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG));
+                            orderTasks.add(new ReadModelNameTask());
+                            orderTasks.add(new ReadConnectStatusTask());
+                            break;
                         case LW003_B:
                             orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
                             orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG));
+                            orderTasks.add(new ReadModelNameTask());
+                            orderTasks.add(new WriteRTCTimeTask());
+                            orderTasks.add(new ReadConnectStatusTask());
                             break;
                         case LW002_TH:
                             orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
                             orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_LOG));
                             orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_MCU));
                             orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_PERIPHERAL));
+                            orderTasks.add(new ReadModelNameTask());
+                            orderTasks.add(new WriteRTCTimeTask());
+                            orderTasks.add(new ReadConnectStatusTask());
                             break;
                         case LW004_BP:
-                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
+                            orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC_NOTIFY));
+                            orderTasks.add(OrderTaskAssembler.verifyPassword(mPassword));
                             break;
                     }
-                    if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
-                        orderTasks.add(new ReadAlarmStatusTask());
-                    orderTasks.add(new ReadModelNameTask());
-                    if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW001_BG)
-                        orderTasks.add(new WriteRTCTimeTask());
-                    orderTasks.add(new ReadConnectStatusTask());
                     MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
                 }
             }, 500);
@@ -197,6 +209,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
             OrderTaskResponse response = event.getResponse();
             OrderEnum orderEnum = response.order;
+            byte[] value = response.responseValue;
             switch (orderEnum) {
                 case READ_CONNECT_STATUS:
                     LogModule.clearInfoForFile();
@@ -205,6 +218,24 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     i.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mSelectedDeviceName);
                     i.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mSelectedDeviceMac);
                     startActivity(i);
+                    break;
+                case NOTIFY:
+                    if ((value[1] & 0xFF) == 0xAA) {
+                        showLoadingProgressDialog();
+                        mSavedPassword = mPassword;
+                        SPUtiles.setStringValue(MainActivity.this, AppConstants.SP_KEY_SAVED_PASSWORD, mSavedPassword);
+                        LogModule.i("Success");
+                        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                        orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
+                        orderTasks.add(new ReadAlarmStatusTask());
+                        orderTasks.add(new ReadModelNameTask());
+                        orderTasks.add(new WriteRTCTimeTask());
+                        orderTasks.add(new ReadConnectStatusTask());
+                        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+                    } else {
+                        ToastUtils.showToast(MainActivity.this, "Password Error");
+                        MokoSupport.getInstance().disConnectBle();
+                    }
                     break;
             }
         }
@@ -303,6 +334,9 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         dialog.show(getSupportFragmentManager());
     }
 
+    private String mPassword;
+    private String mSavedPassword;
+
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
         srlMain.finishRefresh();
@@ -313,19 +347,43 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         }
         // 跳转
         final DeviceInfo deviceInfo = (DeviceInfo) adapter.getItem(position);
-        if (deviceInfo == null) {
+        if (deviceInfo == null && !isFinishing()) {
             return;
         }
-        showLoadingProgressDialog();
         MokoSupport.deviceTypeEnum = deviceInfo.deviceTypeEnum;
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                MokoSupport.getInstance().connDevice(MainActivity.this, deviceInfo.mac);
-            }
-        }, 500);
         mSelectedDeviceName = deviceInfo.name;
         mSelectedDeviceMac = deviceInfo.mac;
+        // show password
+        final PasswordDialog dialog = new PasswordDialog(MainActivity.this);
+        dialog.setData(mSavedPassword);
+        dialog.setOnPasswordClicked(new PasswordDialog.PasswordClickListener() {
+            @Override
+            public void onEnsureClicked(String password) {
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    MokoSupport.getInstance().enableBluetooth();
+                    return;
+                }
+                LogModule.i(password);
+                mPassword = password;
+                showLoadingProgressDialog();
+                mHandler.postDelayed(() -> MokoSupport.getInstance().connDevice(MainActivity.this, deviceInfo.mac), 500);
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+        });
+        dialog.show();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                runOnUiThread(() -> dialog.showKeyboard());
+            }
+        }, 200);
+
     }
 
     @Override
