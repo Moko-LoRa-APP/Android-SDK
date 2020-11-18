@@ -744,6 +744,7 @@ public class MokoSupport implements MokoResponseCallback {
     // setting
     ///////////////////////////////////////////////////////////////////////////
 
+    public int lowPowerPrompt;
     public String devAddr;
     public String nwkSKey;
     public String appSKey;

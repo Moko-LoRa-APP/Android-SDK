@@ -25,7 +25,7 @@ public class AppConstants {
     public static final int REQUEST_CODE_PERMISSION = 120;
     public static final int REQUEST_CODE_PERMISSION_2 = 121;
     public static final int REQUEST_CODE_LOCATION_SETTINGS = 122;
-    public static final int REQUEST_CODE_DEVICE_SETTING = 123;
+    public static final int REQUEST_CODE_LORA_SETTING = 123;
     public static final int REQUEST_CODE_REFRESH = 124;
     public static final int REQUEST_CODE_SETTING = 125;
     public static final int PERMISSION_REQUEST_CODE = 1;

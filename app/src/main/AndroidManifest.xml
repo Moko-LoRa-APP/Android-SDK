@@ -49,6 +49,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
+            android:name=".activity.LoRaSettingActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".activity.LogActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />

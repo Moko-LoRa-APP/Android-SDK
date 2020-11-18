@@ -60,6 +60,7 @@ public enum OrderEnum implements Serializable {
     READ_ALAMR_VIBRATION_SWITCH("读取震动传感器开关状态", 0xC3),
     READ_ALARM_GPS_SWITCH("读取GPS开关状态", 0xC4),
     READ_ALARM_SATELLITE_SEARCH_TIME("读取待机心跳GPS定位时间", 0xC5),
+    READ_LOW_POWER_PROMPT("读取低电报警电量", 0xCC),
 
     WRITE_UPLINK_DATA_TEST("设置上行测试数据", 0xBB),
     WRITE_DEV_ADDR("设置DevAddr", 0x37),
@@ -103,6 +104,7 @@ public enum OrderEnum implements Serializable {
     WRITE_ALARM_VIBRATION_SWITCH("设置振动传感器开关状态", 0x77),
     WRITE_ALARM_GPS_SWITCH("设置GPS开关状态", 0x78),
     WRITE_ALARM_SATELLITE_SEARCH_TIME("设置待机心跳GPS定位时间", 0x79),
+    WRITE_LOW_POWER_PROMPT("设置低电报警电量", 0x86),
     WRITE_PASSWORD("设置蓝牙连接密码", 0x88),
 
     NOTIFY("通知", 0),

@@ -40,6 +40,7 @@ import com.moko.support.task.ReadDevAddrTask;
 import com.moko.support.task.ReadDevEUITask;
 import com.moko.support.task.ReadFilterNameTask;
 import com.moko.support.task.ReadFilterRSSITask;
+import com.moko.support.task.ReadLowPowerPromptTask;
 import com.moko.support.task.ReadMsgTypeTask;
 import com.moko.support.task.ReadMulticastAddrTask;
 import com.moko.support.task.ReadMulticastAppSKeyTask;
@@ -64,8 +65,10 @@ import butterknife.ButterKnife;
 public class SettingActivity extends BaseActivity {
 
 
-    @Bind(R.id.tv_device_setting)
-    TextView tvDeviceSetting;
+    @Bind(R.id.rl_device_setting)
+    RelativeLayout rlDeviceSetting;
+    @Bind(R.id.tv_lora_setting)
+    TextView tvLoraSetting;
     @Bind(R.id.rl_multicast_setting)
     RelativeLayout rlMulticastSetting;
     @Bind(R.id.rl_alarm_setting)
@@ -93,6 +96,7 @@ public class SettingActivity extends BaseActivity {
         int classType = MokoSupport.getInstance().getClassType();
         int uploadMode = MokoSupport.getInstance().getUploadMode();
         int deviceType = MokoSupport.deviceTypeEnum.getDeviceType();
+        rlDeviceSetting.setVisibility(deviceType == 3 ? View.VISIBLE : View.GONE);
         rlBleSetting.setVisibility(deviceType == 1 ? View.VISIBLE : View.GONE);
         rlScanSetting.setVisibility(deviceType == 2 || deviceType == 3 ? View.VISIBLE : View.GONE);
         rlMulticastSetting.setVisibility(deviceType != 0 && deviceType != 3 ? View.VISIBLE : View.GONE);
@@ -101,7 +105,7 @@ public class SettingActivity extends BaseActivity {
         regions = getResources().getStringArray(R.array.region);
         classTypes = getResources().getStringArray(R.array.class_type);
         uploadModes = getResources().getStringArray(R.array.upload_mode);
-        tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
+        tvLoraSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
         mDeviceMac = getIntent().getStringExtra(AppConstants.EXTRA_KEY_DEVICE_MAC);
         EventBus.getDefault().register(this);
         // 注册广播接收器
@@ -145,15 +149,19 @@ public class SettingActivity extends BaseActivity {
                 OrderTaskResponse response = event.getResponse();
                 OrderEnum orderEnum = response.order;
                 switch (orderEnum) {
+                    case READ_LOW_POWER_PROMPT:
+                        // 跳转组播设置页面
+                        startActivity(new Intent(SettingActivity.this, DeviceSettingActivity.class));
+                        break;
                     case READ_ADR:
                         // 跳转设置页面
-                        startActivityForResult(new Intent(SettingActivity.this, DeviceSettingActivity.class), AppConstants.REQUEST_CODE_DEVICE_SETTING);
+                        startActivityForResult(new Intent(SettingActivity.this, LoRaSettingActivity.class), AppConstants.REQUEST_CODE_LORA_SETTING);
                         break;
                     case READ_UPLOAD_MODE:
                         int region = MokoSupport.getInstance().getRegion();
                         int classType = MokoSupport.getInstance().getClassType();
                         int uploadMode = MokoSupport.getInstance().getUploadMode();
-                        tvDeviceSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
+                        tvLoraSetting.setText(String.format("%s/%s/%s", uploadMode > 2 ? "" : uploadModes[uploadMode - 1], regions[region], classTypes[classType - 1]));
                         break;
                     case READ_BLE:
                         // 跳转蓝牙设置页面
@@ -234,6 +242,11 @@ public class SettingActivity extends BaseActivity {
 
     public void deviceSetting(View view) {
         showLoadingProgressDialog();
+        MokoSupport.getInstance().sendOrder(new ReadLowPowerPromptTask());
+    }
+
+    public void loraSetting(View view) {
+        showLoadingProgressDialog();
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadDevEUITask());
         orderTasks.add(new ReadAppEUITask());
@@ -304,12 +317,12 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AppConstants.REQUEST_CODE_DEVICE_SETTING) {
+        if (requestCode == AppConstants.REQUEST_CODE_LORA_SETTING) {
             if (resultCode == RESULT_OK) {
                 setResult(RESULT_OK);
                 finish();
             } else {
-                tvDeviceSetting.postDelayed(new Runnable() {
+                tvLoraSetting.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (!MokoSupport.getInstance().isConnDevice(SettingActivity.this, mDeviceMac))
@@ -325,6 +338,4 @@ public class SettingActivity extends BaseActivity {
             }
         }
     }
-
-
 }

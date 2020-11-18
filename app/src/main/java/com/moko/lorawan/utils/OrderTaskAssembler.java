@@ -25,6 +25,7 @@ import com.moko.support.task.WriteFilterNameTask;
 import com.moko.support.task.WriteFilterRSSITask;
 import com.moko.support.task.WriteHumiDataTask;
 import com.moko.support.task.WriteI2CIntervalTask;
+import com.moko.support.task.WriteLowPowerPromptTask;
 import com.moko.support.task.WriteMsgTypeTask;
 import com.moko.support.task.WriteMulticastAddrTask;
 import com.moko.support.task.WriteMulticastAppSKeyTask;
@@ -266,6 +267,12 @@ public class OrderTaskAssembler {
         VerifyPasswordTask verifyPasswordTask = new VerifyPasswordTask();
         verifyPasswordTask.setData(password);
         return verifyPasswordTask;
+    }
+
+    public static OrderTask setLowPowerPromptTask(int lowPowerPrompt) {
+        WriteLowPowerPromptTask orderTask = new WriteLowPowerPromptTask();
+        orderTask.setOrderData(lowPowerPrompt);
+        return orderTask;
     }
 }
 

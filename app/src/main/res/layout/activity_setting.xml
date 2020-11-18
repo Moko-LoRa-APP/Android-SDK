@@ -28,6 +28,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_device_setting"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/white_ffffff"
@@ -49,9 +50,44 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:drawableRight="@drawable/ic_arrows"
+            android:drawablePadding="10dp"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white_ffffff"
+        android:onClick="loraSetting">
+
+        <TextView
+            android:id="@+id/lora_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="LoRa Setting"
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/tv_lora_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:layout_toRightOf="@id/device_setting"
+            android:layout_toRightOf="@id/lora_setting"
             android:drawableRight="@drawable/ic_arrows"
             android:drawablePadding="10dp"
             android:gravity="right"
