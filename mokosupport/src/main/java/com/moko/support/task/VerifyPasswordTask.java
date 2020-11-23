@@ -13,16 +13,18 @@ public class VerifyPasswordTask extends OrderTask {
     public byte[] data;
 
     public VerifyPasswordTask() {
-        super(OrderType.CHARACTERISTIC_NOTIFY, OrderEnum.NOTIFY, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+        super(OrderType.CHARACTERISTIC_NOTIFY, OrderEnum.PASSWORD, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
     public void setData(String password) {
-        this.data = new byte[9];
+        this.data = new byte[11];
         byte[] passwordBytes = password.getBytes();
         int length = passwordBytes.length;
         data[0] = (byte) 0xED;
+        data[1] = (byte) order.getOrderHeader();
+        data[2] = (byte) 0x08;
         for (int i = 0; i < length; i++) {
-            data[i + 1] = passwordBytes[i];
+            data[i + 3] = passwordBytes[i];
         }
     }
 

@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">MokoLoRa</string>
+    <string name="about_title">About MOKO</string>
+    <string name="about_moko_name">MOKO TECHNOLOGY LTD.</string>
+    <string name="company_website">www.mokosmart.com</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+
+    <string name="please_enter_password">Please enter password</string>
+    <string name="password_null">Password cannot be empty!</string>
+    <string name="main_password_length">The password should be 8 characters</string>
+    <string name="change_password_length">The password should be 8 characters.Please try again</string>
+    <string name="change_password_match">Password do not match!Please try again.</string>
+
+    <string name="permission_storage_close_title">Storage permission is not available</string>
+    <string name="permission_storage_close_content">Please find it in cellphone setting- permission, and allow LoRaWAN use the Storage permission</string>
+    <string name="permission_open">OK</string>
+    <string name="permission_storage_need_title">Please turn on Storage permissions</string>
+    <string name="permission_storage_need_content">LoRaWAN requires access to Location and Storage permission. If the permissions are not on, LoRaWAN cannot be used normally.</string>
+    <string name="location_need_title">Turn on Location permission</string>
+    <string name="location_need_content">After that, LoRaWAN could search and connect with the LoRaWAN</string>
+    <string name="permission_location_close_title">Location persission is not available</string>
+    <string name="permission_location_close_content">Please find it in cellphone setting- permission, and allow LoRaWAN use the Location and Storage permission</string>
+    <string name="permission_location_need_title">Turn on Location permission</string>
+    <string name="permission_location_need_content">After that, LoRaWAN could search and connect with the LoRaWAN</string>
+
+    <string name="main_exit_tips">Are you sure you want to quit?</string>
+    <string name="setting_syncing">syncing</string>
+
+    <string name="main_scan_name">Name</string>
+    <string name="main_scan_rssi">RSSI</string>
+    <string name="version_info">Version:%s</string>
+    <string name="th_sensor_data"><![CDATA[T&H Sensor Data]]></string>
+
+    <string-array name="connect_status">
+        <item>Disconnected</item>
+        <item>Connected</item>
+        <item>Connecting</item>
+    </string-array>
+    <string-array name="region">
+        <item>EU868</item>
+        <item>US915</item>
+        <item>US915HYBRID</item>
+        <item>CN779</item>
+        <item>EU433</item>
+        <item>AU915</item>
+        <item>AU915OLD</item>
+        <item>CN470</item>
+        <item>AS923</item>
+        <item>KR920</item>
+        <item>IN865</item>
+        <item>CN470PREQUEL</item>
+        <item>STE920</item>
+    </string-array>
+    <string-array name="class_type">
+        <item>ClassA</item>
+        <item>ClassB</item>
+        <item>ClassC</item>
+    </string-array>
+    <string-array name="upload_mode">
+        <item>ABP</item>
+        <item>OTAA</item>
+    </string-array>
+    <string-array name="alarm">
+        <item>Disable</item>
+        <item>Enable</item>
+    </string-array>
+    <string-array name="OTA">
+        <item>MCU</item>
+        <item>BLE</item>
+    </string-array>
+    <string-array name="trigger_mode">
+        <item>Single click</item>
+        <item>Double click</item>
+        <item>Long press</item>
+    </string-array>
+
+</resources>

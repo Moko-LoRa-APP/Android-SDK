@@ -219,8 +219,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     i.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mSelectedDeviceMac);
                     startActivity(i);
                     break;
-                case NOTIFY:
-                    if ((value[1] & 0xFF) == 0xAA) {
+                case PASSWORD:
+                    if ((value[3] & 0xFF) == 0xAA) {
                         showLoadingProgressDialog();
                         mSavedPassword = mPassword;
                         SPUtiles.setStringValue(MainActivity.this, AppConstants.SP_KEY_SAVED_PASSWORD, mSavedPassword);

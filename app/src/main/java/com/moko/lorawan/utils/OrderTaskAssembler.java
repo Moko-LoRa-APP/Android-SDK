@@ -127,9 +127,9 @@ public class OrderTaskAssembler {
         return orderTask;
     }
 
-    public static OrderTask setDROrderTask(int dr1, int dr2) {
+    public static OrderTask setDROrderTask(int dr1) {
         WriteDRTask orderTask = new WriteDRTask();
-        orderTask.setOrderData(dr1, dr2);
+        orderTask.setOrderData(dr1);
         return orderTask;
     }
 

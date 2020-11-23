@@ -356,7 +356,7 @@ public class MokoSupport implements MokoResponseCallback {
             } else {
                 OrderEnum order = null;
                 if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_NOTIFY.getUuid())) {
-                    order = OrderEnum.NOTIFY;
+                    order = OrderEnum.DISCONNECT_TYPE;
                 }
                 if (order != null) {
                     LogModule.i(order.getOrderName());

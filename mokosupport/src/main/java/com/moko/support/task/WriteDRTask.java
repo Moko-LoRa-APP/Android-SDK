@@ -19,13 +19,13 @@ public class WriteDRTask extends OrderTask {
         super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_DR, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
-    public void setOrderData(int dr1, int dr2) {
+    public void setOrderData(int dr1) {
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
         orderData[2] = (byte) 0x02;
         orderData[3] = (byte) dr1;
-        orderData[4] = (byte) dr2;
+        orderData[4] = (byte) dr1;
     }
 
     @Override

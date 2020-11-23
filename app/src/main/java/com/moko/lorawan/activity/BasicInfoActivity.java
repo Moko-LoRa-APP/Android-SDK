@@ -135,9 +135,9 @@ public class BasicInfoActivity extends BaseActivity {
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
                 switch (order) {
-                    case NOTIFY:
-                        if (value != null && value.length == 2) {
-                            int type = value[1] & 0xFF;
+                    case DISCONNECT_TYPE:
+                        if (value != null && value.length == 4) {
+                            int type = value[3] & 0xFF;
                             disConnectType = type;
                             if (type == 1) {
                                 // valid password timeout

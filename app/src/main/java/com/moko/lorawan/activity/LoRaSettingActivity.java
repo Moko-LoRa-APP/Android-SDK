@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -15,7 +16,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
-import com.moko.lorawan.dialog.AlertMessageDialog;
+import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.dialog.RegionBottomDialog;
 import com.moko.lorawan.entity.Region;
@@ -72,20 +73,14 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
     RadioGroup rgDeviceType;
     @Bind(R.id.et_report_interval)
     EditText etReportInterval;
-    //    @Bind(R.id.tv_ch_1)
-//    TextView tvCh1;
-//    @Bind(R.id.tv_ch_2)
-//    TextView tvCh2;
-//    @Bind(R.id.tv_dr_1)
-//    TextView tvDr1;
-//    @Bind(R.id.tv_dr_2)
-//    TextView tvDr2;
-//    @Bind(R.id.tv_save)
-//    TextView tvSave;
-//    @Bind(R.id.tv_connect)
-//    TextView tvConnect;
-//    @Bind(R.id.cb_adr)
-//    CheckBox cbAdr;
+    @Bind(R.id.tv_ch_1)
+    TextView tvCh1;
+    @Bind(R.id.tv_ch_2)
+    TextView tvCh2;
+    @Bind(R.id.tv_dr_1)
+    TextView tvDr1;
+    @Bind(R.id.cb_adr)
+    CheckBox cbAdr;
     @Bind(R.id.tv_region)
     TextView tvRegion;
     @Bind(R.id.ll_report_invterval)
@@ -102,18 +97,22 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
     LinearLayout llDeviceType;
     @Bind(R.id.tv_report_interval_tips)
     TextView tvReportIntervalTips;
+    @Bind(R.id.cb_advance_setting)
+    CheckBox cbAdvanceSetting;
+    @Bind(R.id.ll_advanced_setting)
+    LinearLayout llAdvancedSetting;
 
 
     private boolean mReceiverTag = false;
+    private ArrayList<Region> mRegionsList;
     private String[] mRegions;
     private int mSelectedRegion;
-    //    private int mSelectedCh1;
-//    private int mSelectedCh2;
-//    private int mSelectedDr1;
-//    private int mSelectedDr2;
+    private int mSelectedCh1;
+    private int mSelectedCh2;
+    private int mSelectedDr1;
+    private int mMaxCH;
+    private int mMaxDR;
     private boolean mIsFailed;
-//    private boolean mIsResetSuccess;
-//    private boolean mReadCHDR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +139,18 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
         String appSKey = MokoSupport.getInstance().appSKey;
         etAppSkey.setText(appSKey);
         mRegions = getResources().getStringArray(R.array.region);
+        mRegionsList = new ArrayList<>();
+        for (int i = 0; i < mRegions.length; i++) {
+            String name = mRegions[i];
+            if ("US915HYBRID".equals(name) || "AU915OLD".equals(name)
+                    || "CN470PREQUEL".equals(name) || "STE920".equals(name)) {
+                continue;
+            }
+            Region region = new Region();
+            region.value = i;
+            region.name = name;
+            mRegionsList.add(region);
+        }
         mSelectedRegion = MokoSupport.getInstance().getRegion();
         tvRegion.setText(mRegions[mSelectedRegion]);
         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
@@ -153,14 +164,12 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
                 rbTypeClassc.setChecked(true);
             }
         }
-//        mSelectedCh1 = MokoSupport.getInstance().ch_1;
-//        tvCh1.setText(mSelectedCh1 + "");
-//        mSelectedCh2 = MokoSupport.getInstance().ch_2;
-//        tvCh2.setText(mSelectedCh2 + "");
-//        mSelectedDr1 = MokoSupport.getInstance().dr_1;
-//        tvDr1.setText("DR" + mSelectedDr1);
-//        mSelectedDr2 = MokoSupport.getInstance().dr_2;
-//        tvDr2.setText("DR" + mSelectedDr2);
+        mSelectedCh1 = MokoSupport.getInstance().ch_1;
+        tvCh1.setText(mSelectedCh1 + "");
+        mSelectedCh2 = MokoSupport.getInstance().ch_2;
+        tvCh2.setText(mSelectedCh2 + "");
+        mSelectedDr1 = MokoSupport.getInstance().dr_1;
+        tvDr1.setText("DR" + mSelectedDr1);
         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW002_TH) {
             llReportInvterval.setVisibility(View.GONE);
         } else {
@@ -180,12 +189,15 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
         } else {
             rbTypeUnconfirmed.setChecked(true);
         }
-//        int adr = MokoSupport.getInstance().adr;
-//        if (adr == 0) {
-//            cbAdr.setChecked(false);
-//        } else {
-//            cbAdr.setChecked(true);
-//        }
+        int adr = MokoSupport.getInstance().adr;
+        if (adr == 0) {
+            cbAdr.setChecked(false);
+        } else {
+            cbAdr.setChecked(true);
+        }
+        cbAdvanceSetting.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            llAdvancedSetting.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
         EventBus.getDefault().register(this);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
@@ -214,19 +226,12 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
 
             }
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-//                    if (mReadCHDR) {
-//                        return;
-//                    }
                 dismissLoadingProgressDialog();
                 if (!mIsFailed) {
                     ToastUtils.showToast(LoRaSettingActivity.this, "Success");
                 } else {
                     ToastUtils.showToast(LoRaSettingActivity.this, "Error");
                 }
-//                    if (mIsResetSuccess) {
-//                        DeviceSettingActivity.this.setResult(RESULT_OK);
-//                        DeviceSettingActivity.this.finish();
-//                    }
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
@@ -253,25 +258,6 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
                             mIsFailed = true;
                         }
                         break;
-//                        case WRITE_RESET:
-//                            if ((value[3] & 0xff) != 0xAA) {
-//                                mIsFailed = true;
-//                            } else {
-//                                mIsResetSuccess = true;
-//                            }
-//                            break;
-//                        case READ_CH:
-//                        case READ_DR:
-//                            mReadCHDR = false;
-//                            mSelectedCh1 = MokoSupport.getInstance().ch_1;
-//                            tvCh1.setText(mSelectedCh1 + "");
-//                            mSelectedCh2 = MokoSupport.getInstance().ch_2;
-//                            tvCh2.setText(mSelectedCh2 + "");
-//                            mSelectedDr1 = MokoSupport.getInstance().dr_1;
-//                            tvDr1.setText("DR" + mSelectedDr1);
-//                            mSelectedDr2 = MokoSupport.getInstance().dr_2;
-//                            tvDr2.setText("DR" + mSelectedDr2);
-//                            break;
                 }
             }
         });
@@ -324,211 +310,156 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
     }
 
     public void selectRegion(View view) {
-        ArrayList<Region> regions = new ArrayList<>();
-        for (int i = 0; i < mRegions.length; i++) {
-            String name = mRegions[i];
-            if ("US915HYBRID".equals(name) || "AU915OLD".equals(name)
-                    || "CN470PREQUEL".equals(name) || "STE920".equals(name)) {
-                continue;
-            }
-            Region region = new Region();
-            region.value = i;
-            region.name = name;
-            regions.add(region);
-        }
         RegionBottomDialog bottomDialog = new RegionBottomDialog();
-        bottomDialog.setDatas(regions, mSelectedRegion);
-        bottomDialog.setListener(new RegionBottomDialog.OnBottomListener() {
-            @Override
-            public void onValueSelected(int value) {
-//                mReadCHDR = true;
+        bottomDialog.setDatas(mRegionsList, mSelectedRegion);
+        bottomDialog.setListener(value -> {
+            if (mSelectedRegion != value) {
                 mSelectedRegion = value;
                 tvRegion.setText(mRegions[mSelectedRegion]);
-//                showLoadingProgressDialog();
-//                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getRegionOrderTask(mSelectedRegion));
+                initCHDRRange();
+                updateCHDR();
             }
         });
         bottomDialog.show(getSupportFragmentManager());
     }
 
-    public void resetData(View view) {
-        AlertMessageDialog dialog = new AlertMessageDialog();
-        dialog.setTitle("Reset All Parameters");
-        dialog.setMessage("Please confirm whether to reset all parameters?");
-        dialog.setOnAlertConfirmListener(new AlertMessageDialog.OnAlertConfirmListener() {
-            @Override
-            public void onClick() {
-                showLoadingProgressDialog();
-                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setResetOrderTask());
-            }
-        });
-        dialog.show(getSupportFragmentManager());
+    private void updateCHDR() {
+        switch (mSelectedRegion) {
+            case 0:
+            case 4:
+            case 9:
+            case 10:
+                mSelectedCh1 = 0;
+                mSelectedCh2 = 2;
+                mSelectedDr1 = 0;
+                break;
+            case 5:
+                mSelectedCh1 = 0;
+                mSelectedCh2 = 7;
+                mSelectedDr1 = 2;
+                break;
+            case 3:
+                mSelectedCh1 = 0;
+                mSelectedCh2 = 5;
+                mSelectedDr1 = 0;
+                break;
+            case 1:
+            case 7:
+                mSelectedCh1 = 0;
+                mSelectedCh2 = 7;
+                mSelectedDr1 = 0;
+                break;
+            case 8:
+                mSelectedCh1 = 0;
+                mSelectedCh2 = 1;
+                mSelectedDr1 = 2;
+                break;
+        }
+
+        tvCh1.setText(String.valueOf(mSelectedCh1));
+        tvCh2.setText(String.valueOf(mSelectedCh2));
+        tvDr1.setText(String.format("DR%d", mSelectedDr1));
     }
 
-//    private static ArrayList<String> mCHList;
-//    private static ArrayList<String> mDRList;
+    private ArrayList<String> mCHList;
+    private ArrayList<String> mDRList;
 
-//    static {
-//        mCHList = new ArrayList<>();
-//        for (int i = 0; i <= 95; i++) {
-//            mCHList.add(i + "");
-//        }
-//        mDRList = new ArrayList<>();
-//        for (int i = 0; i <= 15; i++) {
-//            mDRList.add("DR" + i);
-//        }
-//    }
+    private void initCHDRRange() {
+        mCHList = new ArrayList<>();
+        mDRList = new ArrayList<>();
+        switch (mSelectedRegion) {
+            case 0:
+            case 3:
+            case 4:
+            case 8:
+            case 9:
+            case 10:
+                // EU868、CN779、EU443、AS923、KR920、IN865
+                mMaxCH = 15;
+                mMaxDR = 5;
+                break;
+            case 1:
+                // US915
+                mMaxCH = 63;
+                mMaxDR = 4;
+                break;
+            case 5:
+                // AU915
+                mMaxCH = 63;
+                mMaxDR = 6;
+                break;
+            case 7:
+                // CN470
+                mMaxCH = 95;
+                mMaxDR = 5;
+                break;
+        }
+        for (int i = 0; i <= mMaxCH; i++) {
+            mCHList.add(i + "");
+        }
+        for (int i = 0; i <= mMaxDR; i++) {
+            mDRList.add("DR" + i);
+        }
+    }
 
+    public void selectCh1(View view) {
+        BottomDialog bottomDialog = new BottomDialog();
+        bottomDialog.setDatas(mCHList, mSelectedCh1);
+        bottomDialog.setListener(value -> {
+            mSelectedCh1 = value;
+            tvCh1.setText(mCHList.get(value));
+            if (mSelectedCh1 > mSelectedCh2) {
+                mSelectedCh2 = mSelectedCh1;
+                tvCh2.setText(mCHList.get(value));
+            }
+        });
+        bottomDialog.show(getSupportFragmentManager());
+    }
 
-//    public void selectCh1(View view) {
-//        BottomDialog bottomDialog = new BottomDialog();
-//        bottomDialog.setDatas(mCHList, mSelectedCh1);
-//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-//            @Override
-//            public void onValueSelected(int value) {
-//                mSelectedCh1 = value;
-//                tvCh1.setText(mCHList.get(value));
-//                if (mSelectedCh1 > mSelectedCh2) {
-//                    mSelectedCh2 = mSelectedCh1;
-//                    tvCh2.setText(mCHList.get(value));
-//                }
-//            }
-//        });
-//        bottomDialog.show(getSupportFragmentManager());
-//    }
-//
-//    public void selectCh2(View view) {
-//        final ArrayList<String> ch2List = new ArrayList<>();
-//        for (int i = mSelectedCh1; i <= 95; i++) {
-//            ch2List.add(i + "");
-//        }
-//        BottomDialog bottomDialog = new BottomDialog();
-//        bottomDialog.setDatas(ch2List, mSelectedCh2 - mSelectedCh1);
-//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-//            @Override
-//            public void onValueSelected(int value) {
-//                mSelectedCh2 = value + mSelectedCh1;
-//                tvCh2.setText(ch2List.get(value));
-//            }
-//        });
-//        bottomDialog.show(getSupportFragmentManager());
-//    }
-//
-//    public void selectDr1(View view) {
-//        BottomDialog bottomDialog = new BottomDialog();
-//        bottomDialog.setDatas(mDRList, mSelectedDr1);
-//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-//            @Override
-//            public void onValueSelected(int value) {
-//                mSelectedDr1 = value;
-//                tvDr1.setText(mDRList.get(value));
-//                if (mSelectedDr1 > mSelectedDr2) {
-//                    mSelectedDr2 = mSelectedDr1;
-//                    tvDr2.setText(mDRList.get(value));
-//                }
-//            }
-//        });
-//        bottomDialog.show(getSupportFragmentManager());
-//    }
-//
-//    public void selectDr2(View view) {
-//        final ArrayList<String> dr2List = new ArrayList<>();
-//        for (int i = mSelectedDr1; i <= 15; i++) {
-//            dr2List.add("DR" + i);
-//        }
-//        BottomDialog bottomDialog = new BottomDialog();
-//        bottomDialog.setDatas(dr2List, mSelectedDr2 - mSelectedDr1);
-//        bottomDialog.setListener(new BottomDialog.OnBottomListener() {
-//            @Override
-//            public void onValueSelected(int value) {
-//                mSelectedDr2 = value + mSelectedDr1;
-//                tvDr2.setText(dr2List.get(value));
-//            }
-//        });
-//        bottomDialog.show(getSupportFragmentManager());
-//    }
+    public void selectCh2(View view) {
+        final ArrayList<String> ch2List = new ArrayList<>();
+        for (int i = mSelectedCh1; i <= mMaxCH; i++) {
+            ch2List.add(i + "");
+        }
+        BottomDialog bottomDialog = new BottomDialog();
+        bottomDialog.setDatas(ch2List, mSelectedCh2 - mSelectedCh1);
+        bottomDialog.setListener(value -> {
+            mSelectedCh2 = value + mSelectedCh1;
+            tvCh2.setText(ch2List.get(value));
+        });
+        bottomDialog.show(getSupportFragmentManager());
+    }
 
-//    public void onSave(View view) {
-//        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-//        if (rbModemAbp.isChecked()) {
-//            String devAddr = etDevAddr.getText().toString();
-//            String nwkSkey = etNwkSkey.getText().toString();
-//            String appSkey = etAppSkey.getText().toString();
-//            if (devAddr.length() != 8) {
-//                ToastUtils.showToast(this, "data length error");
-//                return;
-//            }
-//            if (nwkSkey.length() != 32) {
-//                ToastUtils.showToast(this, "data length error");
-//                return;
-//            }
-//            if (appSkey.length() != 32) {
-//                ToastUtils.showToast(this, "data length error");
-//                return;
-//            }
-//            orderTasks.add(OrderTaskAssembler.setDevAddrOrderTask(devAddr));
-//            orderTasks.add(OrderTaskAssembler.setNwkSKeyOrderTask(nwkSkey));
-//            orderTasks.add(OrderTaskAssembler.setAppSKeyOrderTask(appSkey));
-//            orderTasks.add(OrderTaskAssembler.setUploadModeOrderTask(1));
-//        } else {
-//            String devEui = etDevEui.getText().toString();
-//            String appEui = etAppEui.getText().toString();
-//            String appKey = etAppKey.getText().toString();
-//            if (devEui.length() != 16) {
-//                ToastUtils.showToast(this, "data length error");
-//                return;
-//            }
-//            if (appEui.length() != 16) {
-//                ToastUtils.showToast(this, "data length error");
-//                return;
-//            }
-//            if (appKey.length() != 32) {
-//                ToastUtils.showToast(this, "data length error");
-//                return;
-//            }
-//            orderTasks.add(OrderTaskAssembler.setDevEUIOrderTask(devEui));
-//            orderTasks.add(OrderTaskAssembler.setAppEUIOrderTask(appEui));
-//            orderTasks.add(OrderTaskAssembler.setAppKeyOrderTask(appKey));
-//            orderTasks.add(OrderTaskAssembler.setUploadModeOrderTask(2));
-//        }
-//        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW002_TH) {
-//            String reportInterval = etReportInterval.getText().toString();
-//            if (TextUtils.isEmpty(reportInterval)) {
-//                ToastUtils.showToast(this, "Reporting Interval is empty");
-//                return;
-//            }
-//            int intervalInt = Integer.parseInt(reportInterval);
-//            if (intervalInt < 1 || intervalInt > 14400) {
-//                ToastUtils.showToast(this, "Reporting Interval range 1~14400");
-//                return;
-//            }
-//            orderTasks.add(OrderTaskAssembler.setUploadIntervalOrderTask(intervalInt));
-//        }
-//        orderTasks.add(OrderTaskAssembler.setMsgTypeOrderTask(rbTypeUnconfirmed.isChecked() ? 0 : 1));
-//        mIsFailed = false;
-//        // 保存
-//        orderTasks.add(OrderTaskAssembler.setRegionOrderTask(mSelectedRegion));
-//        if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
-//            orderTasks.add(OrderTaskAssembler.setClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
-//        }
-////        orderTasks.add(OrderTaskAssembler.setCHOrderTask(mSelectedCh1, mSelectedCh2));
-////        orderTasks.add(OrderTaskAssembler.setDROrderTask(mSelectedDr1, mSelectedDr2));
-////        orderTasks.add(OrderTaskAssembler.setADROrderTask(cbAdr.isChecked() ? 1 : 0));
-//        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-//        showLoadingProgressDialog();
-//    }
+    public void selectDr1(View view) {
+        if (cbAdr.isChecked()) {
+            return;
+        }
+        BottomDialog bottomDialog = new BottomDialog();
+        bottomDialog.setDatas(mDRList, mSelectedDr1);
+        bottomDialog.setListener(value -> {
+            mSelectedDr1 = value;
+            tvDr1.setText(mDRList.get(value));
+        });
+        bottomDialog.show(getSupportFragmentManager());
+    }
 
     public void onConnect(View view) {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         if (rbModemAbp.isChecked()) {
+            String devEui = etDevEui.getText().toString();
+            String appEui = etAppEui.getText().toString();
             String devAddr = etDevAddr.getText().toString();
-            String nwkSkey = etNwkSkey.getText().toString();
             String appSkey = etAppSkey.getText().toString();
-            if (devAddr.length() != 8) {
+            String nwkSkey = etNwkSkey.getText().toString();
+            if (devEui.length() != 16) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
-            if (nwkSkey.length() != 32) {
+            if (appEui.length() != 16) {
+                ToastUtils.showToast(this, "data length error");
+                return;
+            }
+            if (devAddr.length() != 8) {
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
@@ -536,9 +467,15 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
                 ToastUtils.showToast(this, "data length error");
                 return;
             }
+            if (nwkSkey.length() != 32) {
+                ToastUtils.showToast(this, "data length error");
+                return;
+            }
+            orderTasks.add(OrderTaskAssembler.setDevEUIOrderTask(devEui));
+            orderTasks.add(OrderTaskAssembler.setAppEUIOrderTask(appEui));
             orderTasks.add(OrderTaskAssembler.setDevAddrOrderTask(devAddr));
-            orderTasks.add(OrderTaskAssembler.setNwkSKeyOrderTask(nwkSkey));
             orderTasks.add(OrderTaskAssembler.setAppSKeyOrderTask(appSkey));
+            orderTasks.add(OrderTaskAssembler.setNwkSKeyOrderTask(nwkSkey));
             orderTasks.add(OrderTaskAssembler.setUploadModeOrderTask(1));
         } else {
             String devEui = etDevEui.getText().toString();
@@ -597,9 +534,9 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
         if (MokoSupport.deviceTypeEnum != DeviceTypeEnum.LW004_BP) {
             orderTasks.add(OrderTaskAssembler.setClassTypeOrderTask(rbTypeClassa.isChecked() ? 1 : 3));
         }
-//        orderTasks.add(OrderTaskAssembler.setCHOrderTask(mSelectedCh1, mSelectedCh2));
-//        orderTasks.add(OrderTaskAssembler.setDROrderTask(mSelectedDr1, mSelectedDr2));
-//        orderTasks.add(OrderTaskAssembler.setADROrderTask(cbAdr.isChecked() ? 1 : 0));
+        orderTasks.add(OrderTaskAssembler.setCHOrderTask(mSelectedCh1, mSelectedCh2));
+        orderTasks.add(OrderTaskAssembler.setDROrderTask(mSelectedDr1));
+        orderTasks.add(OrderTaskAssembler.setADROrderTask(cbAdr.isChecked() ? 1 : 0));
         orderTasks.add(OrderTaskAssembler.setConnectOrderTask());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();

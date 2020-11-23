@@ -107,7 +107,8 @@ public enum OrderEnum implements Serializable {
     WRITE_LOW_POWER_PROMPT("设置低电报警电量", 0x86),
     WRITE_PASSWORD("设置蓝牙连接密码", 0x88),
 
-    NOTIFY("通知", 0),
+    PASSWORD("密码", 0x8A),
+    DISCONNECT_TYPE("断开类型", 0xD1),
     UPGRADE_MCU("升级包概况", 0x41),
     UPGRADE_MCU_DETAIL("升级包详情", 0x42),
 
