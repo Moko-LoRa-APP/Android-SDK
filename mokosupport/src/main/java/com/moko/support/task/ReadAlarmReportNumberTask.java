@@ -1,5 +1,6 @@
 package com.moko.support.task;
 
+
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
@@ -9,35 +10,33 @@ import com.moko.support.log.LogModule;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class VerifyPasswordTask extends OrderTask {
-    public byte[] data;
+public class ReadAlarmReportNumberTask extends OrderTask {
+    private static final int ORDERDATA_LENGTH = 3;
 
-    public VerifyPasswordTask() {
-        super(OrderType.CHARACTERISTIC_NOTIFY, OrderEnum.PASSWORD, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
-    }
+    public byte[] orderData;
 
-    public void setData(String password) {
-        this.data = new byte[11];
-        byte[] passwordBytes = password.getBytes();
-        int length = passwordBytes.length;
-        data[0] = (byte) 0xED;
-        data[1] = (byte) order.getOrderHeader();
-        data[2] = (byte) 0x08;
-        for (int i = 0; i < length; i++) {
-            data[i + 3] = passwordBytes[i];
-        }
+    public ReadAlarmReportNumberTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_ALARM_REPORT_NUMBER, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+        orderData = new byte[ORDERDATA_LENGTH];
+        orderData[0] = (byte) MokoConstants.HEADER_SEND;
+        orderData[1] = (byte) order.getOrderHeader();
+        orderData[2] = (byte) MokoConstants.END_READ;
     }
 
     @Override
     public byte[] assemble() {
-        return data;
+        return orderData;
     }
 
     @Override
     public void parseValue(byte[] value) {
-        if (value.length != 4)
+        if (value.length != 0x04)
             return;
-        response.responseValue = value;
+        if (order.getOrderHeader() != (value[1] & 0xFF))
+            return;
+        if (0x01 != (value[2] & 0xFF))
+            return;
+        MokoSupport.getInstance().alarmReportNumer = value[3] & 0xFF;
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

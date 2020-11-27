@@ -153,6 +153,7 @@ public class LoRaSettingActivity extends BaseActivity implements RadioGroup.OnCh
         }
         mSelectedRegion = MokoSupport.getInstance().getRegion();
         tvRegion.setText(mRegions[mSelectedRegion]);
+        initCHDRRange();
         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
             llDeviceType.setVisibility(View.GONE);
             tvReportIntervalTips.setVisibility(View.VISIBLE);

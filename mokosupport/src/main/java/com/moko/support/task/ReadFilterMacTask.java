@@ -7,18 +7,19 @@ import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
 
-public class ReadFilterNameTask extends OrderTask {
+public class ReadFilterMacTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public ReadFilterNameTask() {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_FILTER_NAME, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadFilterMacTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_FILTER_MAC, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -36,10 +37,10 @@ public class ReadFilterNameTask extends OrderTask {
             return;
         int length = value[2] & 0xFF;
         if (length > 0) {
-            byte[] filterName = Arrays.copyOfRange(value, 3, value.length);
-            MokoSupport.getInstance().filterName = new String(filterName);
+            byte[] filterMac = Arrays.copyOfRange(value, 3, value.length);
+            MokoSupport.getInstance().filterMac = MokoUtils.bytesToHexString(filterMac);
         } else {
-            MokoSupport.getInstance().filterName = "";
+            MokoSupport.getInstance().filterMac = "";
         }
 
         LogModule.i(order.getOrderName() + "成功");

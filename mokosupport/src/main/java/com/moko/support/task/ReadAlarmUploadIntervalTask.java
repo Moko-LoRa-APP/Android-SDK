@@ -35,8 +35,10 @@ public class ReadAlarmUploadIntervalTask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        byte[] uploadIntervalBytes = Arrays.copyOfRange(value, 3, value.length);
+        byte[] uploadIntervalBytes = Arrays.copyOfRange(value, 3, 5);
+        byte[] scanTimeBytes = Arrays.copyOfRange(value, 5, value.length);
         MokoSupport.getInstance().alarmUploadInterval = MokoUtils.toInt(uploadIntervalBytes);
+        MokoSupport.getInstance().alarmScanTime = MokoUtils.toInt(scanTimeBytes);
 
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;

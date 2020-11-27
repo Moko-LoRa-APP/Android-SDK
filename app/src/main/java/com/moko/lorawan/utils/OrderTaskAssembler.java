@@ -6,6 +6,7 @@ import com.moko.support.task.UpgradeMCUTask;
 import com.moko.support.task.VerifyPasswordTask;
 import com.moko.support.task.WriteADRTask;
 import com.moko.support.task.WriteAlarmGPSSwitchTask;
+import com.moko.support.task.WriteAlarmReportNumberTask;
 import com.moko.support.task.WriteAlarmSatelliteSearchTimeTask;
 import com.moko.support.task.WriteAlarmStatusTask;
 import com.moko.support.task.WriteAlarmTriggerModeTask;
@@ -21,8 +22,13 @@ import com.moko.support.task.WriteConnectTask;
 import com.moko.support.task.WriteDRTask;
 import com.moko.support.task.WriteDevAddrTask;
 import com.moko.support.task.WriteDevEUITask;
+import com.moko.support.task.WriteFilterAdvRawData;
+import com.moko.support.task.WriteFilterMacTask;
+import com.moko.support.task.WriteFilterMajorTask;
+import com.moko.support.task.WriteFilterMinorTask;
 import com.moko.support.task.WriteFilterNameTask;
 import com.moko.support.task.WriteFilterRSSITask;
+import com.moko.support.task.WriteFilterUUIDTask;
 import com.moko.support.task.WriteHumiDataTask;
 import com.moko.support.task.WriteI2CIntervalTask;
 import com.moko.support.task.WriteLowPowerPromptTask;
@@ -32,6 +38,7 @@ import com.moko.support.task.WriteMulticastAppSKeyTask;
 import com.moko.support.task.WriteMulticastNwkSKeyTask;
 import com.moko.support.task.WriteMulticastSwitchTask;
 import com.moko.support.task.WriteNwkSKeyTask;
+import com.moko.support.task.WritePasswordTask;
 import com.moko.support.task.WritePowerTask;
 import com.moko.support.task.WriteRegionTask;
 import com.moko.support.task.WriteResetTask;
@@ -40,6 +47,8 @@ import com.moko.support.task.WriteScanUploadIntervalTask;
 import com.moko.support.task.WriteTempDataTask;
 import com.moko.support.task.WriteUploadIntervalTask;
 import com.moko.support.task.WriteUploadModeTask;
+
+import java.util.ArrayList;
 
 public class OrderTaskAssembler {
 
@@ -185,6 +194,35 @@ public class OrderTaskAssembler {
         return orderTask;
     }
 
+    public static OrderTask setFilterMacOrderTask(String mac) {
+        WriteFilterMacTask task = new WriteFilterMacTask();
+        task.setOrderData(mac);
+        return task;
+    }
+
+    public static OrderTask setFilterUUIDOrderTask(String filterUUID) {
+        WriteFilterUUIDTask orderTask = new WriteFilterUUIDTask();
+        orderTask.setOrderData(filterUUID);
+        return orderTask;
+    }
+
+    public static OrderTask setFilterAdvRawData(ArrayList<String> filterRawDatas) {
+        WriteFilterAdvRawData task = new WriteFilterAdvRawData(filterRawDatas);
+        return task;
+    }
+
+    public static OrderTask setFilterMajorRange(int enable, int majorMin, int majorMax) {
+        WriteFilterMajorTask task = new WriteFilterMajorTask();
+        task.setOrderData(enable, majorMin, majorMax);
+        return task;
+    }
+
+    public static OrderTask setFilterMinorRange(int enable, int minorMin, int minorMax) {
+        WriteFilterMinorTask task = new WriteFilterMinorTask();
+        task.setOrderData(enable, minorMin, minorMax);
+        return task;
+    }
+
 
     public static OrderTask setScanSwitchOrderTask(int scanSwitch) {
         WriteScanSwitchTask orderTask = new WriteScanSwitchTask();
@@ -245,15 +283,21 @@ public class OrderTaskAssembler {
         return orderTask;
     }
 
+    public static OrderTask setAlarmReportNumberOrderTask(int reportNumber) {
+        WriteAlarmReportNumberTask orderTask = new WriteAlarmReportNumberTask();
+        orderTask.setOrderData(reportNumber);
+        return orderTask;
+    }
+
     public static OrderTask setAlarmTriggerModeOrderTask(int triggerMode) {
         WriteAlarmTriggerModeTask orderTask = new WriteAlarmTriggerModeTask();
         orderTask.setOrderData(triggerMode);
         return orderTask;
     }
 
-    public static OrderTask setAlarmUploadIntervalOrderTask(int uploadInterval) {
+    public static OrderTask setAlarmUploadIntervalOrderTask(int uploadInterval, int scanTime) {
         WriteAlarmUploadIntervalTask orderTask = new WriteAlarmUploadIntervalTask();
-        orderTask.setOrderData(uploadInterval);
+        orderTask.setOrderData(uploadInterval, scanTime);
         return orderTask;
     }
 
@@ -266,6 +310,12 @@ public class OrderTaskAssembler {
     public static OrderTask verifyPassword(String password) {
         VerifyPasswordTask verifyPasswordTask = new VerifyPasswordTask();
         verifyPasswordTask.setData(password);
+        return verifyPasswordTask;
+    }
+
+    public static OrderTask changePassword(String password) {
+        WritePasswordTask verifyPasswordTask = new WritePasswordTask();
+        verifyPasswordTask.setOrderData(password);
         return verifyPasswordTask;
     }
 

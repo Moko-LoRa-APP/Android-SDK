@@ -25,6 +25,7 @@ import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
 import com.moko.support.task.ReadADRTask;
 import com.moko.support.task.ReadAlarmGPSSwitchModeTask;
+import com.moko.support.task.ReadAlarmReportNumberTask;
 import com.moko.support.task.ReadAlarmSatelliteSearchTimeTask;
 import com.moko.support.task.ReadAlarmTriggerModeTask;
 import com.moko.support.task.ReadAlarmUploadIntervalTask;
@@ -38,8 +39,13 @@ import com.moko.support.task.ReadClassTypeTask;
 import com.moko.support.task.ReadDRTask;
 import com.moko.support.task.ReadDevAddrTask;
 import com.moko.support.task.ReadDevEUITask;
+import com.moko.support.task.ReadFilterAdvRawData;
+import com.moko.support.task.ReadFilterMacTask;
+import com.moko.support.task.ReadFilterMajorTask;
+import com.moko.support.task.ReadFilterMinorTask;
 import com.moko.support.task.ReadFilterNameTask;
 import com.moko.support.task.ReadFilterRSSITask;
+import com.moko.support.task.ReadFilterUUIDTask;
 import com.moko.support.task.ReadLowPowerPromptTask;
 import com.moko.support.task.ReadMsgTypeTask;
 import com.moko.support.task.ReadMulticastAddrTask;
@@ -283,6 +289,13 @@ public class SettingActivity extends BaseActivity {
             orderTasks.add(new ReadScanSwitchTask());
         }
         orderTasks.add(new ReadFilterNameTask());
+        if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
+            orderTasks.add(new ReadFilterMacTask());
+            orderTasks.add(new ReadFilterUUIDTask());
+            orderTasks.add(new ReadFilterMajorTask());
+            orderTasks.add(new ReadFilterMinorTask());
+            orderTasks.add(new ReadFilterAdvRawData());
+        }
         orderTasks.add(new ReadFilterRSSITask());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
@@ -302,6 +315,7 @@ public class SettingActivity extends BaseActivity {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(new ReadAlarmUploadIntervalTask());
         orderTasks.add(new ReadAlarmVibrationSwitchModeTask());
+        orderTasks.add(new ReadAlarmReportNumberTask());
         orderTasks.add(new ReadAlarmTriggerModeTask());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }

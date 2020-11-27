@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
+import com.moko.lorawan.dialog.ChangePasswordDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.dialog.LowPowerPromptDialog;
 import com.moko.lorawan.utils.OrderTaskAssembler;
@@ -25,6 +26,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -33,6 +37,8 @@ public class DeviceSettingActivity extends BaseActivity {
 
     @Bind(R.id.tv_low_power_prompt)
     TextView tvLowPowerPrompt;
+    @Bind(R.id.tv_low_power_prompt_tips)
+    TextView tvLowPowerPromptTips;
     private boolean mReceiverTag = false;
 
     private boolean mIsFailed;
@@ -47,6 +53,7 @@ public class DeviceSettingActivity extends BaseActivity {
 
         int lowPowerPrompt = MokoSupport.getInstance().lowPowerPrompt;
         tvLowPowerPrompt.setText(String.format("%d%%", lowPowerPrompt));
+        tvLowPowerPromptTips.setText(getString(R.string.low_power_prompt_tips, lowPowerPrompt));
         mSelected = lowPowerPrompt / 10 - 1;
         EventBus.getDefault().register(this);
         // 注册广播接收器
@@ -89,6 +96,7 @@ public class DeviceSettingActivity extends BaseActivity {
                 byte[] value = response.responseValue;
                 switch (orderEnum) {
                     case WRITE_LOW_POWER_PROMPT:
+                    case WRITE_PASSWORD:
                         if ((value[3] & 0xff) != 0xAA) {
                             mIsFailed = true;
                         }
@@ -108,6 +116,7 @@ public class DeviceSettingActivity extends BaseActivity {
                 mSelected = value;
                 int lowPowerPrompt = (mSelected + 1) * 10;
                 tvLowPowerPrompt.setText(String.format("%d%%", lowPowerPrompt));
+                tvLowPowerPromptTips.setText(getString(R.string.low_power_prompt_tips, lowPowerPrompt));
             }
         });
         bottomDialog.show(getSupportFragmentManager());
@@ -163,5 +172,22 @@ public class DeviceSettingActivity extends BaseActivity {
 
     public void back(View view) {
         finish();
+    }
+
+    public void changePassword(View view) {
+        final ChangePasswordDialog dialog = new ChangePasswordDialog(this);
+        dialog.setOnPasswordClicked(password -> {
+            showLoadingProgressDialog();
+            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.changePassword(password));
+        });
+        dialog.show();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+
+            public void run() {
+                runOnUiThread(() -> dialog.showKeyboard());
+            }
+        }, 200);
     }
 }

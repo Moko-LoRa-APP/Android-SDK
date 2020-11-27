@@ -9,33 +9,34 @@ import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class WriteFilterNameTask extends OrderTask {
+public class WriteFilterUUIDTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public WriteFilterNameTask() {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_FILTER_NAME, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteFilterUUIDTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_FILTER_UUID, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
-    public void setOrderData(String filterName) {
-        if (TextUtils.isEmpty(filterName)) {
+    public void setOrderData(String filterUUID) {
+        if (TextUtils.isEmpty(filterUUID)) {
             orderData = new byte[ORDERDATA_LENGTH];
             orderData[0] = (byte) MokoConstants.HEADER_SEND;
             orderData[1] = (byte) order.getOrderHeader();
             orderData[2] = (byte) 0;
         } else {
-            byte[] filterNameBytes = filterName.getBytes();
-            int lengh = filterNameBytes.length;
+            byte[] filterUUIDBytes = MokoUtils.hex2bytes(filterUUID);
+            int lengh = filterUUIDBytes.length;
             orderData = new byte[3 + lengh];
             orderData[0] = (byte) MokoConstants.HEADER_SEND;
             orderData[1] = (byte) order.getOrderHeader();
             orderData[2] = (byte) lengh;
             for (int i = 0; i < lengh; i++) {
-                orderData[3 + i] = filterNameBytes[i];
+                orderData[3 + i] = filterUUIDBytes[i];
             }
         }
     }

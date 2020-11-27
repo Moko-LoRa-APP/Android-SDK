@@ -7,18 +7,19 @@ import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
 
-public class ReadFilterNameTask extends OrderTask {
+public class ReadFilterMajorTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public ReadFilterNameTask() {
-        super(OrderType.CHARACTERISTIC, OrderEnum.READ_FILTER_NAME, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public ReadFilterMajorTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.READ_FILTER_MAJOR, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
@@ -36,10 +37,13 @@ public class ReadFilterNameTask extends OrderTask {
             return;
         int length = value[2] & 0xFF;
         if (length > 0) {
-            byte[] filterName = Arrays.copyOfRange(value, 3, value.length);
-            MokoSupport.getInstance().filterName = new String(filterName);
+            byte[] filterMajorMin = Arrays.copyOfRange(value, 3, 5);
+            byte[] filterMajorMax = Arrays.copyOfRange(value, 5, value.length);
+            MokoSupport.getInstance().filterMajorMin = String.valueOf(MokoUtils.toInt(filterMajorMin));
+            MokoSupport.getInstance().filterMajorMax = String.valueOf(MokoUtils.toInt(filterMajorMax));
         } else {
-            MokoSupport.getInstance().filterName = "";
+            MokoSupport.getInstance().filterMajorMin = "";
+            MokoSupport.getInstance().filterMajorMax = "";
         }
 
         LogModule.i(order.getOrderName() + "成功");

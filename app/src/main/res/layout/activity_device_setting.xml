@@ -48,11 +48,11 @@
             android:layout_height="40dp"
             android:background="@drawable/shape_radius_edit_bg"
             android:gravity="center"
+            android:onClick="selecLowPowerPrompt"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:singleLine="true"
             android:text=""
-            android:onClick="selecLowPowerPrompt"
             android:textSize="15sp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -61,12 +61,51 @@
     </android.support.constraint.ConstraintLayout>
 
     <TextView
+        android:id="@+id/tv_low_power_prompt_tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
-        android:text="*When the battery is less than or equal to 10%, the red LED will flashe once every 30 seconds."
+        android:text="@string/low_power_prompt_tips"
         android:textSize="12sp" />
+
+    <View
+        style="@style/divider_line"
+        android:layout_marginTop="12dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:onClick="changePassword">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:text="Change Password"
+            android:textSize="15sp" />
+
+
+        <TextView
+            android:id="@+id/tv_multicast_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:drawableRight="@drawable/ic_arrows"
+            android:drawablePadding="10dp"
+            android:gravity="right"
+            android:text=""
+            android:textColor="@color/grey_808080"
+            android:textSize="15sp" />
+
+
+        <View
+            style="@style/divider_line"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"

@@ -1,42 +1,42 @@
 package com.moko.support.task;
 
 
-import android.text.TextUtils;
-
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.OrderTaskResponseEvent;
 import com.moko.support.log.LogModule;
+import com.moko.support.utils.MokoUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class WriteFilterNameTask extends OrderTask {
+public class WriteFilterMinorTask extends OrderTask {
     private static final int ORDERDATA_LENGTH = 3;
 
     public byte[] orderData;
 
-    public WriteFilterNameTask() {
-        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_FILTER_NAME, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    public WriteFilterMinorTask() {
+        super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_FILTER_MINOR, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
-    public void setOrderData(String filterName) {
-        if (TextUtils.isEmpty(filterName)) {
+    public void setOrderData(int enable, int minorMin,int minorMax) {
+        if (enable == 0) {
             orderData = new byte[ORDERDATA_LENGTH];
             orderData[0] = (byte) MokoConstants.HEADER_SEND;
             orderData[1] = (byte) order.getOrderHeader();
             orderData[2] = (byte) 0;
         } else {
-            byte[] filterNameBytes = filterName.getBytes();
-            int lengh = filterNameBytes.length;
-            orderData = new byte[3 + lengh];
+            byte[] minorMinBytes = MokoUtils.toByteArray(minorMin, 2);
+            byte[] minorMaxBytes = MokoUtils.toByteArray(minorMax, 2);
+            orderData = new byte[7];
             orderData[0] = (byte) MokoConstants.HEADER_SEND;
             orderData[1] = (byte) order.getOrderHeader();
-            orderData[2] = (byte) lengh;
-            for (int i = 0; i < lengh; i++) {
-                orderData[3 + i] = filterNameBytes[i];
-            }
+            orderData[2] = (byte) 0x04;
+            orderData[3] = minorMinBytes[1];
+            orderData[4] = minorMinBytes[0];
+            orderData[5] = minorMaxBytes[1];
+            orderData[6] = minorMaxBytes[0];
         }
     }
 

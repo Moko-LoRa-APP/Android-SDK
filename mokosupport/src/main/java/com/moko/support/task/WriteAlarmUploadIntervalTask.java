@@ -12,7 +12,7 @@ import com.moko.support.utils.MokoUtils;
 import org.greenrobot.eventbus.EventBus;
 
 public class WriteAlarmUploadIntervalTask extends OrderTask {
-    private static final int ORDERDATA_LENGTH = 5;
+    private static final int ORDERDATA_LENGTH = 7;
 
     public byte[] orderData;
 
@@ -20,14 +20,17 @@ public class WriteAlarmUploadIntervalTask extends OrderTask {
         super(OrderType.CHARACTERISTIC, OrderEnum.WRITE_ALARM_UPLOAD_INTERVAL, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
     }
 
-    public void setOrderData(int uploadInterval) {
+    public void setOrderData(int uploadInterval, int scanTime) {
         orderData = new byte[ORDERDATA_LENGTH];
         orderData[0] = (byte) MokoConstants.HEADER_SEND;
         orderData[1] = (byte) order.getOrderHeader();
-        orderData[2] = (byte) 0x02;
+        orderData[2] = (byte) 0x04;
         byte[] uploadIntervalBytes = MokoUtils.toByteArray(uploadInterval, 2);
         orderData[3] = uploadIntervalBytes[1];
         orderData[4] = uploadIntervalBytes[0];
+        byte[] scanTimeBytes = MokoUtils.toByteArray(scanTime, 2);
+        orderData[5] = scanTimeBytes[1];
+        orderData[6] = scanTimeBytes[0];
     }
 
     @Override

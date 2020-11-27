@@ -346,7 +346,7 @@ public class MokoSupport implements MokoResponseCallback {
     public void onCharacteristicChanged(BluetoothGattCharacteristic characteristic, byte[] value) {
         if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC.getUuid())
                 || characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_MCU.getUuid())
-                || characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_NOTIFY.getUuid())){
+                || characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_NOTIFY.getUuid())) {
             if (isSyncData()) {
                 // 非延时应答
                 OrderTask orderTask = mQueue.peek();
@@ -369,8 +369,7 @@ public class MokoSupport implements MokoResponseCallback {
                     EventBus.getDefault().post(event);
                 }
             }
-        } else
-        if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_LOG.getUuid())) {
+        } else if (characteristic.getUuid().toString().equals(OrderType.CHARACTERISTIC_LOG.getUuid())) {
             if (value != null && value.length > 0) {
                 String log = new String(value);
                 LogModule.d(log);
@@ -780,6 +779,13 @@ public class MokoSupport implements MokoResponseCallback {
     public String filterName;
     public int scanUploadInterval;
     public int filterRssi;
+    public String filterMac;
+    public String filterMajorMin;
+    public String filterMajorMax;
+    public String filterMinorMin;
+    public String filterMinorMax;
+    public String filterUUID;
+    public String filterRawData;
     ///////////////////////////////////////////////////////////////////////////
     // Multicast
     ///////////////////////////////////////////////////////////////////////////
@@ -792,6 +798,8 @@ public class MokoSupport implements MokoResponseCallback {
     ///////////////////////////////////////////////////////////////////////////
     public int alarmStatus;
     public int alarmUploadInterval;
+    public int alarmScanTime;
+    public int alarmReportNumer;
     public int alarmTriggerMode;
     public int alamrVibrationSwitch;
     public int alarmGpsSwitch;

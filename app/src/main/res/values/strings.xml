@@ -12,6 +12,7 @@
     <string name="main_password_length">The password should be 8 characters</string>
     <string name="change_password_length">The password should be 8 characters.Please try again</string>
     <string name="change_password_match">Password do not match!Please try again.</string>
+    <string name="rssi_filter">*The Beacon will store valid ADV data with RSSI no less than %ddBm.</string>
 
     <string name="permission_storage_close_title">Storage permission is not available</string>
     <string name="permission_storage_close_content">Please find it in cellphone setting- permission, and allow LoRaWAN use the Storage permission</string>
@@ -32,6 +33,7 @@
     <string name="main_scan_rssi">RSSI</string>
     <string name="version_info">Version:%s</string>
     <string name="th_sensor_data"><![CDATA[T&H Sensor Data]]></string>
+    <string name="low_power_prompt_tips">*When the battery is less than or equal to %d%%, the red LED will flashe once every 30 seconds.</string>
 
     <string-array name="connect_status">
         <item>Disconnected</item>

@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
+import com.moko.lorawan.dialog.AlertMessageDialog;
 import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.utils.OrderTaskAssembler;
@@ -44,6 +45,10 @@ public class AlarmSettingActivity extends BaseActivity {
     EditText etReportInterval;
     @Bind(R.id.tv_save)
     TextView tvSave;
+    @Bind(R.id.et_ble_scan_time)
+    EditText etBleScanTime;
+    @Bind(R.id.et_reported_num)
+    EditText etReportedNum;
 
     private boolean mReceiverTag = false;
     private boolean mIsFailed;
@@ -65,6 +70,8 @@ public class AlarmSettingActivity extends BaseActivity {
         mTriggerMode = getResources().getStringArray(R.array.trigger_mode);
         tvTriggerMode.setText(mTriggerMode[mModeSelected]);
         etReportInterval.setText(MokoSupport.getInstance().alarmUploadInterval + "");
+        etBleScanTime.setText(MokoSupport.getInstance().alarmScanTime + "");
+        etReportedNum.setText(MokoSupport.getInstance().alarmReportNumer + "");
         EventBus.getDefault().register(this);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
@@ -110,6 +117,7 @@ public class AlarmSettingActivity extends BaseActivity {
                     case WRITE_ALARM_VIBRATION_SWITCH:
                     case WRITE_ALARM_TRIGGER_MODE:
                     case WRITE_ALARM_UPLOAD_INTERVAL:
+                    case WRITE_ALARM_REPORT_NUMBER:
                         if ((value[3] & 0xff) != 0xAA) {
                             mIsFailed = true;
                         }
@@ -177,9 +185,38 @@ public class AlarmSettingActivity extends BaseActivity {
             ToastUtils.showToast(this, "Report Interval range 10~600");
             return;
         }
+        String scanTime = etBleScanTime.getText().toString();
+        if (TextUtils.isEmpty(scanTime)) {
+            ToastUtils.showToast(this, "Scan Time is empty");
+            return;
+        }
+        int timeInt = Integer.parseInt(scanTime);
+        if (timeInt < 10 || timeInt > 600) {
+            ToastUtils.showToast(this, "Scan Time range 10~600");
+            return;
+        }
+        if (timeInt > intervalInt) {
+            AlertMessageDialog dialog = new AlertMessageDialog();
+            dialog.setMessage("Alarm Report Interval  should be no less than Valid BLE Data Filter Interval");
+            dialog.setConfirm("OK");
+            dialog.setCancelGone();
+            dialog.show(getSupportFragmentManager());
+            return;
+        }
+        String reportNum = etReportedNum.getText().toString();
+        if (TextUtils.isEmpty(reportNum)) {
+            ToastUtils.showToast(this, "Quantity of Reported Device is empty");
+            return;
+        }
+        int reportNumInt = Integer.parseInt(reportNum);
+        if (reportNumInt < 1 || reportNumInt > 4) {
+            ToastUtils.showToast(this, "Quantity of Reported Device range 1~4");
+            return;
+        }
         orderTasks.add(OrderTaskAssembler.setAlarmTriggerModeOrderTask(mModeSelected + 1));
-        orderTasks.add(OrderTaskAssembler.setAlarmUploadIntervalOrderTask(intervalInt));
+        orderTasks.add(OrderTaskAssembler.setAlarmUploadIntervalOrderTask(intervalInt, timeInt));
         orderTasks.add(OrderTaskAssembler.setAlarmVibrationSwitchOrderTask(cbVibrationSwitch.isChecked() ? 1 : 0));
+        orderTasks.add(OrderTaskAssembler.setAlarmReportNumberOrderTask(reportNumInt));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
     }
