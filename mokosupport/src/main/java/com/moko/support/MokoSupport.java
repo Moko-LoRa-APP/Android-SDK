@@ -276,6 +276,7 @@ public class MokoSupport implements MokoResponseCallback {
         final MokoCharacteristic mokoCharacteristic = mCharacteristicMap.get(orderTask.orderType);
         if (mokoCharacteristic == null) {
             LogModule.i("executeTask : mokoCharacteristic is null");
+            disConnectBle();
             return;
         }
         if (orderTask.response.responseType == OrderTask.RESPONSE_TYPE_READ) {

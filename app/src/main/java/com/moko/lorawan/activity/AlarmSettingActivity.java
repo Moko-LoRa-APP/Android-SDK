@@ -102,7 +102,7 @@ public class AlarmSettingActivity extends BaseActivity {
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                 dismissLoadingProgressDialog();
                 if (!mIsFailed) {
-                    ToastUtils.showToast(AlarmSettingActivity.this, "Execute after bluetooth disconnect");
+                    ToastUtils.showToast(AlarmSettingActivity.this, "Success");
                 } else {
                     ToastUtils.showToast(AlarmSettingActivity.this, "Error");
                 }

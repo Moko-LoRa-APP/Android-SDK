@@ -94,7 +94,7 @@ public class GPSSettingActivity extends BaseActivity {
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                 dismissLoadingProgressDialog();
                 if (!mIsFailed) {
-                    ToastUtils.showToast(GPSSettingActivity.this, "Execute after bluetooth disconnect");
+                    ToastUtils.showToast(GPSSettingActivity.this, "Success");
                 } else {
                     ToastUtils.showToast(GPSSettingActivity.this, "Error");
                 }

@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -217,7 +218,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     Intent i = new Intent(MainActivity.this, BasicInfoActivity.class);
                     i.putExtra(AppConstants.EXTRA_KEY_DEVICE_NAME, mSelectedDeviceName);
                     i.putExtra(AppConstants.EXTRA_KEY_DEVICE_MAC, mSelectedDeviceMac);
-                    startActivity(i);
+                    startActivityForResult(i, AppConstants.REQUEST_CODE_BASIC);
                     break;
                 case PASSWORD:
                     if ((value[3] & 0xFF) == 0xAA) {
@@ -226,7 +227,6 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         SPUtiles.setStringValue(MainActivity.this, AppConstants.SP_KEY_SAVED_PASSWORD, mSavedPassword);
                         LogModule.i("Success");
                         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-                        orderTasks.add(new OpenNotifyTask(OrderType.CHARACTERISTIC));
                         orderTasks.add(new ReadAlarmStatusTask());
                         orderTasks.add(new ReadModelNameTask());
                         orderTasks.add(new WriteRTCTimeTask());
@@ -396,6 +396,21 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                 MokoSupport.getInstance().stopScanDevice();
             }
         }, 5000);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AppConstants.REQUEST_CODE_BASIC) {
+            if (resultCode == RESULT_OK) {
+                srlMain.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        srlMain.autoRefresh();
+                    }
+                }, 500);
+            }
+        }
     }
 
     public void about(View view) {

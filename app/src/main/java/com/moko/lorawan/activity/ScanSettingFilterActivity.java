@@ -236,7 +236,7 @@ public class ScanSettingFilterActivity extends BaseActivity implements CompoundB
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
                 dismissLoadingProgressDialog();
                 if (!mIsFailed) {
-                    ToastUtils.showToast(ScanSettingFilterActivity.this, "Execute after bluetooth disconnect");
+                    ToastUtils.showToast(ScanSettingFilterActivity.this, "Success");
                 } else {
                     ToastUtils.showToast(ScanSettingFilterActivity.this, "Error");
                 }

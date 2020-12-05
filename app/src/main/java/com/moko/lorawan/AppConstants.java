@@ -28,6 +28,7 @@ public class AppConstants {
     public static final int REQUEST_CODE_LORA_SETTING = 123;
     public static final int REQUEST_CODE_REFRESH = 124;
     public static final int REQUEST_CODE_SETTING = 125;
+    public static final int REQUEST_CODE_BASIC = 126;
     public static final int PERMISSION_REQUEST_CODE = 1;
 
     // result_code

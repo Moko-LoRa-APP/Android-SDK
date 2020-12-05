@@ -32,8 +32,10 @@ public class ReadFilterRSSITask extends OrderTask {
     public void parseValue(byte[] value) {
         if (order.getOrderHeader() != (value[1] & 0xFF))
             return;
-        MokoSupport.getInstance().filterRssi = value[3] & 0xFF;
-
+        int length = value[2] & 0xFF;
+        if (length == 1) {
+            MokoSupport.getInstance().filterRssi = value[3] & 0xFF;
+        }
         LogModule.i(order.getOrderName() + "成功");
         orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
 

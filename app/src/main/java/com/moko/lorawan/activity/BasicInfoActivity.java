@@ -118,6 +118,9 @@ public class BasicInfoActivity extends BaseActivity {
             }
             dialog.setCancelGone();
             dialog.setOnAlertConfirmListener(() -> {
+                if (disConnectType == 3) {
+                    setResult(RESULT_OK);
+                }
                 finish();
             });
             dialog.show(getSupportFragmentManager());
@@ -317,9 +320,9 @@ public class BasicInfoActivity extends BaseActivity {
             tvConnectStatus.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (disConnectType > 0) {
-                        if (!MokoSupport.getInstance().isConnDevice(BasicInfoActivity.this, mDeviceMac))
-                            return;
+                    if (!MokoSupport.getInstance().isConnDevice(BasicInfoActivity.this, mDeviceMac))
+                        return;
+                    if (disConnectType == 0) {
                         showLoadingProgressDialog();
                         ArrayList<OrderTask> orderTasks = new ArrayList<>();
                         if (MokoSupport.deviceTypeEnum == DeviceTypeEnum.LW004_BP)
