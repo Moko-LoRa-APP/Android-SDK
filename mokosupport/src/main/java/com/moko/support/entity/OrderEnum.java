@@ -67,6 +67,7 @@ public enum OrderEnum implements Serializable {
     READ_ALARM_SATELLITE_SEARCH_TIME("读取待机心跳GPS定位时间", 0xC5),
     READ_LOW_POWER_PROMPT("读取低电报警电量", 0xCC),
     READ_ALARM_REPORT_NUMBER("读取上报设备数量", 0xCF),
+    READ_NETWORK_CHECK("读取网络检测间隔时间", 0xD2),
 
     WRITE_UPLINK_DATA_TEST("设置上行测试数据", 0xBB),
     WRITE_DEV_ADDR("设置DevAddr", 0x37),
@@ -118,6 +119,7 @@ public enum OrderEnum implements Serializable {
     WRITE_LOW_POWER_PROMPT("设置低电报警电量", 0x86),
     WRITE_PASSWORD("设置蓝牙连接密码", 0x88),
     WRITE_ALARM_REPORT_NUMBER("设置上报设备数量", 0x89),
+    WRITE_NETWORK_CHECK("设置网络检测间隔时间", 0x8B),
 
     PASSWORD("密码", 0x8A),
     DISCONNECT_TYPE("断开类型", 0xD1),

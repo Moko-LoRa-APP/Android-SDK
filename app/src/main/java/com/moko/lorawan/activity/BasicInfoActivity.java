@@ -113,7 +113,7 @@ public class BasicInfoActivity extends BaseActivity {
                 dialog.setConfirm("OK");
             } else {
                 dialog.setTitle("Dismiss");
-                dialog.setMessage("The Beacon disconnected!");
+                dialog.setMessage("The device disconnected!");
                 dialog.setConfirm("Exit");
             }
             dialog.setCancelGone();

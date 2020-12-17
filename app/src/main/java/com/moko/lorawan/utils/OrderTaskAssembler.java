@@ -37,6 +37,7 @@ import com.moko.support.task.WriteMulticastAddrTask;
 import com.moko.support.task.WriteMulticastAppSKeyTask;
 import com.moko.support.task.WriteMulticastNwkSKeyTask;
 import com.moko.support.task.WriteMulticastSwitchTask;
+import com.moko.support.task.WriteNetworkCheckTask;
 import com.moko.support.task.WriteNwkSKeyTask;
 import com.moko.support.task.WritePasswordTask;
 import com.moko.support.task.WritePowerTask;
@@ -322,6 +323,12 @@ public class OrderTaskAssembler {
     public static OrderTask setLowPowerPromptTask(int lowPowerPrompt) {
         WriteLowPowerPromptTask orderTask = new WriteLowPowerPromptTask();
         orderTask.setOrderData(lowPowerPrompt);
+        return orderTask;
+    }
+
+    public static OrderTask setNetworkCheckTask(int netWorkCheck) {
+        WriteNetworkCheckTask orderTask = new WriteNetworkCheckTask();
+        orderTask.setOrderData(netWorkCheck);
         return orderTask;
     }
 }

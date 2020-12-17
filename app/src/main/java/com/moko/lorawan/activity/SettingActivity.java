@@ -52,6 +52,7 @@ import com.moko.support.task.ReadMulticastAddrTask;
 import com.moko.support.task.ReadMulticastAppSKeyTask;
 import com.moko.support.task.ReadMulticastNwkSKeyTask;
 import com.moko.support.task.ReadMulticastSwitchTask;
+import com.moko.support.task.ReadNetworkCheckTask;
 import com.moko.support.task.ReadNwkSKeyTask;
 import com.moko.support.task.ReadRegionTask;
 import com.moko.support.task.ReadScanSwitchTask;
@@ -248,7 +249,10 @@ public class SettingActivity extends BaseActivity {
 
     public void deviceSetting(View view) {
         showLoadingProgressDialog();
-        MokoSupport.getInstance().sendOrder(new ReadLowPowerPromptTask());
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(new ReadNetworkCheckTask());
+        orderTasks.add(new ReadLowPowerPromptTask());
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     public void loraSetting(View view) {

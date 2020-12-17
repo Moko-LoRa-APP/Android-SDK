@@ -353,37 +353,41 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         MokoSupport.deviceTypeEnum = deviceInfo.deviceTypeEnum;
         mSelectedDeviceName = deviceInfo.name;
         mSelectedDeviceMac = deviceInfo.mac;
-        // show password
-        final PasswordDialog dialog = new PasswordDialog(MainActivity.this);
-        dialog.setData(mSavedPassword);
-        dialog.setOnPasswordClicked(new PasswordDialog.PasswordClickListener() {
-            @Override
-            public void onEnsureClicked(String password) {
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    MokoSupport.getInstance().enableBluetooth();
-                    return;
+        if (deviceInfo.deviceTypeEnum == DeviceTypeEnum.LW004_BP) {
+            // show password
+            final PasswordDialog dialog = new PasswordDialog(MainActivity.this);
+            dialog.setData(mSavedPassword);
+            dialog.setOnPasswordClicked(new PasswordDialog.PasswordClickListener() {
+                @Override
+                public void onEnsureClicked(String password) {
+                    if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                        MokoSupport.getInstance().enableBluetooth();
+                        return;
+                    }
+                    LogModule.i(password);
+                    mPassword = password;
+                    showLoadingProgressDialog();
+                    mHandler.postDelayed(() -> MokoSupport.getInstance().connDevice(MainActivity.this, deviceInfo.mac), 500);
                 }
-                LogModule.i(password);
-                mPassword = password;
-                showLoadingProgressDialog();
-                mHandler.postDelayed(() -> MokoSupport.getInstance().connDevice(MainActivity.this, deviceInfo.mac), 500);
-            }
 
-            @Override
-            public void onDismiss() {
+                @Override
+                public void onDismiss() {
 
-            }
-        });
-        dialog.show();
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+                }
+            });
+            dialog.show();
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
 
-            @Override
-            public void run() {
-                runOnUiThread(() -> dialog.showKeyboard());
-            }
-        }, 200);
-
+                @Override
+                public void run() {
+                    runOnUiThread(() -> dialog.showKeyboard());
+                }
+            }, 200);
+        } else {
+            showLoadingProgressDialog();
+            mHandler.postDelayed(() -> MokoSupport.getInstance().connDevice(MainActivity.this, deviceInfo.mac), 500);
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
+import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.ChangePasswordDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.dialog.LowPowerPromptDialog;
@@ -20,12 +21,14 @@ import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderEnum;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.event.OrderTaskResponseEvent;
+import com.moko.support.task.OrderTask;
 import com.moko.support.task.OrderTaskResponse;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,11 +42,16 @@ public class DeviceSettingActivity extends BaseActivity {
     TextView tvLowPowerPrompt;
     @Bind(R.id.tv_low_power_prompt_tips)
     TextView tvLowPowerPromptTips;
+    @Bind(R.id.tv_network_check)
+    TextView tvNetworkCheck;
     private boolean mReceiverTag = false;
 
     private boolean mIsFailed;
 
     private int mSelected;
+
+    private ArrayList<String> mValues;
+    private int mNetwrokValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +60,12 @@ public class DeviceSettingActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         int lowPowerPrompt = MokoSupport.getInstance().lowPowerPrompt;
+        mNetwrokValue = MokoSupport.getInstance().networkCheck;
+        mValues = new ArrayList<>();
+        for (int i = 0; i <= 255; i++) {
+            mValues.add(String.valueOf(i));
+        }
+        tvNetworkCheck.setText(String.valueOf(mNetwrokValue));
         tvLowPowerPrompt.setText(String.format("%d%%", lowPowerPrompt));
         tvLowPowerPromptTips.setText(getString(R.string.low_power_prompt_tips, lowPowerPrompt));
         mSelected = lowPowerPrompt / 10 - 1;
@@ -97,6 +111,7 @@ public class DeviceSettingActivity extends BaseActivity {
                 switch (orderEnum) {
                     case WRITE_LOW_POWER_PROMPT:
                     case WRITE_PASSWORD:
+                    case WRITE_NETWORK_CHECK:
                         if ((value[3] & 0xff) != 0xAA) {
                             mIsFailed = true;
                         }
@@ -124,7 +139,10 @@ public class DeviceSettingActivity extends BaseActivity {
 
     public void onSave(View view) {
         int lowPowerPrompt = (mSelected + 1) * 10;
-        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setLowPowerPromptTask(lowPowerPrompt));
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(OrderTaskAssembler.setLowPowerPromptTask(lowPowerPrompt));
+        orderTasks.add(OrderTaskAssembler.setNetworkCheckTask(mNetwrokValue));
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         showLoadingProgressDialog();
     }
 
@@ -189,5 +207,15 @@ public class DeviceSettingActivity extends BaseActivity {
                 runOnUiThread(() -> dialog.showKeyboard());
             }
         }, 200);
+    }
+
+    public void selectNetworkCheck(View view) {
+        BottomDialog bottomDialog = new BottomDialog();
+        bottomDialog.setDatas(mValues, mNetwrokValue);
+        bottomDialog.setListener(value -> {
+            mNetwrokValue = value;
+            tvNetworkCheck.setText(String.valueOf(value));
+        });
+        bottomDialog.show(getSupportFragmentManager());
     }
 }
