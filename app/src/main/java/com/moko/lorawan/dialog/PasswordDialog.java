@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-
 import com.moko.lorawan.R;
 import com.moko.lorawan.utils.ToastUtils;
 

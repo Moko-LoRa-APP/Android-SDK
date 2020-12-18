@@ -1,6 +1,5 @@
 package com.moko.lorawan.dialog;
 
-import androidx.annotation.StringRes;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 
 import com.moko.lorawan.R;
 
+import androidx.annotation.StringRes;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

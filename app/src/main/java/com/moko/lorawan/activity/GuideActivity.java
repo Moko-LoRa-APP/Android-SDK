@@ -12,12 +12,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.provider.Settings;
-import androidx.core.app.ActivityCompat;
 
 import com.moko.lorawan.AppConstants;
 import com.moko.lorawan.R;
 import com.moko.lorawan.utils.Utils;
 
+import androidx.core.app.ActivityCompat;
 import butterknife.ButterKnife;
 
 

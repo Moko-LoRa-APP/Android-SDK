@@ -11,7 +11,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelUuid;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.moko.support.callback.MokoResponseCallback;
@@ -38,6 +37,7 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import androidx.annotation.NonNull;
 import no.nordicsemi.android.ble.BleManagerCallbacks;
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanFilter;
