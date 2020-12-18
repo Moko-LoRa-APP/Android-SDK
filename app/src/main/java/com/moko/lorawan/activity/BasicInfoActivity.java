@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,22 +48,22 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BasicInfoActivity extends BaseActivity {
 
-    @Bind(R.id.tv_connect_status)
+    @BindView(R.id.tv_connect_status)
     TextView tvConnectStatus;
-    @Bind(R.id.tv_device_name)
+    @BindView(R.id.tv_device_name)
     TextView tvDeviceName;
-    @Bind(R.id.rl_gps_axis)
+    @BindView(R.id.rl_gps_axis)
     RelativeLayout rlGpsAxis;
-    @Bind(R.id.rl_sensor_data)
+    @BindView(R.id.rl_sensor_data)
     RelativeLayout rlSensorData;
-    @Bind(R.id.rl_alarm_status)
+    @BindView(R.id.rl_alarm_status)
     RelativeLayout rlAlarmStatus;
-    @Bind(R.id.tv_alarm_status)
+    @BindView(R.id.tv_alarm_status)
     TextView tvAlarmStatus;
 
     private String[] connectStatusStrs;

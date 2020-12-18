@@ -1,7 +1,7 @@
 package com.moko.lorawan.dialog;
 
 import android.content.DialogInterface;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,15 +10,15 @@ import android.widget.TextView;
 import com.moko.lorawan.R;
 import com.moko.lorawan.view.ProgressDrawable;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LoadingMessageDialog extends MokoBaseDialog {
     private static final int DIALOG_DISMISS_DELAY_TIME = 5000;
     public static final String TAG = LoadingMessageDialog.class.getSimpleName();
-    @Bind(R.id.iv_loading)
+    @BindView(R.id.iv_loading)
     ImageView ivLoading;
-    @Bind(R.id.tv_loading_message)
+    @BindView(R.id.tv_loading_message)
     TextView tvLoadingMessage;
 
     @Override
@@ -89,7 +89,6 @@ public class LoadingMessageDialog extends MokoBaseDialog {
     public void onDestroyView() {
         super.onDestroyView();
         ((ProgressDrawable) ivLoading.getDrawable()).stop();
-        ButterKnife.unbind(this);
     }
 
     private DialogDissmissCallback callback;

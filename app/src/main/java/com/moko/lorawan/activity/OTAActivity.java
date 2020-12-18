@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -42,7 +42,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import no.nordicsemi.android.dfu.DfuLogListener;
 import no.nordicsemi.android.dfu.DfuProgressListener;
@@ -53,9 +53,9 @@ import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 public class OTAActivity extends BaseActivity {
     public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
 
-    @Bind(R.id.tv_file_path)
+    @BindView(R.id.tv_file_path)
     TextView tvFilePath;
-    @Bind(R.id.tv_ota)
+    @BindView(R.id.tv_ota)
     TextView tvOta;
 
     private String mDeviceMac;

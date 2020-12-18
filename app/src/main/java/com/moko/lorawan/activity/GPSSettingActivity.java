@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -32,19 +32,19 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GPSSettingActivity extends BaseActivity {
 
 
-    @Bind(R.id.tv_save)
+    @BindView(R.id.tv_save)
     TextView tvSave;
-    @Bind(R.id.cb_gps_switch)
+    @BindView(R.id.cb_gps_switch)
     CheckBox cbGpsSwitch;
-    @Bind(R.id.et_search_time)
+    @BindView(R.id.et_search_time)
     EditText etSearchTime;
-    @Bind(R.id.cl_search_time)
+    @BindView(R.id.cl_search_time)
     ConstraintLayout clSearchTime;
 
     private boolean mReceiverTag = false;

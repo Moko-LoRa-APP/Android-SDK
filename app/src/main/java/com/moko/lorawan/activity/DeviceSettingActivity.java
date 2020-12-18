@@ -32,17 +32,17 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DeviceSettingActivity extends BaseActivity {
 
 
-    @Bind(R.id.tv_low_power_prompt)
+    @BindView(R.id.tv_low_power_prompt)
     TextView tvLowPowerPrompt;
-    @Bind(R.id.tv_low_power_prompt_tips)
+    @BindView(R.id.tv_low_power_prompt_tips)
     TextView tvLowPowerPromptTips;
-    @Bind(R.id.tv_network_check)
+    @BindView(R.id.tv_network_check)
     TextView tvNetworkCheck;
     private boolean mReceiverTag = false;
 

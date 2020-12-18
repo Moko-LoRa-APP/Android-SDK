@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -66,25 +66,25 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SettingActivity extends BaseActivity {
 
 
-    @Bind(R.id.rl_device_setting)
+    @BindView(R.id.rl_device_setting)
     RelativeLayout rlDeviceSetting;
-    @Bind(R.id.tv_lora_setting)
+    @BindView(R.id.tv_lora_setting)
     TextView tvLoraSetting;
-    @Bind(R.id.rl_multicast_setting)
+    @BindView(R.id.rl_multicast_setting)
     RelativeLayout rlMulticastSetting;
-    @Bind(R.id.rl_alarm_setting)
+    @BindView(R.id.rl_alarm_setting)
     RelativeLayout rlAlarmSetting;
-    @Bind(R.id.rl_ble_setting)
+    @BindView(R.id.rl_ble_setting)
     RelativeLayout rlBleSetting;
-    @Bind(R.id.rl_scan_setting)
+    @BindView(R.id.rl_scan_setting)
     RelativeLayout rlScanSetting;
-    @Bind(R.id.rl_gps_setting)
+    @BindView(R.id.rl_gps_setting)
     RelativeLayout rlGpsSetting;
 
     private String[] regions;

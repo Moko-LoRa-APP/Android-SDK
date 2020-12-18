@@ -7,12 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 
@@ -61,7 +61,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import no.nordicsemi.android.support.v18.scanner.ScanRecord;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
@@ -70,9 +70,9 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 public class MainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemClickListener, OnRefreshListener {
 
 
-    @Bind(R.id.rv_main)
+    @BindView(R.id.rv_main)
     RecyclerView rvMain;
-    @Bind(R.id.srl_main)
+    @BindView(R.id.srl_main)
     SmartRefreshLayout srlMain;
     private boolean mReceiverTag = false;
     private LoRaDeviceAdapter mAdapter;

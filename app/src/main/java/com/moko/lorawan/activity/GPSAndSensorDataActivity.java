@@ -18,40 +18,40 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class GPSAndSensorDataActivity extends BaseActivity {
 
-    @Bind(R.id.tv_longitude)
+    @BindView(R.id.tv_longitude)
     TextView tvLongitude;
-    @Bind(R.id.tv_latitude)
+    @BindView(R.id.tv_latitude)
     TextView tvLatitude;
-    @Bind(R.id.tv_speed)
+    @BindView(R.id.tv_speed)
     TextView tvSpeed;
-    @Bind(R.id.tv_altitude)
+    @BindView(R.id.tv_altitude)
     TextView tvAltitude;
-    @Bind(R.id.tv_gx)
+    @BindView(R.id.tv_gx)
     TextView tvGx;
-    @Bind(R.id.tv_gy)
+    @BindView(R.id.tv_gy)
     TextView tvGy;
-    @Bind(R.id.tv_gz)
+    @BindView(R.id.tv_gz)
     TextView tvGz;
-    @Bind(R.id.tv_ax)
+    @BindView(R.id.tv_ax)
     TextView tvAx;
-    @Bind(R.id.tv_ay)
+    @BindView(R.id.tv_ay)
     TextView tvAy;
-    @Bind(R.id.tv_az)
+    @BindView(R.id.tv_az)
     TextView tvAz;
-    @Bind(R.id.tv_mx)
+    @BindView(R.id.tv_mx)
     TextView tvMx;
-    @Bind(R.id.tv_my)
+    @BindView(R.id.tv_my)
     TextView tvMy;
-    @Bind(R.id.tv_mz)
+    @BindView(R.id.tv_mz)
     TextView tvMz;
-    @Bind(R.id.tv_x_angle)
+    @BindView(R.id.tv_x_angle)
     TextView tvXAngle;
-    @Bind(R.id.tv_y_angle)
+    @BindView(R.id.tv_y_angle)
     TextView tvYAngle;
 
     private boolean mReceiverTag = false;

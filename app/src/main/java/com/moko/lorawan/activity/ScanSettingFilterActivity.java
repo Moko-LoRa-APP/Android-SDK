@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -50,49 +50,49 @@ public class ScanSettingFilterActivity extends BaseActivity implements CompoundB
 
 
     private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";
-    @Bind(R.id.sb_rssi_filter)
+    @BindView(R.id.sb_rssi_filter)
     SeekBar sbRssiFilter;
-    @Bind(R.id.tv_rssi_filter_value)
+    @BindView(R.id.tv_rssi_filter_value)
     TextView tvRssiFilterValue;
-    @Bind(R.id.tv_rssi_filter_tips)
+    @BindView(R.id.tv_rssi_filter_tips)
     TextView tvRssiFilterTips;
-    @Bind(R.id.cb_mac_address)
+    @BindView(R.id.cb_mac_address)
     CheckBox cbMacAddress;
-    @Bind(R.id.et_mac_address)
+    @BindView(R.id.et_mac_address)
     EditText etMacAddress;
-    @Bind(R.id.cb_adv_name)
+    @BindView(R.id.cb_adv_name)
     CheckBox cbAdvName;
-    @Bind(R.id.et_adv_name)
+    @BindView(R.id.et_adv_name)
     EditText etAdvName;
-    @Bind(R.id.cb_ibeacon_uuid)
+    @BindView(R.id.cb_ibeacon_uuid)
     CheckBox cbIbeaconUuid;
-    @Bind(R.id.et_ibeacon_uuid)
+    @BindView(R.id.et_ibeacon_uuid)
     EditText etIbeaconUuid;
-    @Bind(R.id.cb_ibeacon_major)
+    @BindView(R.id.cb_ibeacon_major)
     CheckBox cbIbeaconMajor;
-    @Bind(R.id.ll_ibeacon_major)
+    @BindView(R.id.ll_ibeacon_major)
     LinearLayout llIbeaconMajor;
-    @Bind(R.id.et_ibeacon_major_min)
+    @BindView(R.id.et_ibeacon_major_min)
     EditText etIbeaconMajorMin;
-    @Bind(R.id.et_ibeacon_major_max)
+    @BindView(R.id.et_ibeacon_major_max)
     EditText etIbeaconMajorMax;
-    @Bind(R.id.ll_ibeacon_minor)
+    @BindView(R.id.ll_ibeacon_minor)
     LinearLayout llIbeaconMinor;
-    @Bind(R.id.cb_ibeacon_minor)
+    @BindView(R.id.cb_ibeacon_minor)
     CheckBox cbIbeaconMinor;
-    @Bind(R.id.et_ibeacon_minor_min)
+    @BindView(R.id.et_ibeacon_minor_min)
     EditText etIbeaconMinorMin;
-    @Bind(R.id.et_ibeacon_minor_max)
+    @BindView(R.id.et_ibeacon_minor_max)
     EditText etIbeaconMinorMax;
-    @Bind(R.id.cb_raw_adv_data)
+    @BindView(R.id.cb_raw_adv_data)
     CheckBox cbRawAdvData;
-    @Bind(R.id.ll_raw_data_filter)
+    @BindView(R.id.ll_raw_data_filter)
     LinearLayout llRawDataFilter;
-    @Bind(R.id.iv_raw_data_del)
+    @BindView(R.id.iv_raw_data_del)
     ImageView ivRawDataDel;
-    @Bind(R.id.iv_raw_data_add)
+    @BindView(R.id.iv_raw_data_add)
     ImageView ivRawDataAdd;
-    @Bind(R.id.tv_save)
+    @BindView(R.id.tv_save)
     TextView tvSave;
 
     private boolean mReceiverTag = false;
@@ -181,10 +181,10 @@ public class ScanSettingFilterActivity extends BaseActivity implements CompoundB
             byte[] rawDataBytes = MokoUtils.hex2bytes(rawData);
             for (int i = 0, l = rawDataBytes.length; i < l; ) {
                 View v = LayoutInflater.from(this).inflate(R.layout.item_raw_data_filter, llRawDataFilter, false);
-                EditText etDataType = ButterKnife.findById(v, R.id.et_data_type);
-                EditText etMin = ButterKnife.findById(v, R.id.et_min);
-                EditText etMax = ButterKnife.findById(v, R.id.et_max);
-                EditText etRawData = ButterKnife.findById(v, R.id.et_raw_data);
+                EditText etDataType = v.findViewById(R.id.et_data_type);
+                EditText etMin = v.findViewById(R.id.et_min);
+                EditText etMax = v.findViewById(R.id.et_max);
+                EditText etRawData = v.findViewById(R.id.et_raw_data);
                 int filterLength = rawDataBytes[i] & 0xFF;
                 i++;
                 String type = MokoUtils.byte2HexString(rawDataBytes[i]);
@@ -406,10 +406,10 @@ public class ScanSettingFilterActivity extends BaseActivity implements CompoundB
 
             for (int i = 0; i < count; i++) {
                 View v = llRawDataFilter.getChildAt(i);
-                EditText etDataType = ButterKnife.findById(v, R.id.et_data_type);
-                EditText etMin = ButterKnife.findById(v, R.id.et_min);
-                EditText etMax = ButterKnife.findById(v, R.id.et_max);
-                EditText etRawData = ButterKnife.findById(v, R.id.et_raw_data);
+                EditText etDataType = v.findViewById(R.id.et_data_type);
+                EditText etMin = v.findViewById(R.id.et_min);
+                EditText etMax = v.findViewById(R.id.et_max);
+                EditText etRawData = v.findViewById(R.id.et_raw_data);
                 final String dataTypeStr = etDataType.getText().toString();
                 final String minStr = etMin.getText().toString();
                 final String maxStr = etMax.getText().toString();

@@ -29,11 +29,11 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class UplinkDataTestActivity extends BaseActivity {
-    @Bind(R.id.tv_uplink_data)
+    @BindView(R.id.tv_uplink_data)
     TextView tvUplinkData;
     private boolean mReceiverTag = false;
 

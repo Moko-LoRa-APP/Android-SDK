@@ -18,20 +18,20 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DeviceInfoActivity extends BaseActivity {
 
-    @Bind(R.id.tv_company_name)
+    @BindView(R.id.tv_company_name)
     TextView tvCompanyName;
-    @Bind(R.id.tv_manufacture_date)
+    @BindView(R.id.tv_manufacture_date)
     TextView tvManufactureDate;
-    @Bind(R.id.tv_model_name)
+    @BindView(R.id.tv_model_name)
     TextView tvModelName;
-    @Bind(R.id.tv_ble_firmware)
+    @BindView(R.id.tv_ble_firmware)
     TextView tvBleFirmware;
-    @Bind(R.id.tv_lora_firmware)
+    @BindView(R.id.tv_lora_firmware)
     TextView tvLoraFirmware;
 
     private boolean mReceiverTag = false;

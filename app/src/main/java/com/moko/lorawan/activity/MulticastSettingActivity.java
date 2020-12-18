@@ -30,21 +30,21 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MulticastSettingActivity extends BaseActivity {
 
 
-    @Bind(R.id.cb_multicast_switch)
+    @BindView(R.id.cb_multicast_switch)
     CheckBox cbMulticastSwitch;
-    @Bind(R.id.et_multicast_addr)
+    @BindView(R.id.et_multicast_addr)
     EditText etMulticastAddr;
-    @Bind(R.id.et_multicast_nwkskey)
+    @BindView(R.id.et_multicast_nwkskey)
     EditText etMulticastNwkskey;
-    @Bind(R.id.et_multicast_appskey)
+    @BindView(R.id.et_multicast_appskey)
     EditText etMulticastAppskey;
-    @Bind(R.id.ll_multicast_info)
+    @BindView(R.id.ll_multicast_info)
     LinearLayout llMulticastInfo;
 
     private boolean mReceiverTag = false;

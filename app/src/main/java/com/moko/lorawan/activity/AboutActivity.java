@@ -9,12 +9,12 @@ import android.widget.TextView;
 import com.moko.lorawan.R;
 import com.moko.lorawan.utils.Utils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AboutActivity extends BaseActivity {
 
-    @Bind(R.id.tv_soft_version)
+    @BindView(R.id.tv_soft_version)
     TextView tvSoftVersion;
 
     @Override

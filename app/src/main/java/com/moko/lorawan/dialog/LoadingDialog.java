@@ -1,6 +1,6 @@
 package com.moko.lorawan.dialog;
 
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,13 +8,13 @@ import android.widget.ImageView;
 import com.moko.lorawan.R;
 import com.moko.lorawan.view.ProgressDrawable;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LoadingDialog extends MokoBaseDialog {
 
     public static final String TAG = LoadingDialog.class.getSimpleName();
-    @Bind(R.id.iv_loading)
+    @BindView(R.id.iv_loading)
     ImageView ivLoading;
 
     @Override
@@ -66,6 +66,5 @@ public class LoadingDialog extends MokoBaseDialog {
     public void onDestroyView() {
         super.onDestroyView();
         ((ProgressDrawable) ivLoading.getDrawable()).stop();
-        ButterKnife.unbind(this);
     }
 }

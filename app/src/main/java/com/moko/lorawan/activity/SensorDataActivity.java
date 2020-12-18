@@ -35,43 +35,43 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SensorDataActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
 
 
-    @Bind(R.id.tv_temp_current)
+    @BindView(R.id.tv_temp_current)
     TextView tvTempCurrent;
-    @Bind(R.id.tv_humi_current)
+    @BindView(R.id.tv_humi_current)
     TextView tvHumiCurrent;
-    @Bind(R.id.et_i2c_interval)
+    @BindView(R.id.et_i2c_interval)
     EditText etI2cInterval;
-    @Bind(R.id.et_temp_low)
+    @BindView(R.id.et_temp_low)
     EditText etTempLow;
-    @Bind(R.id.et_temp_high)
+    @BindView(R.id.et_temp_high)
     EditText etTempHigh;
-    @Bind(R.id.ll_temp_alarm)
+    @BindView(R.id.ll_temp_alarm)
     LinearLayout llTempAlarm;
-    @Bind(R.id.et_humi_low)
+    @BindView(R.id.et_humi_low)
     EditText etHumiLow;
-    @Bind(R.id.et_humi_high)
+    @BindView(R.id.et_humi_high)
     EditText etHumiHigh;
-    @Bind(R.id.ll_humi_alarm)
+    @BindView(R.id.ll_humi_alarm)
     LinearLayout llHumiAlarm;
-    @Bind(R.id.tv_save)
+    @BindView(R.id.tv_save)
     TextView tvSave;
-    @Bind(R.id.rb_temp_disable)
+    @BindView(R.id.rb_temp_disable)
     RadioButton rbTempDisable;
-    @Bind(R.id.rb_temp_enable)
+    @BindView(R.id.rb_temp_enable)
     RadioButton rbTempEnable;
-    @Bind(R.id.rg_temp)
+    @BindView(R.id.rg_temp)
     RadioGroup rgTemp;
-    @Bind(R.id.rb_humi_disable)
+    @BindView(R.id.rb_humi_disable)
     RadioButton rbHumiDisable;
-    @Bind(R.id.rb_humi_enable)
+    @BindView(R.id.rb_humi_enable)
     RadioButton rbHumiEnable;
-    @Bind(R.id.rg_humi)
+    @BindView(R.id.rg_humi)
     RadioGroup rgHumi;
     private boolean mReceiverTag = false;
     private String[] mAlarms;

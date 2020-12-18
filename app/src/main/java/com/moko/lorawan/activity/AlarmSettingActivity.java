@@ -32,22 +32,22 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AlarmSettingActivity extends BaseActivity {
 
-    @Bind(R.id.cb_vibration_switch)
+    @BindView(R.id.cb_vibration_switch)
     CheckBox cbVibrationSwitch;
-    @Bind(R.id.tv_trigger_mode)
+    @BindView(R.id.tv_trigger_mode)
     TextView tvTriggerMode;
-    @Bind(R.id.et_report_interval)
+    @BindView(R.id.et_report_interval)
     EditText etReportInterval;
-    @Bind(R.id.tv_save)
+    @BindView(R.id.tv_save)
     TextView tvSave;
-    @Bind(R.id.et_ble_scan_time)
+    @BindView(R.id.et_ble_scan_time)
     EditText etBleScanTime;
-    @Bind(R.id.et_reported_num)
+    @BindView(R.id.et_reported_num)
     EditText etReportedNum;
 
     private boolean mReceiverTag = false;

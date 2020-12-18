@@ -34,24 +34,24 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ScanSettingActivity extends BaseActivity {
 
 
     private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";
-    @Bind(R.id.cb_scan_switch)
+    @BindView(R.id.cb_scan_switch)
     CheckBox cbScanSwitch;
-    @Bind(R.id.et_filter_name)
+    @BindView(R.id.et_filter_name)
     EditText etFilterName;
-    @Bind(R.id.et_filter_rssi)
+    @BindView(R.id.et_filter_rssi)
     EditText etFilterRssi;
-    @Bind(R.id.et_report_interval)
+    @BindView(R.id.et_report_interval)
     EditText etReportInterval;
-    @Bind(R.id.ll_scan_filter)
+    @BindView(R.id.ll_scan_filter)
     LinearLayout llScanFilter;
-    @Bind(R.id.tv_save)
+    @BindView(R.id.tv_save)
     TextView tvSave;
     private boolean mReceiverTag = false;
     private boolean mIsFailed;

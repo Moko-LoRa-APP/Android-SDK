@@ -28,13 +28,13 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BleSettingActivity extends BaseActivity {
 
 
-    @Bind(R.id.et_ble_opening_time)
+    @BindView(R.id.et_ble_opening_time)
     EditText etBleOpeningTime;
     private boolean mReceiverTag = false;
     private boolean mIsFailed;

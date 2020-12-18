@@ -10,14 +10,14 @@ import com.moko.lorawan.view.WheelView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class RegionBottomDialog extends MokoBaseDialog {
 
 
-    @Bind(R.id.wv_bottom)
+    @BindView(R.id.wv_bottom)
     WheelView wvBottom;
     private ArrayList<Region> mDatas;
     private HashMap<Integer, Region> regionHashMap;
@@ -50,12 +50,6 @@ public class RegionBottomDialog extends MokoBaseDialog {
     @Override
     public float getDimAmount() {
         return 0.7f;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @OnClick({R.id.tv_cancel, R.id.tv_confirm})
