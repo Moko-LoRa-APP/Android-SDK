@@ -6,11 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.moko.lorawan.R;
-import com.moko.lorawan.dialog.BottomDialog;
 import com.moko.lorawan.dialog.ChangePasswordDialog;
 import com.moko.lorawan.dialog.LoadingDialog;
 import com.moko.lorawan.dialog.LowPowerPromptDialog;
@@ -42,15 +43,14 @@ public class DeviceSettingActivity extends BaseActivity {
     TextView tvLowPowerPrompt;
     @BindView(R.id.tv_low_power_prompt_tips)
     TextView tvLowPowerPromptTips;
-    @BindView(R.id.tv_network_check)
-    TextView tvNetworkCheck;
+    @BindView(R.id.et_network_check)
+    EditText etNetworkCheck;
     private boolean mReceiverTag = false;
 
     private boolean mIsFailed;
 
     private int mSelected;
 
-    private ArrayList<String> mValues;
     private int mNetwrokValue;
 
     @Override
@@ -61,11 +61,7 @@ public class DeviceSettingActivity extends BaseActivity {
 
         int lowPowerPrompt = MokoSupport.getInstance().lowPowerPrompt;
         mNetwrokValue = MokoSupport.getInstance().networkCheck;
-        mValues = new ArrayList<>();
-        for (int i = 0; i <= 255; i++) {
-            mValues.add(String.valueOf(i));
-        }
-        tvNetworkCheck.setText(String.valueOf(mNetwrokValue));
+        etNetworkCheck.setText(String.valueOf(mNetwrokValue));
         tvLowPowerPrompt.setText(String.format("%d%%", lowPowerPrompt));
         tvLowPowerPromptTips.setText(getString(R.string.low_power_prompt_tips, lowPowerPrompt));
         mSelected = lowPowerPrompt / 10 - 1;
@@ -138,6 +134,17 @@ public class DeviceSettingActivity extends BaseActivity {
     }
 
     public void onSave(View view) {
+        String netwrokValue = etNetworkCheck.getText().toString();
+        if (TextUtils.isEmpty(netwrokValue)) {
+            ToastUtils.showToast(this, "Network Check Cycle is empty");
+            return;
+        }
+        int network = Integer.parseInt(netwrokValue);
+        if (network < 0 || network > 255) {
+            ToastUtils.showToast(this, "Network Check Cycle range 0~255");
+            return;
+        }
+        mNetwrokValue = network;
         int lowPowerPrompt = (mSelected + 1) * 10;
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.setLowPowerPromptTask(lowPowerPrompt));
@@ -207,15 +214,5 @@ public class DeviceSettingActivity extends BaseActivity {
                 runOnUiThread(() -> dialog.showKeyboard());
             }
         }, 200);
-    }
-
-    public void selectNetworkCheck(View view) {
-        BottomDialog bottomDialog = new BottomDialog();
-        bottomDialog.setDatas(mValues, mNetwrokValue);
-        bottomDialog.setListener(value -> {
-            mNetwrokValue = value;
-            tvNetworkCheck.setText(String.valueOf(value));
-        });
-        bottomDialog.show(getSupportFragmentManager());
     }
 }

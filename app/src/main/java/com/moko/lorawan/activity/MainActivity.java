@@ -80,6 +80,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     private HashMap<String, DeviceInfo> mDeviceInfoHashMap;
     private String mSelectedDeviceName;
     private String mSelectedDeviceMac;
+    private boolean isPasswordError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,7 +157,11 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
             // 设备断开
             dismissLoadingProgressDialog();
-            ToastUtils.showToast(MainActivity.this, "Disconnected");
+            if (isPasswordError) {
+                isPasswordError = false;
+            } else {
+                ToastUtils.showToast(MainActivity.this, "Disconnected");
+            }
         }
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
             // 设备连接成功
@@ -233,6 +238,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         orderTasks.add(new ReadConnectStatusTask());
                         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
                     } else {
+                        isPasswordError = true;
                         ToastUtils.showToast(MainActivity.this, "Password Error");
                         MokoSupport.getInstance().disConnectBle();
                     }
